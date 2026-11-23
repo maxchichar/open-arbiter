@@ -7,7 +7,8 @@
     "test": "node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs",
     "dev:arbiter": "cd arbiter && wrangler dev --local",
     "seed": "node arbiter/scripts/seed.mjs",
-    "e2e": "node arbiter/scripts/e2e.mjs"
+    "e2e": "node arbiter/scripts/e2e.mjs",
+    "test:worker": "node arbiter/scripts/worker-harness.mjs"
   },
   "keywords": [],
   "author": "",

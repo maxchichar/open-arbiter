@@ -1,0 +1,50 @@
+{
+    "trigger_raise": {
+        "threw": true,
+        "message": "D1_ERROR: out_of_stock: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)",
+        "cause": "out_of_stock: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)",
+        "m1_state_after": "RESOLVED",
+        "stock_after": 2
+    },
+    "trigger_insert_guard": {
+        "threw": true,
+        "message": "D1_ERROR: not_settled: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)",
+        "cause": "not_settled: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)",
+        "receipts": 0
+    },
+    "unique_rollback": {
+        "threw": true,
+        "message": "D1_ERROR: UNIQUE constraint failed: receipts.mandate_id: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_UNIQUE)",
+        "cause": "UNIQUE constraint failed: receipts.mandate_id: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_UNIQUE)",
+        "stock_after": 2,
+        "receipts": 0
+    },
+    "commit": {
+        "changes": [
+            1,
+            1
+        ],
+        "stock_after": 1,
+        "receipts": 1
+    },
+    "prev_hash_unique": {
+        "threw": true,
+        "message": "D1_ERROR: UNIQUE constraint failed: events.prev_hash: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_UNIQUE)",
+        "cause": "UNIQUE constraint failed: events.prev_hash: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_UNIQUE)"
+    },
+    "conditional_insert": {
+        "changes": [
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        "rows": 3
+    },
+    "notnull_guard": {
+        "threw": true,
+        "message": "D1_ERROR: NOT NULL constraint failed: receipts.mandate_id: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_NOTNULL)",
+        "cause": "NOT NULL constraint failed: receipts.mandate_id: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_NOTNULL)"
+    }
+}
