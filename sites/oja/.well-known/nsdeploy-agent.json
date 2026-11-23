@@ -1,0 +1,7 @@
+{
+  "protocol": "nsdeploy-agent-mcp/v1",
+  "network": "oja_market",
+  "front_man": "oja_steward",
+  "available": false,
+  "reason": "This site is static. The Open Arbiter itself offers MCP at <arbiter>/mcp."
+}

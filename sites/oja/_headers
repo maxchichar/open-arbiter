@@ -1,0 +1,13 @@
+# Cloudflare Pages headers for the open agentic web (spec 3.3, 3.4).
+/agent-manifest.json
+  Access-Control-Allow-Origin: *
+/oja_market.network.json
+  Access-Control-Allow-Origin: *
+/links.json
+  Access-Control-Allow-Origin: *
+/agent-mcp.json
+  Access-Control-Allow-Origin: *
+/.well-known/*
+  Access-Control-Allow-Origin: *
+/runtime/sandbox-worker.js
+  Content-Security-Policy: default-src 'none'; script-src blob:; connect-src 'none'; worker-src 'none'

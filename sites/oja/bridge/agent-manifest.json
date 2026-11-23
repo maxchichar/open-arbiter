@@ -1,0 +1,11 @@
+{
+  "networks": [
+    {
+      "name": "oja_market"
+    }
+  ],
+  "actions": {
+    "version": 1,
+    "module": "./bridge-actions.js"
+  }
+}

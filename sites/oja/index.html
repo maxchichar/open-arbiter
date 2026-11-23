@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oja: fair-price market, settled by an open arbiter</title>
+  <meta name="description" content="Buy foodstuff from Lagos market sellers at a fair price. You and the seller each seal a limit; a deterministic open arbiter finds the deal or says no, without revealing either.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assistant.css">
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="site.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap bar">
+      <a class="brand" href="./"><span class="mark" aria-hidden="true">◆</span> Oja</a>
+      <nav aria-label="Sections">
+        <a href="#catalog">Market</a>
+        <a href="#haggle">Haggle</a>
+        <a href="#assistant">Ask Oja</a>
+        <a href="#trust">Trust</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <h1>Haggle without the stress. <span>Get the fair price.</span></h1>
+      <p class="lead">You seal the most you will pay. Each seller has sealed the least they will take. An open arbiter, plain code rather than an AI, offers the midpoint of where you overlap, or says no deal, without revealing either side's number.</p>
+      <ol class="steps">
+        <li><strong>Seal your maximum</strong><span>Pick an item, a quantity and how fast you need it.</span></li>
+        <li><strong>The arbiter matches</strong><span>Every seller is checked at once. You see ranked offers and your saving.</span></li>
+        <li><strong>Accept and keep a signed receipt</strong><span>Your browser checks the arbiter's signature itself.</span></li>
+      </ol>
+    </section>
+
+    <section id="catalog" class="wrap" aria-labelledby="catalog-h">
+      <h2 id="catalog-h">Today in the market</h2>
+      <p class="muted">List prices are public. Sellers' lowest prices are sealed with the arbiter. Demo sellers and prices.</p>
+      <div id="catalog-body" class="grid"><p class="muted">Loading the market…</p></div>
+    </section>
+
+    <section id="haggle" class="wrap two" aria-labelledby="haggle-h">
+      <div>
+        <h2 id="haggle-h">Haggle by hand</h2>
+        <form id="haggle-form" class="card">
+          <label>Item <select id="h-sku" required></select></label>
+          <div class="row">
+            <label>Quantity <input id="h-qty" type="number" min="1" max="10000" value="1" required></label>
+            <label>Deliver within (hours) <input id="h-hours" type="number" min="0" max="2160" value="48" required></label>
+          </div>
+          <label>Most you will pay in total (₦) <input id="h-max" type="number" min="1" step="1" required placeholder="e.g. 170000"></label>
+          <p class="muted small">Sealed: sellers never see it. These exact terms can be negotiated once.</p>
+          <button type="submit">Seal and negotiate</button>
+          <p id="flash" class="flash" role="status"></p>
+        </form>
+      </div>
+      <div>
+        <h2>Your negotiations</h2>
+        <div id="negotiations" aria-live="polite"></div>
+        <h2>Receipts</h2>
+        <div id="receipts"></div>
+      </div>
+    </section>
+
+    <section id="assistant" class="assistant wrap" aria-labelledby="assistant-heading">
+      <h2 id="assistant-heading">Ask Oja</h2>
+      <p>Tell Oja what you need, such as "two bags of rice by tomorrow, no more than ₦170,000". It reads the market, seals your bid with the arbiter after you approve, and accepts an offer only when you confirm.</p>
+      <p class="assistant-note">Your messages and this page's data go to the AI provider you choose in the settings below, on your own key. Your maximum goes only to the arbiter. You confirm every bid and every purchase.</p>
+      <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+      <div id="agent-app">
+        <div data-ns-slot="header"></div>
+        <div class="assistant-panels">
+          <div data-ns-slot="chat"></div>
+          <div data-ns-slot="agents"></div>
+        </div>
+        <div data-ns-slot="settings"></div>
+      </div>
+    </section>
+
+    <section id="trust" class="wrap two" aria-labelledby="trust-h">
+      <div>
+        <h2 id="trust-h">Why you can trust the price</h2>
+        <ul class="ticks">
+          <li>The arbiter at <code id="arbiter-host">…</code> is open-source deterministic code. Same inputs, same price, every time.</li>
+          <li>Price = midpoint between the seller's sealed floor and the lower of your maximum and the list price.</li>
+          <li>Neither limit is ever returned, logged in public, or shown to the AI.</li>
+          <li>Rebidding the same terms with a new maximum is refused, so no one can map a seller's floor.</li>
+          <li>Every step is written to a hash-chained audit log, and receipts are signed with ECDSA P-256 (<a id="jwks-link" href="#">public key</a>).</li>
+          <li>Other agents can use it too, over MCP at <code id="mcp-url">…</code>, or by calling this site's network.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Check a receipt</h2>
+        <form id="verify-form" class="card">
+          <label>Receipt id <input id="v-id" required placeholder="rct_…"></label>
+          <button type="submit">Verify signature</button>
+          <p id="v-out" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Oja is a demo for the <a href="https://worldwideagenticweb.org">Open Agentic Web</a> challenge. Sellers, stock and prices are illustrative; settlement is simulated and no money moves. Sellers: <a href="vendor.html">seal your prices</a>.</p>
+  </footer>
+
+  <dialog id="confirm" class="assistant-review" aria-labelledby="confirm-title">
+    <form method="dialog">
+      <h2 id="confirm-title">Accept this offer?</h2>
+      <p>This is binding: the seller reserves the stock and the arbiter issues a signed receipt.</p>
+      <dl id="confirm-details"></dl>
+      <button value="confirm">Accept and settle</button>
+      <button value="cancel" class="assistant-decline">Don't accept</button>
+    </form>
+  </dialog>
+</body>
+</html>

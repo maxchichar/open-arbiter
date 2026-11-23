@@ -1,0 +1,82 @@
+{
+  "brand": "Oja Market Assistant",
+  "networks": [
+    {
+      "name": "oja_market",
+      "front_man": "oja_steward",
+      "hocon": "./oja_market.network.json",
+      "description": "Find Lagos foodstuff, negotiate a fair price through a sealed-bid arbiter, and keep a signed receipt.",
+      "tags": [
+        "agentified-website",
+        "commerce",
+        "negotiation",
+        "open-arbiter"
+      ],
+      "sample_queries": [
+        "What rice is in the market today, and who delivers fastest?",
+        "I need 2 bags of rice within 48 hours and won't pay more than 170,000 naira in total.",
+        "Accept the cheapest offer.",
+        "Is receipt rct_example genuine?",
+        "Can you pay the seller with my card?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Local agents and page-local actions only. Page actions call the Open Arbiter API shown in each confirmation dialog."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "oja_market",
+    "front_man": "oja_steward",
+    "available": false,
+    "reason": "This site is static. The Open Arbiter itself offers MCP at <arbiter>/mcp."
+  },
+  "theme": {
+    "primary": "#9a3412"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "oja_market",
+        "front_man": "oja_steward",
+        "aliases": [
+          "oja_market",
+          "oja_steward"
+        ],
+        "url": "oja_market"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_market_state",
+      "negotiate",
+      "accept_offer",
+      "verify_receipt"
+    ]
+  }
+}

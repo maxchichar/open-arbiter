@@ -1,0 +1,20 @@
+{
+  "name": "open-arbiter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs",
+    "dev:arbiter": "cd arbiter && wrangler dev --local",
+    "seed": "node arbiter/scripts/seed.mjs",
+    "e2e": "node arbiter/scripts/e2e.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^4.166.0"
+  },
+  "type": "module",
+  "private": true
+}

@@ -1,0 +1,18 @@
+{
+  "protocol": "nsdeploy-link/v1",
+  "exports": [
+    {
+      "network": "oja_market",
+      "front_man": "oja_steward",
+      "aliases": [
+        "oja_market",
+        "oja_steward"
+      ],
+      "url": "oja_market"
+    }
+  ],
+  "imports": [],
+  "link_updates": {
+    "mode": "browser-local"
+  }
+}

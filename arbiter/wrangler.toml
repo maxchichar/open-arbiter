@@ -1,0 +1,14 @@
+name = "open-arbiter"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "open-arbiter"
+# Replace with the id printed by `npx wrangler d1 create open-arbiter`.
+database_id = "00000000-0000-0000-0000-000000000000"
+
+# Secrets (set with `npx wrangler secret put <NAME>`):
+#   ADMIN_TOKEN          registers vendors
+#   ARBITER_SIGNING_JWK  private ECDSA P-256 JWK (npm run keygen); without it a key is generated and kept in D1
+#   BUYER_SALT           salt for hashing caller IPs

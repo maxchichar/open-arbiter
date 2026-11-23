@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oja for sellers: seal your prices</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top"><div class="wrap bar"><a class="brand" href="./"><span class="mark" aria-hidden="true">◆</span> Oja</a><nav><a href="./">Market</a></nav></div></header>
+  <main class="wrap">
+    <section class="hero" style="padding-bottom:0">
+      <h1 style="font-size:2.2rem">Seal your prices. <span>Sell while you sleep.</span></h1>
+      <p class="lead">Set a public list price and a private lowest price for each item. Buyers' agents negotiate through the arbiter; your lowest price is never shown to anyone, not even to the AI.</p>
+    </section>
+    <section class="two">
+      <form id="login" class="card">
+        <h2>Your seller key</h2>
+        <label>Seller key <input id="key" type="password" autocomplete="off" required placeholder="vk_…"></label>
+        <p class="muted small">Kept in this tab only, and sent only to the arbiter at <code id="host"></code>.</p>
+        <button type="submit">Open my listings</button>
+        <p id="who" class="flash" role="status"></p>
+      </form>
+      <form id="listing" class="card" hidden>
+        <h2>Add or update an item</h2>
+        <div class="row">
+          <label>Item id <input id="sku" required pattern="[a-z0-9][a-z0-9_\-]{0,63}" placeholder="rice-50kg"></label>
+          <label>Unit <input id="unit" value="bag" required></label>
+        </div>
+        <label>Name <input id="title" required placeholder="Local parboiled rice, 50 kg bag"></label>
+        <div class="row">
+          <label>List price per unit (₦) <input id="ask" type="number" min="1" required></label>
+          <label>Lowest price per unit (₦, sealed) <input id="floor" type="number" min="1" required></label>
+        </div>
+        <div class="row">
+          <label>Delivery time (hours) <input id="hours" type="number" min="0" max="2160" value="24" required></label>
+          <label>In stock <input id="stock" type="number" min="0" value="10" required></label>
+        </div>
+        <button type="submit">Seal this listing</button>
+        <p id="saved" class="flash" role="status"></p>
+      </form>
+    </section>
+    <section id="mine" hidden>
+      <h2>Your sealed listings</h2>
+      <table><thead><tr><th>Item</th><th class="num">List</th><th class="num">Lowest (only you see this)</th><th class="num">Delivery</th><th class="num">Stock</th></tr></thead><tbody id="rows"></tbody></table>
+    </section>
+  </main>
+  <script type="module">
+    import { arbiterUrl } from "./js/config.js";
+    const base = arbiterUrl().replace(/\/+$/, "");
+    const $ = (s) => document.querySelector(s);
+    const ngn = (k) => `₦${(k / 100).toLocaleString("en-NG")}`;
+    $("#host").textContent = new URL(base).host;
+    let key = sessionStorage.getItem("oja-vendor-key") || "";
+    const api = (method, body) => fetch(`${base}/v1/listings`, { method, headers: { "content-type": "application/json", authorization: `Bearer ${key}` }, body: body && JSON.stringify(body) }).then(async (r) => ({ ok: r.ok, data: await r.json() }));
+    async function load() {
+      const r = await api("GET");
+      if (!r.ok) { $("#who").textContent = r.data.message; $("#who").className = "flash error"; return; }
+      sessionStorage.setItem("oja-vendor-key", key);
+      $("#who").textContent = `Signed in as ${r.data.vendor.name}.`;
+      $("#who").className = "flash";
+      $("#listing").hidden = false; $("#mine").hidden = false;
+      $("#rows").replaceChildren(...r.data.listings.map((l) => {
+        const tr = document.createElement("tr");
+        for (const [v, cls] of [[`${l.title} (${l.sku})`, ""], [ngn(l.ask_cents), "num"], [ngn(l.floor_cents), "num"], [`${l.delivery_hours} h`, "num"], [l.stock, "num"]]) {
+          const td = document.createElement("td"); td.textContent = v; td.className = cls; tr.append(td);
+        }
+        tr.addEventListener("click", () => {
+          $("#sku").value = l.sku; $("#unit").value = l.unit; $("#title").value = l.title;
+          $("#ask").value = l.ask_cents / 100; $("#floor").value = l.floor_cents / 100; $("#hours").value = l.delivery_hours; $("#stock").value = l.stock;
+        });
+        return tr;
+      }));
+    }
+    $("#login").addEventListener("submit", (e) => { e.preventDefault(); key = $("#key").value.trim(); load(); });
+    $("#listing").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const r = await api("PUT", {
+        sku: $("#sku").value.trim(), unit: $("#unit").value.trim(), title: $("#title").value.trim(), currency: "NGN",
+        ask_cents: Math.round(Number($("#ask").value) * 100), floor_cents: Math.round(Number($("#floor").value) * 100),
+        delivery_hours: Number($("#hours").value), stock: Number($("#stock").value),
+      });
+      $("#saved").textContent = r.ok ? `Sealed ${r.data.sku}.` : r.data.message;
+      $("#saved").className = r.ok ? "flash" : "flash error";
+      if (r.ok) load();
+    });
+    if (key) { $("#key").value = key; load(); }
+  </script>
+</body>
+</html>
