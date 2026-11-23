@@ -53,7 +53,7 @@ class SiteActions {
         type: "object", additionalProperties: false, required: ["offer_id"],
         properties: { offer_id: { type: "string", minLength: 5, maxLength: 64, description: "offer_id from website_get_market_state." } },
       },
-      execute: (args) => App.page.acceptOffer(args),
+      execute: (args, ctx) => App.page.acceptOffer(args, { signal: ctx?.signal }),
     };
   }
 

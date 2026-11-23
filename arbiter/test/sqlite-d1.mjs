@@ -7,9 +7,12 @@
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 
-export function memoryD1({ fault } = {}) {
+export const SCHEMA_SQL = readFileSync(new URL("../schema.sql", import.meta.url), "utf8");
+
+/** @param opts.schemaSql use a different schema (for tests of outdated databases) */
+export function memoryD1({ fault, schemaSql = SCHEMA_SQL } = {}) {
   const db = new DatabaseSync(":memory:");
-  db.exec(readFileSync(new URL("../schema.sql", import.meta.url), "utf8"));
+  db.exec(schemaSql);
   let executed = 0;
   const check = (sql) => {
     const n = executed++;

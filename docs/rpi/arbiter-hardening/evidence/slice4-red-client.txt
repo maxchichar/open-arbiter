@@ -1,0 +1,60 @@
+✖ ArbiterClient.accept, response lost (hang): unknown, sent once (4002.620249ms)
+✖ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (4002.680744ms)
+✖ ArbiterClient.accept, response lost (network-error): unknown, sent once (9.740132ms)
+✖ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (8.044888ms)
+✖ through the runtime: a lost accept response is a receipt with status unknown, run once (4001.584561ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 3
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12091.315975
+
+✖ failing tests:
+
+test at sites/oja/tests/accept-unknown.test.mjs:48:3
+✖ ArbiterClient.accept, response lost (hang): unknown, sent once (4002.620249ms)
+  'test timed out after 4000ms'
+
+test at sites/oja/tests/accept-unknown.test.mjs:58:3
+✖ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (4002.680744ms)
+  'test timed out after 4000ms'
+
+test at sites/oja/tests/accept-unknown.test.mjs:48:3
+✖ ArbiterClient.accept, response lost (network-error): unknown, sent once (9.740132ms)
+  AssertionError [ERR_ASSERTION]: must be reported as unknown, got {"ok":false,"reason":"The arbiter at arb.test could not be reached."}
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/accept-unknown.test.mjs:52:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/accept-unknown.test.mjs:58:3
+✖ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (8.044888ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/accept-unknown.test.mjs:60:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /unknown/i,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/accept-unknown.test.mjs:79:1
+✖ through the runtime: a lost accept response is a receipt with status unknown, run once (4001.584561ms)
+  'test timed out after 4000ms'

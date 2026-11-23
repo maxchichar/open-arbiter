@@ -1,0 +1,91 @@
+
+> open-arbiter@1.0.0 test
+> node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+
+✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (38.565842ms)
+✔ fault at "decrement stock": nothing of the accept is committed, and a later accept works (13.136141ms)
+✔ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (8.221301ms)
+✔ fault at "insert receipt": nothing of the accept is committed, and a later accept works (12.654041ms)
+✔ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (9.033827ms)
+✔ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (6.862352ms)
+✔ concurrent accepts of the same offer: exactly one receipt (13.041222ms)
+✔ concurrent accepts of different offers on one mandate: exactly one receipt (10.54359ms)
+✔ the schema refuses negative stock (CHECK stock_nonneg) (4.498343ms)
+✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (9.32678ms)
+✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (6.680819ms)
+✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (17.273783ms)
+✔ batch commits every statement together (3.605095ms)
+✔ batch rolls back everything when one statement fails (2.081565ms)
+✔ injected fault aborts a batch at the chosen statement (1.626805ms)
+✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (145.310584ms)
+✔ 5 concurrent identical terms: one succeeds, four get identical_terms (10.663548ms)
+✔ a refused mandate writes no row and no event (2.774274ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (1.667793ms)
+✔ concurrent writes of every kind keep one linear chain (231.067081ms)
+✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (6.941342ms)
+✔ chain-head conflicts are retried with a fresh head (25.341092ms)
+✔ when retries run out: 503 busy, and the business write is not committed (213.276562ms)
+✔ createVendor: a failed event insert rolls back the business write (2.908819ms)
+✔ upsertListing: a failed event insert rolls back the business write (2.319194ms)
+✔ createMandate: a failed event insert rolls back the business write (2.471062ms)
+✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (3.726734ms)
+✔ the detector finds DEV however it is written, and ignores comments (1.807978ms)
+✔ arbiter/wrangler.toml never defines DEV (1.49703ms)
+✔ midpoint of the zone of agreement (1.545742ms)
+✔ budget above list price is capped at list price (0.282854ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (1.32235ms)
+✔ offers ranked by price, then delivery, then vendor id (0.424362ms)
+✔ vendor filter is respected (0.413181ms)
+✔ listing validation (0.537617ms)
+✔ terms key ignores budget and vendor order (0.328701ms)
+✔ canonical json sorts keys at every level (0.305247ms)
+✔ catalog never exposes floors (25.269057ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (21.086189ms)
+✔ cannot accept twice, with a wrong token, or after expiry (14.833691ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (7.712449ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (10.217685ms)
+✔ tampering with the audit log is detected (5.144374ms)
+✔ the stripped schemas really lack the constraint (1.440613ms)
+Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.
+✔ outdated database (no CHECK stock_nonneg): writes refused with 500 misconfigured, nothing written (23.205246ms)
+Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.
+✔ outdated database (no UNIQUE events.prev_hash): writes refused with 500 misconfigured, nothing written (3.013606ms)
+✔ current schema: writes work (2.333431ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (78.277279ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (9.785618ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (7.918469ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (5.673214ms)
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (12.1622ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ a configured signing key works without DEV and is never stored (5.651292ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (1.276473ms)
+✔ ArbiterClient.accept, response lost (hang): unknown, sent once (233.288992ms)
+✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (165.157982ms)
+✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (7.878483ms)
+✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (8.737888ms)
+✔ through the runtime: a lost accept response is a receipt with status unknown, run once (156.288095ms)
+✔ negotiate, accept and verify through the page; budget and tokens never in state (90.52979ms)
+✔ page checks refuse bad input before anything is sent (4.764076ms)
+✔ repeat terms are refused with the arbiter's reason (7.097206ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (2.241898ms)
+ℹ tests 63
+ℹ suites 0
+ℹ pass 63
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 702.813926

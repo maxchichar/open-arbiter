@@ -92,8 +92,14 @@ async function manualAccept(offerId) {
   dlg.showModal();
   dlg.addEventListener("close", async () => {
     if (dlg.returnValue !== "confirm") return;
-    const r = await App.page.acceptOffer({ offer_id: offerId });
-    flash(r.ok ? `Deal settled with ${r.seller}. Receipt ${r.receipt_id}.` : r.reason, !r.ok);
+    try {
+      const r = await App.page.acceptOffer({ offer_id: offerId });
+      flash(r.ok ? `Deal settled with ${r.seller}. Receipt ${r.receipt_id}.` : r.reason, !r.ok);
+    } catch (error) {
+      // Outcome unknown (the arbiter's answer was lost). Never retried; the next refresh shows the truth.
+      flash(error.message, true);
+      App.page.refreshCatalog();
+    }
   }, { once: true });
 }
 

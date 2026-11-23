@@ -1,0 +1,4 @@
+# slice-4 code against the slice-3 schema (commit e63c362), which has no CHECK (stock >= 0)
+POST /v1/vendors -> {  "error": "misconfigured",  "message": "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes."} [500]
+GET /v1/catalog -> [200]
+log: 

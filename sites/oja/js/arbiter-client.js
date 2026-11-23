@@ -23,25 +23,46 @@ export class ArbiterClient {
   #offerToMandate = new Map();
   #jwks = null;
 
-  /** @param baseUrl the arbiter's origin, such as https://arbiter.example */
-  constructor(baseUrl, { fetchImpl } = {}) {
+  /**
+   * @param baseUrl the arbiter's origin, such as https://arbiter.example
+   * @param opts.timeoutMs how long to wait for an answer (default 20 s, under the runtime's own limit)
+   */
+  constructor(baseUrl, { fetchImpl, timeoutMs = 20_000 } = {}) {
     this.baseUrl = baseUrl.replace(/\/+$/, "");
     this.fetch = fetchImpl || globalThis.fetch.bind(globalThis);
+    this.timeoutMs = timeoutMs;
   }
 
-  async #call(method, path, { body, token } = {}) {
+  /**
+   * One request, never retried. With `binding: true` (accepting an offer), a request that may have
+   * reached the arbiter but got no answer (timeout, network error, unreadable reply) has an UNKNOWN
+   * outcome: it returns { ok: false, unknown: true }, never a "nothing changed" refusal.
+   */
+  async #call(method, path, { body, token, binding = false, signal } = {}) {
+    const host = new URL(this.baseUrl).host;
+    const unknown = { ok: false, unknown: true, reason: `No answer from the arbiter at ${host}, so the outcome is unknown: it may have gone through. Check the market state before trying again.` };
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    const onAbort = () => controller.abort();
+    signal?.addEventListener("abort", onAbort, { once: true });
     let res;
     try {
       res = await this.fetch(this.baseUrl + path, {
         method,
         headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}) },
         body: body === undefined ? undefined : JSON.stringify(body),
+        signal: controller.signal,
       });
     } catch {
-      return { ok: false, reason: `The arbiter at ${new URL(this.baseUrl).host} could not be reached.` };
+      return binding ? unknown : { ok: false, reason: `The arbiter at ${host} could not be reached.` };
+    } finally {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
     }
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) return { ok: false, reason: data.message || `The arbiter answered ${res.status}.`, code: data.error };
+    let data;
+    try { data = await res.json(); } catch { data = null; }
+    if (!res.ok) return { ok: false, reason: data?.message || `The arbiter answered ${res.status}.`, code: data?.error };
+    if (data === null) return binding ? unknown : { ok: false, reason: `The arbiter at ${host} sent an unreadable answer.` };
     return { ok: true, data };
   }
 
@@ -79,12 +100,15 @@ export class ArbiterClient {
     return r.ok ? { ok: true, outcome: r.data } : r;
   }
 
-  /** Accept one offer. Binding: reserves stock and returns a signed receipt. */
-  async accept(offerId) {
+  /**
+   * Accept one offer. Binding: reserves stock and returns a signed receipt. Sent once, never retried;
+   * a lost answer is { ok: false, unknown: true }.
+   */
+  async accept(offerId, { signal } = {}) {
     const mandateId = this.#offerToMandate.get(offerId);
     const token = mandateId && this.#tokens.get(mandateId);
     if (!token) return { ok: false, reason: "That offer did not come from a negotiation on this page." };
-    const r = await this.#call("POST", `/v1/offers/${offerId}/accept`, { token });
+    const r = await this.#call("POST", `/v1/offers/${offerId}/accept`, { token, binding: true, signal });
     return r.ok ? { ok: true, ...r.data } : r;
   }
 

@@ -14,6 +14,7 @@ export class Market {
     this.negotiations = []; // newest first
     this.receipts = [];
     this.listeners = new Set();
+    this.unknownOffers = new Set(); // accepts sent with no answer: outcome unknown until a read
   }
 
   onChange(fn) { this.listeners.add(fn); }
@@ -42,8 +43,31 @@ export class Market {
   async refreshCatalog() {
     const r = await this.client.catalog();
     if (r.ok) { this.catalog = r.items; this.catalogError = null; } else { this.catalogError = r.reason; }
+    await this.#settleUnknown();
     this.emit();
     return r.ok ? { ok: true, items: this.catalog.length } : r;
+  }
+
+  /**
+   * Find out what happened to accepts whose answer was lost: read each negotiation again (a read,
+   * not a retry), pick up and verify any receipt, and clear the unknown mark once the arbiter has
+   * answered.
+   */
+  async #settleUnknown() {
+    for (const n of this.negotiations) {
+      const marked = n.outcome.offers.filter((o) => this.unknownOffers.has(o.offer_id));
+      if (!marked.length) continue;
+      const fresh = await this.client.outcome(n.mandate_id);
+      if (!fresh.ok) continue; // still unknown; keep the mark
+      n.outcome = fresh.outcome;
+      if (n.outcome.receipt_id && !this.receipts.some((x) => x.receipt.receipt_id === n.outcome.receipt_id)) {
+        const r = await this.client.receipt(n.outcome.receipt_id);
+        if (!r.ok) continue;
+        const v = await this.client.verify(r);
+        this.receipts.unshift({ receipt: r.receipt, signature: r.signature, key_id: r.key_id, verified: v.ok && v.valid });
+      }
+      for (const o of marked) this.unknownOffers.delete(o.offer_id);
+    }
   }
 
   /** Everything the assistant may read. Buyer tokens and the visitor's budgets are not here. */
@@ -72,7 +96,7 @@ export class Market {
       offers: n.outcome.offers.map((o) => ({
         offer_id: o.offer_id, seller: o.vendor_name, seller_page: o.vendor_origin, item: o.item, quantity: o.quantity,
         total: o.total, list_total: o.list_total, saving: o.saving, delivery_hours: o.delivery_hours,
-        state: o.state === "OPEN" && Date.parse(o.expires_at) <= now ? "EXPIRED" : o.state, expires_at: o.expires_at,
+        state: this.unknownOffers.has(o.offer_id) ? "UNKNOWN" : o.state === "OPEN" && Date.parse(o.expires_at) <= now ? "EXPIRED" : o.state, expires_at: o.expires_at,
       })),
       receipt_id: n.outcome.receipt_id,
     };
@@ -134,6 +158,7 @@ export class Market {
     const hit = this.#findOffer(offer_id);
     if (!hit) return { ok: false, reason: "No offer with that id on this page. Read the market state again." };
     const { n, o } = hit;
+    if (this.unknownOffers.has(offer_id)) return { ok: false, reason: "The last attempt to accept this offer got no answer, so its outcome is unknown. Read the market state to see what happened before trying again." };
     if (n.outcome.state === "SETTLED") return { ok: false, reason: "This negotiation already has an accepted offer." };
     if (o.state !== "OPEN") return { ok: false, reason: "This offer is no longer open." };
     if (Date.parse(o.expires_at) <= Date.now()) return { ok: false, reason: "This offer expired (offers last 15 minutes). Negotiate again with different terms." };
@@ -149,11 +174,21 @@ export class Market {
     };
   }
 
-  async acceptOffer({ offer_id }) {
+  /**
+   * Accept an offer. When the arbiter's answer is lost the outcome is unknown: this throws (the
+   * runtime then records the action as "unknown" and never retries it) and marks the offer so no
+   * second accept is sent until a read shows what happened.
+   */
+  async acceptOffer({ offer_id }, { signal } = {}) {
     const check = this.checkAccept({ offer_id });
     if (!check.ok) return check;
     const { n } = this.#findOffer(offer_id);
-    const r = await this.client.accept(offer_id);
+    const r = await this.client.accept(offer_id, { signal });
+    if (r.unknown) {
+      this.unknownOffers.add(offer_id);
+      this.emit();
+      throw new Error(r.reason);
+    }
     if (!r.ok) {
       const fresh = await this.client.outcome(n.mandate_id);
       if (fresh.ok) n.outcome = fresh.outcome;

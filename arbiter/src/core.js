@@ -21,6 +21,7 @@ const EVENT_COLUMNS = "mandate_id, kind, payload, prev_hash, hash, created_at";
 const sqliteMessage = (e) => `${e?.message ?? ""} ${e?.cause?.message ?? ""}`;
 const isPrevHashConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: events.prev_hash");
 const isTermsConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.buyer_key, mandates.terms_key");
+const isStockCheck = (e) => sqliteMessage(e).includes("CHECK constraint failed: stock_nonneg");
 
 export class Arbiter {
   /**
@@ -96,6 +97,7 @@ export class Arbiter {
    * @returns { results: the business statements' results, hashes, written: whether events were written }
    */
   async commit({ events, statements = () => [], guard = null }) {
+    await this.ensureSchema();
     for (let attempt = 0; attempt < CHAIN_ATTEMPTS; attempt++) {
       const last = await this.q("SELECT hash FROM events ORDER BY seq DESC LIMIT 1").first();
       let prev = last ? last.hash : "genesis";
@@ -125,6 +127,25 @@ export class Arbiter {
       }
     }
     throw new ArbiterError("busy", "The arbiter's audit log is busy. Try again in a moment.", 503);
+  }
+
+  /**
+   * The chain (F3) and accept (F4) guarantees are enforced by schema constraints, so a database
+   * created before them would silently fork the chain or oversell. Refuse to write until it is
+   * migrated or reset. Checked once per Arbiter instance (one request in the Worker).
+   */
+  async ensureSchema() {
+    if (this._schemaOk) return;
+    const rows = (await this.q(
+      "SELECT name, sql FROM sqlite_master WHERE (type = 'table' AND name = 'listings') OR (type = 'index' AND name = 'events_prev_unique')",
+    ).all()).results;
+    const listings = rows.find((r) => r.name === "listings");
+    const ok = Boolean(listings && /CONSTRAINT stock_nonneg CHECK/.test(listings.sql) && rows.some((r) => r.name === "events_prev_unique"));
+    if (!ok) {
+      console.error("Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.");
+      throw new ArbiterError("misconfigured", "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes.", 500);
+    }
+    this._schemaOk = true;
   }
 
   async mandateFor(mandateId, token) {
@@ -319,29 +340,31 @@ export class Arbiter {
     };
   }
 
-  /** The buyer accepts one offer. Stock is reserved atomically and a signed receipt is issued. */
+  /**
+   * The buyer accepts one offer: all or nothing.
+   *
+   * The receipt is signed first (it names the OFFER_ACCEPTED event's hash, so per commit attempt),
+   * then one batch makes every change. A batch does not stop at a statement that changes 0 rows, so
+   * each statement carries its own guard and the receipt insert decides:
+   *   1. mandate RESOLVED -> SETTLED, only if this offer is OPEN, unexpired and belongs to it
+   *   2. stock decrement, 3. offer states: only if the mandate is SETTLED and has no receipt yet
+   *      (so a concurrent accept that already committed makes them no-ops)
+   *   4. receipt INSERT ... SELECT ... WHERE the mandate is SETTLED, has no receipt, and this offer
+   *      is the ACCEPTED one; UNIQUE (receipts.mandate_id) is the backstop
+   *   5. both events, only if this receipt row exists
+   * Statements 1-4 share their conditions, so they all change or none do. 0 rows from (4) is an
+   * error. CHECK stock_nonneg (overselling) rolls the batch back and is reported as out_of_stock.
+   */
   async acceptOffer(offerId, token) {
     await this.key(); // fail closed on a missing signing key before anything is written
     const o = await this.q("SELECT * FROM offers WHERE id = ?", offerId).first();
     if (!o) throw new ArbiterError("not_found", "Unknown offer.", 404);
     const m = await this.mandateFor(o.mandate_id, token);
+    // Early, friendly answers. The batch below re-checks all of these itself.
     if (m.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
     if (o.state !== "OPEN") throw new ArbiterError("offer_closed", "This offer is no longer open.", 409);
     const now = this.clock();
     if (o.expires_at <= now) throw new ArbiterError("offer_expired", "This offer expired; offers last 15 minutes.", 410);
-
-    // KNOWN GAP until slice F4: these state updates run outside commit()'s batch, which breaks its
-    // retry precondition (a failed commit leaves them applied). F4 moves them into the batch.
-    const settled = await this.q("UPDATE mandates SET state = 'SETTLED' WHERE id = ? AND state = 'RESOLVED'", m.id).run();
-    if (!settled.meta.changes) throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
-    const reserved = await this.q("UPDATE listings SET stock = stock - ? WHERE vendor_id = ? AND sku = ? AND stock >= ?",
-      o.quantity, o.vendor_id, o.sku, o.quantity).run();
-    if (!reserved.meta.changes) {
-      await this.q("UPDATE mandates SET state = 'RESOLVED' WHERE id = ?", m.id).run();
-      await this.q("UPDATE offers SET state = 'VOID' WHERE id = ?", o.id).run();
-      throw new ArbiterError("out_of_stock", "The seller no longer has enough stock; choose another offer.", 409);
-    }
-    await this.q("UPDATE offers SET state = CASE WHEN id = ? THEN 'ACCEPTED' ELSE 'VOID' END WHERE mandate_id = ?", o.id, m.id).run();
 
     const vendor = await this.q("SELECT id, name, origin FROM vendors WHERE id = ?", o.vendor_id).first();
     const listing = await this.q("SELECT title, unit, currency FROM listings WHERE vendor_id = ? AND sku = ?", o.vendor_id, o.sku).first();
@@ -365,19 +388,47 @@ export class Arbiter {
       audit_hash: auditHash,
       settlement: "simulated",
     });
-    // The receipt names the OFFER_ACCEPTED event's hash, so it is signed per attempt, before the batch.
-    let payload, signature;
-    await this.commit({
-      events: [
-        { mandateId: m.id, kind: "OFFER_ACCEPTED", payload: { offer_id: o.id, vendor_id: o.vendor_id, total_cents: o.total_cents } },
-        { mandateId: m.id, kind: "RECEIPT_ISSUED", payload: { receipt_id: receiptId } },
-      ],
-      statements: async ([acceptedHash]) => {
-        payload = receipt(acceptedHash);
-        signature = await signPayload(privateJwk, payload);
-        return [this.q("INSERT INTO receipts VALUES (?,?,?,?,?,?)", receiptId, m.id, canonicalJson(payload), signature, kid, now)];
-      },
-    });
+    const settledByUs = "EXISTS (SELECT 1 FROM mandates WHERE id = ? AND state = 'SETTLED') AND NOT EXISTS (SELECT 1 FROM receipts WHERE mandate_id = ?)";
+
+    let payload, signature, done;
+    try {
+      done = await this.commit({
+        events: [
+          { mandateId: m.id, kind: "OFFER_ACCEPTED", payload: { offer_id: o.id, vendor_id: o.vendor_id, total_cents: o.total_cents } },
+          { mandateId: m.id, kind: "RECEIPT_ISSUED", payload: { receipt_id: receiptId } },
+        ],
+        statements: async ([acceptedHash]) => {
+          payload = receipt(acceptedHash);
+          signature = await signPayload(privateJwk, payload); // signed before anything is written
+          return [
+            this.q(`UPDATE mandates SET state = 'SETTLED' WHERE id = ? AND state = 'RESOLVED'
+                    AND EXISTS (SELECT 1 FROM offers WHERE id = ? AND mandate_id = ? AND state = 'OPEN' AND expires_at > ?)`,
+              m.id, o.id, m.id, now),
+            this.q(`UPDATE listings SET stock = stock - ? WHERE vendor_id = ? AND sku = ? AND ${settledByUs}`,
+              o.quantity, o.vendor_id, o.sku, m.id, m.id),
+            this.q(`UPDATE offers SET state = CASE WHEN id = ? THEN 'ACCEPTED' ELSE 'VOID' END WHERE mandate_id = ? AND ${settledByUs}`,
+              o.id, m.id, m.id, m.id),
+            this.q(`INSERT INTO receipts (id, mandate_id, payload, signature, key_id, created_at)
+                    SELECT ?,?,?,?,?,? WHERE ${settledByUs} AND EXISTS (SELECT 1 FROM offers WHERE id = ? AND state = 'ACCEPTED')`,
+              receiptId, m.id, canonicalJson(payload), signature, kid, now, m.id, m.id, o.id),
+          ];
+        },
+        guard: { sql: "EXISTS (SELECT 1 FROM receipts WHERE id = ?)", args: [receiptId] },
+      });
+    } catch (e) {
+      if (isStockCheck(e)) {
+        // Nothing of the accept was committed. Close only this offer; the mandate stays RESOLVED.
+        await this.q("UPDATE offers SET state = 'VOID' WHERE id = ? AND state = 'OPEN'", o.id).run();
+        throw new ArbiterError("out_of_stock", "The seller no longer has enough stock; choose another offer.", 409);
+      }
+      throw e;
+    }
+    if (done.results[3].meta.changes !== 1) {
+      // Nothing was written. Say why, from the state that won.
+      const cur = await this.q("SELECT state FROM mandates WHERE id = ?", m.id).first();
+      if (cur.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
+      throw new ArbiterError("offer_closed", "This offer can no longer be accepted; nothing changed.", 409);
+    }
     return { receipt: payload, signature, key_id: kid };
   }
 

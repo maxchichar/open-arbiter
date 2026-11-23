@@ -20,7 +20,10 @@ CREATE TABLE IF NOT EXISTS listings (
   delivery_hours INTEGER NOT NULL,
   stock INTEGER NOT NULL,
   updated_at INTEGER NOT NULL,
-  PRIMARY KEY (vendor_id, sku)
+  PRIMARY KEY (vendor_id, sku),
+  -- Overselling fails the whole accept batch (core.js maps it to out_of_stock). A constraint, not a
+  -- trigger: no dependence on trigger behaviour in hosted D1, and it ports to PostgreSQL unchanged.
+  CONSTRAINT stock_nonneg CHECK (stock >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS mandates (

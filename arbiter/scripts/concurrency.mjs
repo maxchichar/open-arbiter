@@ -88,5 +88,24 @@ check("chain intact before", before.data.ok === true, JSON.stringify(before.data
   check("F4 audit chain intact after accepts", after.data.ok === true, JSON.stringify(after.data));
 }
 
+// F4: overselling is refused by CHECK (stock >= 0) and reported as out_of_stock; nothing else changes.
+{
+  const reg = await call("POST", "/v1/vendors", { token: admin, body: { name: `Probe ${tag} D` } });
+  const key = reg.data.api_key;
+  const sku = `probe-${tag}-oos`;
+  const listing = { sku, title: "Probe item", unit: "item", ask_cents: 100_000, floor_cents: 50_000, delivery_hours: 1, stock: 5 };
+  await call("PUT", "/v1/listings", { token: key, body: listing });
+  const m = await call("POST", "/v1/mandates", { body: { sku, quantity: 3, max_total_cents: 300_000, deliver_within_hours: 48 } });
+  const out = await call("POST", `/v1/mandates/${m.data.mandate_id}/resolve`, { token: m.data.buyer_token });
+  await call("PUT", "/v1/listings", { token: key, body: { ...listing, stock: 2 } }); // the offer is for 3
+  const acc = await call("POST", `/v1/offers/${out.data.offers[0].offer_id}/accept`, { token: m.data.buyer_token });
+  const after = await call("GET", `/v1/mandates/${m.data.mandate_id}`, { token: m.data.buyer_token });
+  const stock = (await call("GET", "/v1/listings", { token: key })).data.listings.find((l) => l.sku === sku)?.stock;
+  check("F4 oversell refused as out_of_stock", acc.status === 409 && acc.data?.error === "out_of_stock", `${acc.status} ${acc.data?.error}`);
+  check("F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt",
+    after.data.state === "RESOLVED" && after.data.offers[0].state === "VOID" && stock === 2 && after.data.receipt_id === null,
+    `state ${after.data.state}, offer ${after.data.offers[0]?.state}, stock ${stock}, receipt ${after.data.receipt_id}`);
+}
+
 console.log(failures.length ? `CONCURRENCY FAILED: ${failures.join("; ")}` : "CONCURRENCY OK");
 process.exit(failures.length ? 1 : 0);

@@ -1,0 +1,231 @@
+✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (37.074624ms)
+✖ fault at "decrement stock": nothing of the accept is committed, and a later accept works (14.529165ms)
+ℹ replay with TEST_SEED=4193704041
+✖ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (12.860009ms)
+ℹ replay with TEST_SEED=4193704041
+✖ fault at "insert receipt": nothing of the accept is committed, and a later accept works (11.252952ms)
+ℹ replay with TEST_SEED=4193704041
+✖ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (11.687814ms)
+ℹ replay with TEST_SEED=4193704041
+✖ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (11.806628ms)
+ℹ replay with TEST_SEED=4193704041
+✔ concurrent accepts of the same offer: exactly one receipt (13.295252ms)
+✔ concurrent accepts of different offers on one mandate: exactly one receipt (13.3627ms)
+✖ the schema refuses negative stock (CHECK stock_nonneg) (7.281584ms)
+✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (12.855431ms)
+✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (8.867993ms)
+✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (25.955384ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 6
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 291.094402
+
+✖ failing tests:
+
+test at arbiter/test/accept.test.mjs:64:3
+✖ fault at "decrement stock": nothing of the accept is committed, and a later accept works (14.529165ms)
+  Error: replay with TEST_SEED=4193704041
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: no partial writes
+    + actual - expected
+    
+      {
+        events: 6,
+    +   mandate: 'SETTLED',
+    -   mandate: 'RESOLVED',
+        offers: [
+          'OPEN',
+          'OPEN'
+        ],
+        receipts: 0,
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/accept.test.mjs:75:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { mandate: 'SETTLED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      expected: { mandate: 'RESOLVED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/accept.test.mjs:64:3
+✖ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (12.860009ms)
+  Error: replay with TEST_SEED=4193704041
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: no partial writes
+    + actual - expected
+    
+      {
+        events: 6,
+    +   mandate: 'SETTLED',
+    -   mandate: 'RESOLVED',
+        offers: [
+          'OPEN',
+          'OPEN'
+        ],
+        receipts: 0,
+        stock: [
+    +     3,
+          5,
+    -     5
+        ]
+      }
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/accept.test.mjs:75:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { mandate: 'SETTLED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      expected: { mandate: 'RESOLVED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/accept.test.mjs:64:3
+✖ fault at "insert receipt": nothing of the accept is committed, and a later accept works (11.252952ms)
+  Error: replay with TEST_SEED=4193704041
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: no partial writes
+    + actual - expected
+    
+      {
+        events: 6,
+    +   mandate: 'SETTLED',
+    -   mandate: 'RESOLVED',
+        offers: [
+    +     'ACCEPTED',
+    +     'VOID'
+    -     'OPEN',
+    -     'OPEN'
+        ],
+        receipts: 0,
+        stock: [
+    +     3,
+          5,
+    -     5
+        ]
+      }
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/accept.test.mjs:75:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { mandate: 'SETTLED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      expected: { mandate: 'RESOLVED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/accept.test.mjs:64:3
+✖ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (11.687814ms)
+  Error: replay with TEST_SEED=4193704041
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: no partial writes
+    + actual - expected
+    
+      {
+        events: 6,
+    +   mandate: 'SETTLED',
+    -   mandate: 'RESOLVED',
+        offers: [
+    +     'ACCEPTED',
+    +     'VOID'
+    -     'OPEN',
+    -     'OPEN'
+        ],
+        receipts: 0,
+        stock: [
+    +     3,
+          5,
+    -     5
+        ]
+      }
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/accept.test.mjs:75:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { mandate: 'SETTLED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      expected: { mandate: 'RESOLVED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/accept.test.mjs:64:3
+✖ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (11.806628ms)
+  Error: replay with TEST_SEED=4193704041
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: no partial writes
+    + actual - expected
+    
+      {
+        events: 6,
+    +   mandate: 'SETTLED',
+    -   mandate: 'RESOLVED',
+        offers: [
+    +     'ACCEPTED',
+    +     'VOID'
+    -     'OPEN',
+    -     'OPEN'
+        ],
+        receipts: 0,
+        stock: [
+    +     3,
+          5,
+    -     5
+        ]
+      }
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/accept.test.mjs:75:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { mandate: 'SETTLED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      expected: { mandate: 'RESOLVED', stock: [Array], offers: [Array], receipts: 0, events: 6 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/accept.test.mjs:101:1
+✖ the schema refuses negative stock (CHECK stock_nonneg) (7.281584ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/accept.test.mjs:103:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /CHECK constraint failed: stock_nonneg/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
