@@ -20,6 +20,7 @@ const EVENT_COLUMNS = "mandate_id, kind, payload, prev_hash, hash, created_at";
 /** D1 wraps SQLite's message ("D1_ERROR: UNIQUE constraint failed: …"); node:sqlite does not. Match both. */
 const sqliteMessage = (e) => `${e?.message ?? ""} ${e?.cause?.message ?? ""}`;
 const isPrevHashConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: events.prev_hash");
+const isTermsConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.buyer_key, mandates.terms_key");
 
 export class Arbiter {
   /**
@@ -221,26 +222,36 @@ export class Arbiter {
     if (problems.length) throw new ArbiterError("invalid", problems.join("; "));
     if (typeof buyerKey !== "string" || !buyerKey) throw new ArbiterError("invalid", "buyerKey required.", 500);
 
+    // Both anti-probing limits are enforced by the database in one statement, so concurrent requests
+    // cannot slip past a check made earlier: the daily cap by the INSERT's WHERE (0 rows = capped),
+    // identical terms by UNIQUE (buyer_key, terms_key). The cap is checked first, as before.
     const now = this.clock();
-    const recent = await this.q("SELECT COUNT(*) AS n FROM mandates WHERE buyer_key = ? AND sku = ? AND created_at > ?",
-      buyerKey, m.sku, now - DAY).first();
-    if (recent.n >= LIMITS.mandatesPerBuyerPerSkuPerDay) {
-      throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`, 429);
-    }
     const tk = termsKey(m);
-    const dup = await this.q("SELECT id FROM mandates WHERE buyer_key = ? AND terms_key = ?", buyerKey, tk).first();
-    if (dup) {
-      throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.", 409);
-    }
     const id = newId("man");
     const token = newToken("bt");
     const tokenHash = await sha256Hex(token);
-    await this.commit({
-      events: [{ mandateId: id, kind: "MANDATE_CREATED", payload: { sku: m.sku, quantity: m.quantity, deliver_within_hours: m.deliver_within_hours, caller_origin: callerOrigin } }],
-      statements: () => [this.q("INSERT INTO mandates VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-        id, tokenHash, buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
-        m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, "OPEN", now)],
-    });
+    let created;
+    try {
+      created = await this.commit({
+        events: [{ mandateId: id, kind: "MANDATE_CREATED", payload: { sku: m.sku, quantity: m.quantity, deliver_within_hours: m.deliver_within_hours, caller_origin: callerOrigin } }],
+        statements: () => [this.q(
+          `INSERT INTO mandates (id, token_hash, buyer_key, terms_key, sku, quantity, max_total_cents, deliver_within_hours, vendor_ids, caller_origin, state, created_at)
+           SELECT ?,?,?,?,?,?,?,?,?,?,'OPEN',?
+           WHERE (SELECT COUNT(*) FROM mandates WHERE buyer_key = ? AND sku = ? AND created_at > ?) < ?`,
+          id, tokenHash, buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
+          m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, now,
+          buyerKey, m.sku, now - DAY, LIMITS.mandatesPerBuyerPerSkuPerDay)],
+        guard: { sql: "EXISTS (SELECT 1 FROM mandates WHERE id = ?)", args: [id] },
+      });
+    } catch (e) {
+      if (isTermsConflict(e)) {
+        throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.", 409);
+      }
+      throw e;
+    }
+    if (created.results[0].meta.changes !== 1) {
+      throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`, 429);
+    }
     return { mandate_id: id, buyer_token: token, state: "OPEN" };
   }
 

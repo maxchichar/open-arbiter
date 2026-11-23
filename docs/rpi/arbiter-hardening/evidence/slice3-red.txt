@@ -1,0 +1,72 @@
+✖ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (111.08419ms)
+ℹ replay with TEST_SEED=3979476733
+✖ 5 concurrent identical terms: one succeeds, four get identical_terms (10.75675ms)
+ℹ replay with TEST_SEED=3979476733
+✔ a refused mandate writes no row and no event (5.875279ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (3.029964ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 247.441395
+
+✖ failing tests:
+
+test at arbiter/test/antiprobing.test.mjs:21:1
+✖ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (111.08419ms)
+  Error: replay with TEST_SEED=3979476733
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    [cause]: AssertionError [ERR_ASSERTION]: round 0: {"ok":25}
+    + actual - expected
+    
+      {
+    +   ok: 25
+    -   ok: 3,
+    -   rate_limited: 22
+      }
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/antiprobing.test.mjs:27:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { ok: 25 },
+      expected: { ok: 3, rate_limited: 22 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/antiprobing.test.mjs:34:1
+✖ 5 concurrent identical terms: one succeeds, four get identical_terms (10.75675ms)
+  Error: replay with TEST_SEED=3979476733
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: round 0: {"ok":1,"ERR_SQLITE_ERROR":4}
+    + actual - expected
+    
+      {
+    +   ERR_SQLITE_ERROR: 4,
+    -   identical_terms: 4,
+        ok: 1
+      }
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/antiprobing.test.mjs:40:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: { ok: 1, ERR_SQLITE_ERROR: 4 },
+      expected: { ok: 1, identical_terms: 4 },
+      operator: 'deepStrictEqual',
+      diff: 'simple'
+    }
+  }
