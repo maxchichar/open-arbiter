@@ -12,6 +12,14 @@ export class ArbiterError extends Error {
 }
 
 const DAY = 86_400;
+const CHAIN_ATTEMPTS = 8;
+const CHAIN_BACKOFF_MS = 4; // first retry waits up to 4 ms, doubling: at most ~0.5 s in total
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const EVENT_COLUMNS = "mandate_id, kind, payload, prev_hash, hash, created_at";
+
+/** D1 wraps SQLite's message ("D1_ERROR: UNIQUE constraint failed: …"); node:sqlite does not. Match both. */
+const sqliteMessage = (e) => `${e?.message ?? ""} ${e?.cause?.message ?? ""}`;
+const isPrevHashConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: events.prev_hash");
 
 export class Arbiter {
   /**
@@ -20,10 +28,12 @@ export class Arbiter {
    * @param opts.signingJwk private ECDSA P-256 JWK
    * @param opts.allowGeneratedKey local development only: with no signingJwk, generate a key and
    *   keep it in the db. Otherwise a missing key fails closed ("misconfigured").
+   * @param opts.random () => [0, 1), jitter for audit-chain retries; tests pass a seeded PRNG
    */
-  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false } = {}) {
+  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false, random = Math.random } = {}) {
     this.db = db;
     this.clock = clock;
+    this.random = random;
     this._signingJwk = signingJwk || null;
     this._allowGeneratedKey = allowGeneratedKey === true;
     this._key = null;
@@ -64,15 +74,56 @@ export class Arbiter {
     return { keys: [publicJwk] };
   }
 
-  async event(mandateId, kind, payload) {
-    const last = await this.q("SELECT hash FROM events ORDER BY seq DESC LIMIT 1").first();
-    const prev = last ? last.hash : "genesis";
-    const at = this.clock();
-    const body = canonicalJson({ at, kind, mandate_id: mandateId, payload, prev });
-    const hash = await sha256Hex(body);
-    await this.q("INSERT INTO events (mandate_id, kind, payload, prev_hash, hash, created_at) VALUES (?,?,?,?,?,?)",
-      mandateId, kind, canonicalJson(payload), prev, hash, at).run();
-    return hash;
+  /**
+   * Commit business statements and their audit events in one D1 batch, which is one transaction.
+   *
+   * The events are chained from the current head of the log. `UNIQUE (prev_hash)` lets only one
+   * writer extend a given head; a writer that lost the race retries with a fresh head after a
+   * jittered exponential backoff (so concurrent losers do not collide again in lockstep), and after
+   * CHAIN_ATTEMPTS it fails with 503 "busy". Either everything commits or nothing does.
+   *
+   * Precondition for retrying: every statement of the write must be inside this batch. A retry is
+   * only safe because a failed batch rolls back completely; a write made outside the batch (before
+   * or after commit()) would survive the failed attempt and then be repeated or orphaned.
+   *
+   * @param events [{ mandateId, kind, payload }], written in order after the business statements
+   * @param statements (hashes) => D1 statements (may be async, e.g. to sign a receipt that
+   *   names an event hash). Called again on every attempt.
+   * @param guard optional { sql, args }: a boolean SQL expression; the events are written only if
+   *   it holds when they are inserted. It is evaluated once per event, so it must not depend on the
+   *   events this commit writes (then it holds for all of them or none).
+   * @returns { results: the business statements' results, hashes, written: whether events were written }
+   */
+  async commit({ events, statements = () => [], guard = null }) {
+    for (let attempt = 0; attempt < CHAIN_ATTEMPTS; attempt++) {
+      const last = await this.q("SELECT hash FROM events ORDER BY seq DESC LIMIT 1").first();
+      let prev = last ? last.hash : "genesis";
+      const at = this.clock();
+      const rows = [];
+      for (const e of events) {
+        const hash = await sha256Hex(canonicalJson({ at, kind: e.kind, mandate_id: e.mandateId, payload: e.payload, prev }));
+        rows.push({ ...e, prev, hash });
+        prev = hash;
+      }
+      const hashes = rows.map((r) => r.hash);
+      const business = await statements(hashes);
+      const inserts = rows.map((r) => {
+        const values = [r.mandateId, r.kind, canonicalJson(r.payload), r.prev, r.hash, at];
+        return guard
+          ? this.q(`INSERT INTO events (${EVENT_COLUMNS}) SELECT ?,?,?,?,?,? WHERE ${guard.sql}`, ...values, ...guard.args)
+          : this.q(`INSERT INTO events (${EVENT_COLUMNS}) VALUES (?,?,?,?,?,?)`, ...values);
+      });
+      try {
+        const results = await this.db.batch([...business, ...inserts]);
+        const eventResults = results.slice(business.length);
+        return { results: results.slice(0, business.length), hashes, written: eventResults.every((r) => r.meta.changes === 1) };
+      } catch (e) {
+        if (!isPrevHashConflict(e)) throw e;
+        // Jitter is not pricing: mechanism.js stays free of randomness and clocks.
+        if (attempt < CHAIN_ATTEMPTS - 1) await sleep(this.random() * CHAIN_BACKOFF_MS * 2 ** attempt);
+      }
+    }
+    throw new ArbiterError("busy", "The arbiter's audit log is busy. Try again in a moment.", 503);
   }
 
   async mandateFor(mandateId, token) {
@@ -94,8 +145,11 @@ export class Arbiter {
     }
     const id = newId("ven");
     const apiKey = newToken("vk");
-    await this.q("INSERT INTO vendors VALUES (?,?,?,?,?)", id, name.trim(), origin || null, await sha256Hex(apiKey), this.clock()).run();
-    await this.event(null, "VENDOR_REGISTERED", { vendor_id: id, name: name.trim(), origin: origin || null });
+    const keyHash = await sha256Hex(apiKey);
+    await this.commit({
+      events: [{ mandateId: null, kind: "VENDOR_REGISTERED", payload: { vendor_id: id, name: name.trim(), origin: origin || null } }],
+      statements: () => [this.q("INSERT INTO vendors VALUES (?,?,?,?,?)", id, name.trim(), origin || null, keyHash, this.clock())],
+    });
     return { vendor_id: id, api_key: apiKey };
   }
 
@@ -121,13 +175,15 @@ export class Arbiter {
     const problems = checkListing(l);
     if (!l.title) problems.push("title is required");
     if (problems.length) throw new ArbiterError("invalid", problems.join("; "));
-    await this.q(
-      `INSERT INTO listings VALUES (?,?,?,?,?,?,?,?,?,?)
-       ON CONFLICT (vendor_id, sku) DO UPDATE SET title=excluded.title, unit=excluded.unit, currency=excluded.currency,
-         ask_cents=excluded.ask_cents, floor_cents=excluded.floor_cents, delivery_hours=excluded.delivery_hours,
-         stock=excluded.stock, updated_at=excluded.updated_at`,
-      vendor.id, l.sku, l.title, l.unit, l.currency, l.ask_cents, l.floor_cents, l.delivery_hours, l.stock, this.clock()).run();
-    await this.event(null, "LISTING_SEALED", { vendor_id: vendor.id, sku: l.sku });
+    await this.commit({
+      events: [{ mandateId: null, kind: "LISTING_SEALED", payload: { vendor_id: vendor.id, sku: l.sku } }],
+      statements: () => [this.q(
+        `INSERT INTO listings VALUES (?,?,?,?,?,?,?,?,?,?)
+         ON CONFLICT (vendor_id, sku) DO UPDATE SET title=excluded.title, unit=excluded.unit, currency=excluded.currency,
+           ask_cents=excluded.ask_cents, floor_cents=excluded.floor_cents, delivery_hours=excluded.delivery_hours,
+           stock=excluded.stock, updated_at=excluded.updated_at`,
+        vendor.id, l.sku, l.title, l.unit, l.currency, l.ask_cents, l.floor_cents, l.delivery_hours, l.stock, this.clock())],
+    });
     const { floor_cents, ...pub } = l;
     return { vendor_id: vendor.id, ...pub };
   }
@@ -178,14 +234,22 @@ export class Arbiter {
     }
     const id = newId("man");
     const token = newToken("bt");
-    await this.q("INSERT INTO mandates VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-      id, await sha256Hex(token), buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
-      m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, "OPEN", now).run();
-    await this.event(id, "MANDATE_CREATED", { sku: m.sku, quantity: m.quantity, deliver_within_hours: m.deliver_within_hours, caller_origin: callerOrigin });
+    const tokenHash = await sha256Hex(token);
+    await this.commit({
+      events: [{ mandateId: id, kind: "MANDATE_CREATED", payload: { sku: m.sku, quantity: m.quantity, deliver_within_hours: m.deliver_within_hours, caller_origin: callerOrigin } }],
+      statements: () => [this.q("INSERT INTO mandates VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        id, tokenHash, buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
+        m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, "OPEN", now)],
+    });
     return { mandate_id: id, buyer_token: token, state: "OPEN" };
   }
 
-  /** Resolve once; later calls return the stored outcome so nothing can be re-run. */
+  /**
+   * Resolve once; later calls return the stored outcome so nothing can be re-run.
+   * Offers, the state change and the event commit in one batch. Every statement is guarded on
+   * the mandate still being OPEN, so of several concurrent resolves exactly one writes anything;
+   * the others return the stored outcome.
+   */
   async resolveMandate(mandateId, token) {
     const m = await this.mandateFor(mandateId, token);
     if (m.state === "OPEN") {
@@ -197,16 +261,23 @@ export class Arbiter {
       };
       const out = resolve(mandate, listings);
       const expires = this.clock() + LIMITS.offerTtlSeconds;
-      let rank = 0;
-      for (const o of out.offers) {
-        await this.q("INSERT INTO offers VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-          newId("off"), m.id, rank++, o.vendor_id, o.sku, o.quantity, o.total_cents, o.list_total_cents, o.delivery_hours, expires, "OPEN").run();
-      }
       const next = out.agreement ? "RESOLVED" : "NO_AGREEMENT";
-      const changed = await this.q("UPDATE mandates SET state = ? WHERE id = ? AND state = 'OPEN'", next, m.id).run();
-      if (!changed.meta.changes) throw new ArbiterError("conflict", "Mandate was resolved concurrently; fetch it again.", 409);
-      await this.event(m.id, next === "RESOLVED" ? "BARGAINING_RESOLVED" : "NO_AGREEMENT", {
-        mechanism: MECHANISM, considered: out.considered, agreements: out.offers.map((o) => o.vendor_id),
+      const kind = next === "RESOLVED" ? "BARGAINING_RESOLVED" : "NO_AGREEMENT";
+      const stillOpen = "EXISTS (SELECT 1 FROM mandates WHERE id = ? AND state = 'OPEN')";
+      await this.commit({
+        events: [{ mandateId: m.id, kind, payload: { mechanism: MECHANISM, considered: out.considered, agreements: out.offers.map((o) => o.vendor_id) } }],
+        statements: () => [
+          ...out.offers.map((o, rank) => this.q(
+            `INSERT INTO offers (id, mandate_id, rank, vendor_id, sku, quantity, total_cents, list_total_cents, delivery_hours, expires_at, state)
+             SELECT ?,?,?,?,?,?,?,?,?,?,'OPEN' WHERE ${stillOpen}`,
+            newId("off"), m.id, rank, o.vendor_id, o.sku, o.quantity, o.total_cents, o.list_total_cents, o.delivery_hours, expires, m.id)),
+          this.q("UPDATE mandates SET state = ? WHERE id = ? AND state = 'OPEN'", next, m.id),
+        ],
+        // Written only by the resolve that moved the mandate out of OPEN in this batch.
+        guard: {
+          sql: "NOT EXISTS (SELECT 1 FROM events WHERE mandate_id = ? AND kind IN ('BARGAINING_RESOLVED', 'NO_AGREEMENT'))",
+          args: [m.id],
+        },
       });
     }
     return this.outcome(m.id);
@@ -248,6 +319,8 @@ export class Arbiter {
     const now = this.clock();
     if (o.expires_at <= now) throw new ArbiterError("offer_expired", "This offer expired; offers last 15 minutes.", 410);
 
+    // KNOWN GAP until slice F4: these state updates run outside commit()'s batch, which breaks its
+    // retry precondition (a failed commit leaves them applied). F4 moves them into the batch.
     const settled = await this.q("UPDATE mandates SET state = 'SETTLED' WHERE id = ? AND state = 'RESOLVED'", m.id).run();
     if (!settled.meta.changes) throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
     const reserved = await this.q("UPDATE listings SET stock = stock - ? WHERE vendor_id = ? AND sku = ? AND stock >= ?",
@@ -261,12 +334,12 @@ export class Arbiter {
 
     const vendor = await this.q("SELECT id, name, origin FROM vendors WHERE id = ?", o.vendor_id).first();
     const listing = await this.q("SELECT title, unit, currency FROM listings WHERE vendor_id = ? AND sku = ?", o.vendor_id, o.sku).first();
-    const eventHash = await this.event(m.id, "OFFER_ACCEPTED", { offer_id: o.id, vendor_id: o.vendor_id, total_cents: o.total_cents });
     const { privateJwk, kid } = await this.key();
-    const payload = {
+    const receiptId = newId("rct");
+    const receipt = (auditHash) => ({
       type: "open-arbiter/receipt",
       version: 1,
-      receipt_id: newId("rct"),
+      receipt_id: receiptId,
       mandate_id: m.id,
       offer_id: o.id,
       issued_at: now,
@@ -278,12 +351,22 @@ export class Arbiter {
       list_total_cents: o.list_total_cents,
       delivery_hours: o.delivery_hours,
       caller_origin: m.caller_origin,
-      audit_hash: eventHash,
+      audit_hash: auditHash,
       settlement: "simulated",
-    };
-    const signature = await signPayload(privateJwk, payload);
-    await this.q("INSERT INTO receipts VALUES (?,?,?,?,?,?)", payload.receipt_id, m.id, canonicalJson(payload), signature, kid, now).run();
-    await this.event(m.id, "RECEIPT_ISSUED", { receipt_id: payload.receipt_id });
+    });
+    // The receipt names the OFFER_ACCEPTED event's hash, so it is signed per attempt, before the batch.
+    let payload, signature;
+    await this.commit({
+      events: [
+        { mandateId: m.id, kind: "OFFER_ACCEPTED", payload: { offer_id: o.id, vendor_id: o.vendor_id, total_cents: o.total_cents } },
+        { mandateId: m.id, kind: "RECEIPT_ISSUED", payload: { receipt_id: receiptId } },
+      ],
+      statements: async ([acceptedHash]) => {
+        payload = receipt(acceptedHash);
+        signature = await signPayload(privateJwk, payload);
+        return [this.q("INSERT INTO receipts VALUES (?,?,?,?,?,?)", receiptId, m.id, canonicalJson(payload), signature, kid, now)];
+      },
+    });
     return { receipt: payload, signature, key_id: kid };
   }
 

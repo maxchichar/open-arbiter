@@ -75,6 +75,10 @@ CREATE TABLE IF NOT EXISTS events (
   created_at INTEGER NOT NULL
 );
 
+-- One child per event: two writers extending the same head conflict here, and the loser retries
+-- with the new head (core.js commit()), so the chain stays linear under concurrent writes.
+CREATE UNIQUE INDEX IF NOT EXISTS events_prev_unique ON events (prev_hash);
+
 -- Used only when no ARBITER_SIGNING_JWK secret is configured (local dev).
 CREATE TABLE IF NOT EXISTS signing_keys (
   id TEXT PRIMARY KEY,

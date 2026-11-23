@@ -1,0 +1,40 @@
+
+> open-arbiter@1.0.0 test:worker
+> node arbiter/scripts/worker-harness.mjs
+
+harness: worker at http://127.0.0.1:42051, state in /tmp/open-arbiter-harness-tlsXKD
+
+=== seed ===
+Iya Basira Foodstuff: ven_UqaVJt4l9aw_fI7a (3 sealed listings)
+Chika Provisions: ven_9k-Z2fFTUW2e0Ikw (2 sealed listings)
+Alhaji Musa Grains: ven_XC5O0CIJD-QQttro (3 sealed listings)
+Vendor keys written to /tmp/open-arbiter-harness-tlsXKD/seed-keys.json
+
+=== e2e ===
+catalog: 3 rice listings, no floors exposed
+REST offers: Iya Basira Foodstuff ₦169,000 (list ₦184,000, 24h); Chika Provisions ₦172,000 (list ₦178,000, 6h)
+receipt rct_0bgMuHPRqm-KnfeM signed by key 0da3edff554ad949; verifies, tampered copy fails
+same terms, new budget -> 409 identical_terms
+MCP offers: Alhaji Musa Grains ₦143,250; Iya Basira Foodstuff ₦145,500
+MCP low bid -> agreement=false: "No seller could meet these terms. Neither side's limits are revealed."
+audit chain intact: 19 events
+E2E OK
+
+=== concurrency ===
+PASS chain intact before: {"ok":true,"events":19,"head":"752dc76b0a1ae858c9ec38779ab3343a09cb033e551a53c9dd074f0bfd774fdb"}
+FAIL F2 daily cap holds under concurrency: most 201s in a round: 25 (cap 3); rounds [{"201":7,"429":18},{"201":6,"429":19},{"201":25},{"201":9,"429":16},{"201":6,"429":19},{"201":14,"429":11},{"201":13,"429":12},{"201":8,"429":17}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":129,"head":"47d46d1051087ae14d35085048a343f13fbccaf842f50b6c8f65c1f095ee8ae7"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":137,"head":"68a08f823296da051314b769ba100b605642d5b7446d4aa46a1274d683486e93"}
+CONCURRENCY FAILED: F2 daily cap holds under concurrency
+
+harness results: {"seed":true,"e2e":true,"concurrency":false}
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":149,"head":"cd42db025468eaca812882ed6da81b3da29a380c473745c07e7f8443564aba2b"}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":157,"head":"6b4d01007e8d690cb2edfbe5d84ecb6aa6fdfd9d63aa67d2e7426b1024cf276f"}
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":134,"head":"b593721c1e31b267f09a200e6b33b4114b8b164fe9bc0212934457a8ac9f89fd"}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":142,"head":"32c97b1daf49fa58a70734f6bd17ccc1937be77fe91d6ef8394622ee797882eb"}

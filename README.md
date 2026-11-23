@@ -86,5 +86,6 @@ Then set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL, re
 - The arbiter is a trusted third party. Its code is open and deterministic, and its receipts are verifiable, but its operator can see sealed limits.
 - Seller identity is a key issued by the arbiter's admin; there is no KYC or NANDA Index verification yet.
 - Demo sellers and prices are illustrative, not market data.
+- One global, hash-chained audit log orders every write, so writes are serialized: concurrent writers that collide retry with backoff, and under sustained load they see `503 busy`. Per-mandate chains (anchored to a global chain of heads) or a Durable Object that owns the log are the scaling path; neither is built.
 
 Apache 2.0.

@@ -1,0 +1,198 @@
+✖ concurrent writes of every kind keep one linear chain (36.769476ms)
+✖ concurrent resolves of one mandate: one set of offers, one event, same outcome (8.839235ms)
+✖ chain-head conflicts are retried with a fresh head (5.474734ms)
+✖ when retries run out: 503 busy, and the business write is not committed (4.871876ms)
+✖ createVendor: a failed event insert rolls back the business write (5.087603ms)
+✖ upsertListing: a failed event insert rolls back the business write (4.164751ms)
+✖ createMandate: a failed event insert rolls back the business write (5.179387ms)
+✖ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (6.92427ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 0
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 182.238471
+
+✖ failing tests:
+
+test at arbiter/test/chain.test.mjs:22:1
+✖ concurrent writes of every kind keep one linear chain (36.769476ms)
+  AssertionError [ERR_ASSERTION]: no two events may share a prev_hash
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:32:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/chain.test.mjs:36:1
+✖ concurrent resolves of one mandate: one set of offers, one event, same outcome (8.839235ms)
+  Error: Mandate was resolved concurrently; fetch it again.
+      at Arbiter.resolveMandate (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:207:40)
+      at async Promise.all (index 1)
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:39:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'conflict',
+    status: 409
+  }
+
+test at arbiter/test/chain.test.mjs:46:1
+✖ chain-head conflicts are retried with a fresh head (5.474734ms)
+  Error: UNIQUE constraint failed: events.prev_hash
+      at prevHashConflict (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:10:32)
+      at file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:49:77
+      at check (file:///home/maxchichar/open-arbiter/arbiter/test/sqlite-d1.mjs:16:24)
+      at Object.run (file:///home/maxchichar/open-arbiter/arbiter/test/sqlite-d1.mjs:31:23)
+      at Arbiter.event (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:74:64)
+      at async Arbiter.createVendor (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:98:5)
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:50:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at arbiter/test/chain.test.mjs:58:1
+✖ when retries run out: 503 busy, and the business write is not committed (4.871876ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'busy',
+  -   status: 503
+  - }
+  
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:61:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: UNIQUE constraint failed: events.prev_hash
+        at prevHashConflict (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:10:32)
+        at file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:60:46
+        at check (file:///home/maxchichar/open-arbiter/arbiter/test/sqlite-d1.mjs:16:24)
+        at Object.run (file:///home/maxchichar/open-arbiter/arbiter/test/sqlite-d1.mjs:31:23)
+        at Arbiter.event (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:74:64)
+        at async Arbiter.createVendor (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:98:5)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:61:3)
+        at async Test.run (node:internal/test_runner/test:1409:7),
+    expected: { code: 'busy', status: 503 },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at arbiter/test/chain.test.mjs:81:3
+✖ createVendor: a failed event insert rolls back the business write (5.087603ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      events: 2,
+      listings: 1,
+      mandates: 0,
+      offers: 0,
+      states: '',
+  +   vendors: 2
+  -   vendors: 1
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:87:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { vendors: 2, listings: 1, mandates: 0, offers: 0, states: '', events: 2 },
+    expected: { vendors: 1, listings: 1, mandates: 0, offers: 0, states: '', events: 2 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/chain.test.mjs:81:3
+✖ upsertListing: a failed event insert rolls back the business write (4.164751ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      events: 2,
+  +   listings: 2,
+  -   listings: 1,
+      mandates: 0,
+      offers: 0,
+      states: '',
+      vendors: 1
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:87:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { vendors: 1, listings: 2, mandates: 0, offers: 0, states: '', events: 2 },
+    expected: { vendors: 1, listings: 1, mandates: 0, offers: 0, states: '', events: 2 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/chain.test.mjs:81:3
+✖ createMandate: a failed event insert rolls back the business write (5.179387ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      events: 2,
+      listings: 1,
+  +   mandates: 1,
+  -   mandates: 0,
+      offers: 0,
+  +   states: 'OPEN',
+  -   states: '',
+      vendors: 1
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:87:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { vendors: 1, listings: 1, mandates: 1, offers: 0, states: 'OPEN', events: 2 },
+    expected: { vendors: 1, listings: 1, mandates: 0, offers: 0, states: '', events: 2 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/chain.test.mjs:91:1
+✖ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (6.92427ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      events: 3,
+      listings: 1,
+      mandates: 1,
+  +   offers: 1,
+  +   states: 'RESOLVED',
+  -   offers: 0,
+  -   states: 'OPEN',
+      vendors: 1
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/chain.test.mjs:98:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { vendors: 1, listings: 1, mandates: 1, offers: 1, states: 'RESOLVED', events: 3 },
+    expected: { vendors: 1, listings: 1, mandates: 1, offers: 0, states: 'OPEN', events: 3 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

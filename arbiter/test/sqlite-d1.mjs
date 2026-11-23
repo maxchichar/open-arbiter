@@ -1,8 +1,9 @@
 // A tiny Cloudflare D1 look-alike over node:sqlite, so the same SQL runs in tests.
 // batch() is one transaction, as D1 documents: if any statement fails, the whole
 // sequence rolls back and the error is thrown.
-// Fault injection: memoryD1({ fault: (sql, n) => boolean }) throws before running the
-// n-th statement executed (0-based, counted across run/first/all/batch) when it returns true.
+// Fault injection: memoryD1({ fault: (sql, n) => boolean | Error }) throws before running the
+// n-th statement executed (0-based, counted across run/first/all/batch) when it returns true
+// (a generic error) or an Error (thrown as is, e.g. to imitate a constraint violation).
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 
@@ -12,7 +13,9 @@ export function memoryD1({ fault } = {}) {
   let executed = 0;
   const check = (sql) => {
     const n = executed++;
-    if (fault && fault(sql, n)) throw new Error(`injected fault at statement ${n}: ${sql.trim().split(/\s+/).slice(0, 3).join(" ")}`);
+    const f = fault && fault(sql, n);
+    if (f instanceof Error) throw f;
+    if (f) throw new Error(`injected fault at statement ${n}: ${sql.trim().split(/\s+/).slice(0, 3).join(" ")}`);
   };
   const d1 = {
     raw: db,

@@ -249,4 +249,5 @@ on receipts UNIQUE → 409 already_settled
 - **Plan gate:** **approved** by the owner in chat, 2026-11-23: B2, ties toward the buyer, D4 gated on slice 0, manifest key `open_arbiter`, amendments A1–A4.
 - **D4 decided:** constraint-only fallback (A5), owner, 2026-11-23.
 - **Residual risks accepted:** R2/R3 (hosted D1 unverified until a deploy plan).
+- **Open item (owner, 2026-11-23, no code now):** a single global audit chain serializes all writes; contention is handled by retry with jittered backoff, then `503 busy` (slice 2). The scaling path is per-mandate chains (with a global chain of heads) or a Durable Object owning the log. It is recorded in README "Limits".
 - **Approval reference:** owner chat message, 2026-11-23.

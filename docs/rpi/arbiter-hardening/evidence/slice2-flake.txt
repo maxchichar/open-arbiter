@@ -1,0 +1,2 @@
+chain.test.mjs: 30 runs, 0 failed
+chain.test.mjs with seeded jitter (fresh seed per run): 30 runs, 0 failed
