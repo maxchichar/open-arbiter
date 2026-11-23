@@ -1,0 +1,99 @@
+✖ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (69.590157ms)
+✖ no signing key and DEV=0: key endpoints fail closed and nothing changes (11.717688ms)
+✖ no signing key and DEV=true: key endpoints fail closed and nothing changes (10.336972ms)
+✖ no signing key and DEV=yes: key endpoints fail closed and nothing changes (7.863182ms)
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (15.40559ms)
+✔ a configured signing key works without DEV and is never stored (11.126112ms)
+✖ core: Arbiter without a key or allowGeneratedKey refuses to sign (2.849709ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 2
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 242.588316
+
+✖ failing tests:
+
+test at arbiter/test/signing.test.mjs:31:3
+✖ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (69.590157ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== 500
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/signing.test.mjs:37:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 500,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/signing.test.mjs:31:3
+✖ no signing key and DEV=0: key endpoints fail closed and nothing changes (11.717688ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== 500
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/signing.test.mjs:37:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 500,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/signing.test.mjs:31:3
+✖ no signing key and DEV=true: key endpoints fail closed and nothing changes (10.336972ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== 500
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/signing.test.mjs:37:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 500,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/signing.test.mjs:31:3
+✖ no signing key and DEV=yes: key endpoints fail closed and nothing changes (7.863182ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== 500
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/signing.test.mjs:37:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 500,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/signing.test.mjs:74:1
+✖ core: Arbiter without a key or allowGeneratedKey refuses to sign (2.849709ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/signing.test.mjs:76:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'misconfigured', status: 500 },
+    operator: 'rejects',
+    diff: 'simple'
+  }

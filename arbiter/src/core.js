@@ -17,12 +17,15 @@ export class Arbiter {
   /**
    * @param db D1Database (or the Node adapter in test/sqlite-d1.mjs)
    * @param opts.clock () => seconds since epoch
-   * @param opts.signingJwk private ECDSA P-256 JWK; when absent one is generated and kept in the db
+   * @param opts.signingJwk private ECDSA P-256 JWK
+   * @param opts.allowGeneratedKey local development only: with no signingJwk, generate a key and
+   *   keep it in the db. Otherwise a missing key fails closed ("misconfigured").
    */
-  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk } = {}) {
+  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false } = {}) {
     this.db = db;
     this.clock = clock;
     this._signingJwk = signingJwk || null;
+    this._allowGeneratedKey = allowGeneratedKey === true;
     this._key = null;
   }
 
@@ -34,6 +37,10 @@ export class Arbiter {
   async key() {
     if (this._key) return this._key;
     let priv = this._signingJwk;
+    if (!priv && !this._allowGeneratedKey) {
+      console.error("Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not \"1\"; refusing to sign.");
+      throw new ArbiterError("misconfigured", "Signing key not configured.", 500);
+    }
     if (!priv) {
       const row = await this.q("SELECT private_jwk FROM signing_keys ORDER BY created_at LIMIT 1").first();
       if (row) priv = JSON.parse(row.private_jwk);
@@ -232,6 +239,7 @@ export class Arbiter {
 
   /** The buyer accepts one offer. Stock is reserved atomically and a signed receipt is issued. */
   async acceptOffer(offerId, token) {
+    await this.key(); // fail closed on a missing signing key before anything is written
     const o = await this.q("SELECT * FROM offers WHERE id = ?", offerId).first();
     if (!o) throw new ArbiterError("not_found", "Unknown offer.", 404);
     const m = await this.mandateFor(o.mandate_id, token);

@@ -58,7 +58,7 @@ test("canonical json sorts keys at every level", () => {
 // ---------- service ----------
 async function market() {
   let now = 1_800_000_000;
-  const arb = new Arbiter(memoryD1(), { clock: () => now });
+  const arb = new Arbiter(memoryD1(), { clock: () => now, allowGeneratedKey: true });
   const iya = await arb.createVendor({ name: "Iya Basira Foodstuff", origin: "https://iya-basira.example" });
   const chika = await arb.createVendor({ name: "Chika Provisions", origin: "https://chika.example" });
   const vI = await arb.vendorByKey(iya.api_key);

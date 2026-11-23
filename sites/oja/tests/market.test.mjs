@@ -9,7 +9,7 @@ import { memoryD1 } from "../../../arbiter/test/sqlite-d1.mjs";
 import { registerActions } from "../site-actions.js";
 
 async function setup() {
-  const env = { DB: memoryD1(), ADMIN_TOKEN: "admin" };
+  const env = { DB: memoryD1(), ADMIN_TOKEN: "admin", DEV: "1" };
   const fetchImpl = (url, init = {}) => worker.fetch(new Request(url, init), env);
   const reg = await (await fetchImpl("https://arb.test/v1/vendors", { method: "POST", headers: { authorization: "Bearer admin", "content-type": "application/json" }, body: JSON.stringify({ name: "Iya Basira Foodstuff", origin: "https://iya.test" }) })).json();
   await fetchImpl("https://arb.test/v1/listings", { method: "PUT", headers: { authorization: `Bearer ${reg.api_key}`, "content-type": "application/json" }, body: JSON.stringify({ sku: "rice-50kg", title: "Rice, 50 kg bag", unit: "bag", ask_cents: 9_200_000, floor_cents: 8_100_000, delivery_hours: 24, stock: 3 }) });

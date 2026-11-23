@@ -42,7 +42,10 @@ export default {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
     const url = new URL(req.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
-    const arb = new Arbiter(env.DB, { signingJwk: env.ARBITER_SIGNING_JWK ? JSON.parse(env.ARBITER_SIGNING_JWK) : undefined });
+    const arb = new Arbiter(env.DB, {
+      signingJwk: env.ARBITER_SIGNING_JWK ? JSON.parse(env.ARBITER_SIGNING_JWK) : undefined,
+      allowGeneratedKey: env.DEV === "1", // only local development may generate a key
+    });
     try {
       // ---- discovery ----
       if (req.method === "GET" && path === "/") {

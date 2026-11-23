@@ -45,7 +45,7 @@ Needs Node 22+.
 ```shell
 npm install
 cd arbiter
-printf 'ADMIN_TOKEN=dev-admin-token\nBUYER_SALT=dev\n' > .dev.vars
+printf 'ADMIN_TOKEN=dev-admin-token\nBUYER_SALT=dev\nDEV=1\n' > .dev.vars   # DEV=1: local only, lets the arbiter generate its signing key
 npx wrangler d1 execute open-arbiter --local --file schema.sql
 npx wrangler dev --local --port 8787 &
 node scripts/seed.mjs http://127.0.0.1:8787 dev-admin-token http://127.0.0.1:8080

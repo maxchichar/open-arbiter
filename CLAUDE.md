@@ -33,7 +33,7 @@ node <agentic-web>/skills/agentify-website/scripts/serve_site.mjs sites/oja --po
 python3 sites/oja/tests/browser_check.py /tmp/shots
 ```
 
-`.dev.vars` (gitignored) needs `ADMIN_TOKEN` and `BUYER_SALT` for local runs. Local anti-probing limits apply per IP: reset with `rm -rf arbiter/.wrangler/state` and re-run the schema and seed steps.
+`.dev.vars` (gitignored) needs `ADMIN_TOKEN`, `BUYER_SALT` and `DEV=1` for local runs. Without `ARBITER_SIGNING_JWK`, the arbiter refuses to sign (500 `misconfigured`) unless `DEV` is exactly `1`; never set `DEV` in a deployment. `npm run test:worker` runs seed, e2e and the concurrency checks against an isolated wrangler dev, so it never touches your local state. Local anti-probing limits apply per IP: reset with `rm -rf arbiter/.wrangler/state` and re-run the schema and seed steps.
 
 ## Invariants: never break these
 

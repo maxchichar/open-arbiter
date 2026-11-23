@@ -1,0 +1,54 @@
+
+> open-arbiter@1.0.0 test
+> node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+
+✔ batch commits every statement together (3.799793ms)
+✔ batch rolls back everything when one statement fails (2.382207ms)
+✔ injected fault aborts a batch at the chosen statement (1.86508ms)
+✔ midpoint of the zone of agreement (2.031404ms)
+✔ budget above list price is capped at list price (0.29142ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (1.605912ms)
+✔ offers ranked by price, then delivery, then vendor id (0.531413ms)
+✔ vendor filter is respected (0.34441ms)
+✔ listing validation (0.549788ms)
+✔ terms key ignores budget and vendor order (0.289016ms)
+✔ canonical json sorts keys at every level (0.412419ms)
+✔ catalog never exposes floors (24.277847ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (25.051868ms)
+✔ cannot accept twice, with a wrong token, or after expiry (10.923719ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (7.963642ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (9.756216ms)
+✔ tampering with the audit log is detected (3.659968ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (77.23662ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (10.944388ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (10.813622ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (7.709492ms)
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (17.823433ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ a configured signing key works without DEV and is never stored (9.784619ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (2.057674ms)
+✔ negotiate, accept and verify through the page; budget and tokens never in state (108.976783ms)
+✔ page checks refuse bad input before anything is sent (7.144346ms)
+✔ repeat terms are refused with the arbiter's reason (8.603069ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (3.429403ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 261.950043
