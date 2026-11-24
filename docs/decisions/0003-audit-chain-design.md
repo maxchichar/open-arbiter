@@ -15,7 +15,7 @@ Before slice 2, the head was read and the event appended in separate steps, outs
 
 1. **One global chain, linear by constraint.** `CREATE UNIQUE INDEX events_prev_unique ON events (prev_hash)`. Two events can never share a parent, so a fork is impossible, not just unlikely.
 2. **Business write and events in one batch.** `commit({events, statements, guard})` reads the head, chains the events from it, and runs `db.batch([...business, ...eventInserts])`. A rolled-back batch leaves neither the row nor the event. Optional `guard` SQL makes the event inserts conditional on the business write having happened (for example, the mandate row exists, or the receipt exists), so a 0-row business statement writes no event.
-3. **Optimistic retry.** On `UNIQUE constraint failed: events.prev_hash`, re-read the head and rebuild the whole batch. Wait `random() × 4 ms × 2^attempt` (jittered exponential backoff, about 0.5 s in total at most), up to **8 attempts**, then fail with **503 `busy`** and nothing committed. Any other error is not retried. The jitter uses an injectable `random`, and it is not pricing: `mechanism.js` stays free of clocks and randomness (invariant 2).
+3. **Optimistic retry.** On `UNIQUE constraint failed: events.prev_hash`, re-read the head and rebuild the whole batch. Wait `random() × min(4 ms × 2^attempt, 128 ms)` (jittered exponential backoff, capped; about 0.9 s in total at most), up to **12 attempts**, then fail with **503 `busy`** and nothing committed. (Slice 2 used 8 uncapped attempts, about 0.5 s. At the Phase 0 gate that let one of 36 concurrent writers run out in 6 of 15 full test runs under CPU load. After the change: 0 of 25, `evidence/gate-flake-after.txt`.) Any other error is not retried. The jitter uses an injectable `random`, and it is not pricing: `mechanism.js` stays free of clocks and randomness (invariant 2).
 4. **Every writer uses `commit()`:** `createVendor`, `upsertListing`, `createMandate`, `resolveMandate`, `acceptOffer`. A retry is safe only because every statement of the write is inside the batch (documented on `commit()`).
 5. **Signed receipts follow the committed hash.** The receipt is re-signed on each attempt with that attempt's `OFFER_ACCEPTED` hash, so `audit_hash` always names the event that committed (AC-F4-4).
 
@@ -27,7 +27,7 @@ Before slice 2, the head was read and the event appended in separate steps, outs
 
 ## Scaling limit
 
-**One global head serializes every write in the system.** Each write costs at least one head read plus one batch, and writers that collide redo both. Throughput therefore tops out near one write per head-read-plus-batch round trip, whatever the number of Workers. Under sustained contention, writers use up the 8 attempts and see `503 busy`.
+**One global head serializes every write in the system.** Each write costs at least one head read plus one batch, and writers that collide redo both. Throughput therefore tops out near one write per head-read-plus-batch round trip, whatever the number of Workers. Under sustained contention, writers use up the 12 attempts and see `503 busy`. Mandate creation is anonymous, so strangers can create that contention, within the anti-probing limits (review finding R4).
 
 - D1 already runs one writer per database, so the chain does not create the serialization. It adds the read-then-write round trip and the wasted retries on top of it.
 - **No throughput was measured.** The local tests show correctness at 20 to 36 concurrent writers, not capacity. Hosted D1 latency is unknown until a deploy (plan risk R3).

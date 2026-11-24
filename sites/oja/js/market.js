@@ -75,7 +75,7 @@ export class Market {
   getState() {
     return {
       arbiter: this.client.baseUrl,
-      how_prices_work: "Each seller has sealed a lowest price; the buyer seals a highest total. The arbiter (deterministic code, not an AI) offers the midpoint of the overlap, capped at list price and placed on a price step of 2.5% of the list price (at least ₦100 per unit), or reports no agreement. Neither limit is shown; an agreed price narrows each to one price step. Offers last 15 minutes. Each set of terms (item, quantity, deadline, sellers) can be negotiated once, and at most 3 times per item per day.",
+      how_prices_work: "Each seller has sealed a lowest price; the buyer seals a highest total. The arbiter (deterministic code, not an AI) offers the midpoint of the overlap, capped at list price and placed on a price step of ₦100, ₦200, ₦400 … per unit (the largest at most 2.5% of the list price), or reports no agreement. Neither limit is shown; an agreed price narrows each to one price step. Offers last 15 minutes. Each set of terms (item, quantity, deadline, sellers) can be negotiated once, and at most 3 times per item per day.",
       catalog_error: this.catalogError,
       catalog: this.catalog.map((r) => ({
         sku: r.sku, item: r.item, unit: r.unit, seller_id: r.vendor_id, seller: r.vendor_name, seller_page: r.vendor_origin,

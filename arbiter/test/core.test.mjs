@@ -9,17 +9,17 @@ const L = (vendor_id, o) => ({ vendor_id, sku: "rice-50kg", ask_cents: 9_000_000
 
 test("midpoint of the zone of agreement", () => {
   const r = resolve({ sku: "rice-50kg", quantity: 2, max_total_cents: 17_000_000, deliver_within_hours: 48 }, [L("a")]);
-  // lower 15,000,000, upper min(17,000,000, 18,000,000); g = 225,000 × 2 = 450,000
-  // L' = 34g = 15,300,000, U' = 37g = 16,650,000, midpoint index 35.5 -> 35 (tie to the buyer) -> 15,750,000
-  // (mechanism 1.0.0 gave 16,000,000)
-  assert.equal(r.offers[0].total_cents, 15_750_000);
-  assert.equal(r.offers[0].saving_cents, 2_250_000);
+  // lower 15,000,000, upper min(17,000,000, 18,000,000); step 160,000 (2.5% of 9,000,000 is 225,000
+  // -> largest ₦100 × 2^k below it), g = 320,000: L' = 47g, U' = 53g, midpoint index 50 -> 16,000,000
+  // (2.0.0 gave 15,750,000; 1.0.0 gave 16,000,000)
+  assert.equal(r.offers[0].total_cents, 16_000_000);
+  assert.equal(r.offers[0].saving_cents, 2_000_000);
 });
 
 test("budget above list price is capped at list price", () => {
   const r = resolve({ sku: "rice-50kg", quantity: 1, max_total_cents: 50_000_000, deliver_within_hours: 48 }, [L("a")]);
-  // upper = list 9,000,000; g = 225,000: L' = 34g, U' = 40g -> 37g = 8,325,000 (1.0.0: 8,250,000)
-  assert.equal(r.offers[0].total_cents, 8_325_000);
+  // upper = list 9,000,000; g = 160,000: L' = 47g, U' = 56g -> index 51 = 8,160,000 (2.0.0: 8,325,000; 1.0.0: 8,250,000)
+  assert.equal(r.offers[0].total_cents, 8_160_000);
 });
 
 test("no overlap, too slow or no stock gives no agreement and reveals nothing", () => {
@@ -86,19 +86,19 @@ test("full negotiation: mandate, resolve, accept, signed receipt, audit chain", 
     { buyerKey: "buyer-1", callerOrigin: "https://oja.example" });
   const out = await arb.resolveMandate(mandate_id, buyer_token);
   assert.equal(out.state, "RESOLVED");
-  // Iya (step 225,000): L' = 35 steps, U' = 38 -> 36 steps = 8,100,000 (1.0.0: 8,200,000)
-  // Chika (step 220,000): L' = 38, U' = 39 -> 38 steps = 8,360,000 (1.0.0: 8,400,000)
-  assert.deepEqual(out.offers.map((o) => [o.vendor_name, o.total_cents]), [["Iya Basira Foodstuff", 8_100_000], ["Chika Provisions", 8_360_000]]);
-  assert.deepEqual(out.offers.map((o) => [o.unit_step_cents, o.grid_step_cents]), [[225_000, 225_000], [220_000, 220_000]]);
+  // Both steps 160,000 (2.5% is 225,000 and 220,000 -> ₦1,600). Iya: L' = 49 steps, U' = 53 -> 51 = 8,160,000
+  // Chika: L' = 52, U' = 53 -> 52 = 8,320,000 (2.0.0: 8,100,000 / 8,360,000; 1.0.0: 8,200,000 / 8,400,000)
+  assert.deepEqual(out.offers.map((o) => [o.vendor_name, o.total_cents]), [["Iya Basira Foodstuff", 8_160_000], ["Chika Provisions", 8_320_000]]);
+  assert.deepEqual(out.offers.map((o) => [o.unit_step_cents, o.grid_step_cents]), [[160_000, 160_000], [160_000, 160_000]]);
   assert.ok(!JSON.stringify(out).includes("8600000"), "budget must not appear in the outcome");
 
   const again = await arb.resolveMandate(mandate_id, buyer_token);
   assert.deepEqual(again.offers.map((o) => o.offer_id), out.offers.map((o) => o.offer_id), "resolve is idempotent");
 
   const signed = await arb.acceptOffer(out.offers[0].offer_id, buyer_token);
-  assert.equal(signed.receipt.total_cents, 8_100_000);
-  assert.equal(signed.receipt.mechanism.version, "2.0.0");
-  assert.equal(signed.receipt.grid_step_cents, 225_000);
+  assert.equal(signed.receipt.total_cents, 8_160_000);
+  assert.equal(signed.receipt.mechanism.version, "3.0.0");
+  assert.equal(signed.receipt.grid_step_cents, 160_000);
   assert.equal(signed.receipt.caller_origin, "https://oja.example");
   assert.deepEqual(await arb.verifyReceipt(signed), { valid: true, recorded: true, receipt_id: signed.receipt.receipt_id });
 

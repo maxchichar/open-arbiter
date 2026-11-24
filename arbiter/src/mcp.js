@@ -120,7 +120,7 @@ export async function handleRpc(arb, msg, ctx) {
         protocolVersion: PROTOCOL_VERSION,
         capabilities: { tools: { listChanged: false } },
         serverInfo: { name: "open-arbiter", version: "1.0.0" },
-        instructions: "Deterministic negotiation: sealed buyer maximums and seller minimums, Nash-midpoint prices on a price step of 2.5% of list (min 100 per unit), signed receipts. Get human approval before accept_offer.",
+        instructions: "Deterministic negotiation: sealed buyer maximums and seller minimums, Nash-midpoint prices on a price step of 100 × 2^k per unit, the largest at most 2.5% of list, signed receipts. Get human approval before accept_offer.",
       });
     case "ping":
       return reply({});

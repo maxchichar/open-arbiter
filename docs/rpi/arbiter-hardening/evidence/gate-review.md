@@ -71,3 +71,43 @@ The reviewer also listed what it checked and found correct. Highlights:
 - The flake was there before the gate work, and it is load-dependent. The earlier batch of 12 runs had 1 failure.
 - The 8-attempt budget is too small for 36 writers when the CPU is busy. Hosted D1 round trips are slower than node:sqlite, so the same exhaustion is likely in production under real concurrency, which is reviewer finding R4.
 - Owner decision requested: raise the budget (code), let the test accept `busy` (test), or both.
+
+## Owner decisions (2026-11-24) and fixes
+
+### R1 (+ R2): nested grid, mechanism 3.0.0
+
+- **Decision:** the nested grid. `unit_step` = ₦100 × 2^k, the largest not above 2.5% of the unit list price (₦100 if 2.5% is below that).
+- **R2 folded in:** while designing the fix I found that the nested bound also needs R2's listing rule. A floor in the cut-off top step can never trade, and "no deal even at list price" pins it to less than one step, even with a single ask. `checkListing` now refuses `floor > maxFloor(ask)` and asks under ₦100. With that rule, every observation is a union of whole cells of the finest grid used, so the bound holds for every sequence, no-deals included. The proof is in ADR 0001.
+- **Red** (`gate-red-r1-nested.txt`, new tests against the 2.0.0 code):
+  - reviewer's example `floors 16100001..16200000 (100000) < one step 320000`;
+  - random multi-ask sequences `floors 15664441..15819270 (154830) < smallest step 320000`;
+  - `steps 408385 and 302100 do not nest`;
+  - a dead listing (ask ₦990, floor ₦950) accepted.
+
+  The AC-F1 tests also failed, because their oracle and domain now follow the 3.0.0 rule.
+- **Green:**
+  - `mechanism.test.mjs` 15 / 15;
+  - AC-F1-7 now asserts the bound on **every** sequence, not only when a deal agreed;
+  - the R1 multi-ask property: 2,000 sequences across 2–4 list prices, more than 300 of them with a step change.
+- **Price expectations updated** (each computed by the code and checked by hand against the step arithmetic in the test comments):
+
+| Test | 2.0.0 | 3.0.0 |
+| --- | --- | --- |
+| `mechanism` worked example (q 2, max ₦170,000, ask ₦90,000, floor ₦75,000) | ₦157,500 | ₦160,000 (step ₦1,600) |
+| `core` midpoint | ₦157,500, saving ₦22,500 | ₦160,000, saving ₦20,000 |
+| `core` capped at list price | ₦83,250 | ₦81,600 |
+| `core` full negotiation (Iya / Chika; receipt) | ₦81,000 / ₦83,600; ₦81,000 | ₦81,600 / ₦83,200; ₦81,600 |
+| `market` rice q 2 | ₦165,600 | ₦166,400 |
+
+- **Copy** (README, `index.html`, `vendor.html`, `market.js`, MCP instructions, HOCON; network rebuilt, `gate-build-network.txt` exit 0) and CLAUDE.md invariant 1 now give the ₦100 × 2^k step. The vendor page says the floor must sit at least one step under the list price. A copy-lint pattern now bans the 2.0.0 step wording; it caught the stale built `oja_market.network.json` before the rebuild.
+- **Trade-off:** the step, and with it the leak bound, is now 1.25–2.5% of the list price instead of 2.5%. For ₦90,000 it is ₦1,600 instead of ₦2,250.
+
+### R4 flake: retry budget raised
+
+- `CHAIN_ATTEMPTS` went from 8 to 12, and each jittered wait is capped at 128 ms (at most about 0.9 s in total before 503 `busy`).
+- Before: 6 / 15 full runs failed at `14aac06`. After: **0 / 25** (`gate-flake-after.txt`, load average about 9).
+- ADR 0003 updated.
+
+### Still recorded, not fixed
+
+R5, R6, R7, R8, R10, R11 and the `ok:false` shape of R9, as triaged above.

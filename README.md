@@ -12,7 +12,7 @@ Letting two LLMs haggle leaks private limits, accepts bad prices and exceeds aut
 
 - The **seller** seals a lowest price per unit. It lives only in the arbiter's database.
 - The **buyer** seals a highest total. The page sends it to the arbiter and keeps it out of page state and tool results; sellers never see it. If you type it in the chat, the AI provider you chose (on your own key) sees it.
-- The **arbiter** (plain JavaScript, no model) offers the Nash bargaining midpoint of the overlap, capped at list price and placed on a **price step of 2.5% of the unit list price (at least ₦100 per unit)**, filtered by delivery deadline and stock, ranked by price then delivery. With no overlap on the step grid it says "no agreement".
+- The **arbiter** (plain JavaScript, no model) offers the Nash bargaining midpoint of the overlap, capped at list price and placed on a **price step of ₦100 × 2^k per unit, the largest at most 2.5% of the unit list price** (so 1.25–2.5%; steps of different list prices nest), filtered by delivery deadline and stock, ranked by price then delivery. With no overlap on the step grid it says "no agreement".
 - **Bounded leak:** neither limit is ever returned. An agreed price depends on a seller's floor only through which price step it falls in, at every quantity, so any number of deals narrows a floor to no less than one price step (and the buyer's maximum to one step of the total). Property tests in `arbiter/test/mechanism.test.mjs` check this.
 - **Anti-probing:** the same terms (item, quantity, deadline, sellers) can be negotiated once per buyer, and each item at most 3 times a day, so nobody can map a seller's floor by re-bidding.
 - **Accountability:** every step goes into a hash-chained audit log; receipts are signed with ECDSA P-256 and can be verified by anyone with the public JWKS. Oja verifies them in the browser against the arbiter key pinned in the site (`js/config.js`), not against a key the arbiter serves at the time.
@@ -83,7 +83,7 @@ Then set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL and
 ## Limits (honest list)
 
 - Settlement is simulated; no money moves. Payments, delivery and disputes are out of scope.
-- An agreed price narrows each side's limit to one price step (2.5% of the unit list price, at least ₦100 per unit). That is the designed, bounded leak; "no agreement" reveals only that the step-aligned zones did not overlap.
+- An agreed price narrows each side's limit to one price step (₦100 × 2^k per unit, 1.25–2.5% of the unit list price). That is the designed, bounded leak, and it holds however many deals are made, also across list-price changes (then with the smallest step used); "no agreement" reveals only that the step-aligned zones did not overlap. One step is reachable: enough deals can pin a floor to its step. A seller's lowest price must sit at least one step below its list price (`docs/decisions/0001-price-leakage-policy.md`).
 - Whatever the visitor types in the chat, including a maximum, goes to the AI provider they chose.
 - The page's Content-Security-Policy lets the assistant reach only the AI providers listed in its settings (Otari, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic). A custom Provider URL, including a local model server, is blocked by the browser; the settings panel says so and names the allowed providers. Supporting another provider means adding its origin to `connect-src` in `sites/oja/_headers`.
 - Anti-probing keys on a salted hash of the caller's IP: a determined prober with many IPs gets more attempts.

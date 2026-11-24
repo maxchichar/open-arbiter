@@ -31,9 +31,10 @@ test("negotiate, accept and verify through the page; budget and tokens never in 
   const m = await setup();
   const neg = await m.negotiate({ sku: "rice-50kg", quantity: 2, max_total: 171_717, deliver_within_hours: 48 });
   assert.equal(neg.ok, true);
-  // floor 162,000 and max 171,717 on a ₦4,600 step (2.5% of ₦92,000 × 2): 36 steps = ₦165,600
-  // (mechanism 1.0.0 gave the raw midpoint, ₦166,858.50)
-  assert.equal(neg.offers[0].total, 165_600);
+  // floor 162,000 and max 171,717 on a ₦3,200 step (₦1,600 per bag: 2.5% of ₦92,000 is ₦2,300, and the
+  // largest ₦100 × 2^k below it is ₦1,600; × 2 bags): L' = 51 steps, U' = 53 -> 52 steps = ₦166,400
+  // (2.0.0 gave ₦165,600; 1.0.0 gave the raw midpoint, ₦166,858.50)
+  assert.equal(neg.offers[0].total, 166_400);
   const acc = await m.acceptOffer({ offer_id: neg.offers[0].offer_id });
   assert.equal(acc.ok, true);
   assert.equal(acc.signature_verified_in_browser, true);

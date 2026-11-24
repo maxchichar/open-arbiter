@@ -4,20 +4,37 @@
 
 export const MECHANISM = Object.freeze({
   name: "open-arbiter/nash-midpoint-grid",
-  version: "2.0.0",
+  version: "3.0.0",
   buyer_weight: "1/2",
   seller_weight: "1/2",
-  grid_bps: 250, // price step per unit: 2.5% of the unit list price ...
-  grid_min_unit_cents: 10_000, // ... and at least 10,000 minor units (₦100)
+  grid_bps: 250, // price step per unit: at most 2.5% of the unit list price ...
+  grid_min_unit_cents: 10_000, // ... at least 10,000 minor units (₦100) ...
+  grid_rule: "pow2", // ... and always 10,000 × 2^k, so the grids of different list prices nest
   tie: "buyer", // a midpoint exactly between two steps goes to the lower price
 });
 
 /**
- * Price step per unit, in minor units: 2.5% of the unit list price, rounded half up, at least
- * 10,000 (₦100). Integer-only: ask ≤ 1e9, so ask × 25 ≤ 2.5e10, well inside 2^53.
+ * Price step per unit, in minor units: the largest 10,000 × 2^k (₦100, ₦200, ₦400, …) not above 2.5%
+ * of the unit list price (rounded half up), and 10,000 when 2.5% is below that. So the step is
+ * between 1.25% and 2.5% of the list price, and every step divides every larger one: when a seller
+ * changes its list price, the old and new grids nest, and deals on both still leave at least the
+ * smaller step of possible floors. Integer-only: ask ≤ 1e9, so ask × 250 ≤ 2.5e11, inside 2^53.
  */
 export function unitStep(askCents) {
-  return Math.max(MECHANISM.grid_min_unit_cents, Math.floor((askCents * MECHANISM.grid_bps + 5_000) / 10_000));
+  const target = Math.floor((askCents * MECHANISM.grid_bps + 5_000) / 10_000);
+  let step = MECHANISM.grid_min_unit_cents;
+  while (step * 2 <= target) step *= 2;
+  return step;
+}
+
+/**
+ * The highest floor a listing may seal: the top of the last whole step at or below the ask. A floor
+ * above it sits in a step cut off by the ask, so it could never trade, and "no deal even at list
+ * price" would reveal it to less than one step. 0 when the ask is below one step.
+ */
+export function maxFloor(askCents) {
+  const u = unitStep(askCents);
+  return Math.floor(askCents / u) * u;
 }
 
 export const LIMITS = Object.freeze({
@@ -37,6 +54,11 @@ export function checkListing(l) {
   if (!isInt(l.ask_cents) || l.ask_cents <= 0 || l.ask_cents > LIMITS.maxCents) p.push("ask_cents must be a positive integer");
   if (!isInt(l.floor_cents) || l.floor_cents <= 0 || l.floor_cents > LIMITS.maxCents) p.push("floor_cents must be a positive integer");
   if (isInt(l.ask_cents) && isInt(l.floor_cents) && l.floor_cents > l.ask_cents) p.push("floor_cents cannot exceed ask_cents");
+  else if (isInt(l.ask_cents) && l.ask_cents > 0 && l.ask_cents <= LIMITS.maxCents) {
+    const top = maxFloor(l.ask_cents);
+    if (top === 0) p.push(`ask_cents must be at least ${MECHANISM.grid_min_unit_cents}: prices move in steps of at least ${MECHANISM.grid_min_unit_cents}`);
+    else if (isInt(l.floor_cents) && l.floor_cents > top) p.push(`floor_cents must be at most ${top} for this ask_cents: prices move in steps of ${unitStep(l.ask_cents)}, and a floor in the last, cut-off step could never be met`);
+  }
   if (!isInt(l.delivery_hours) || l.delivery_hours < 0 || l.delivery_hours > LIMITS.maxDeliveryHours) p.push("delivery_hours must be an integer between 0 and 2160");
   if (!isInt(l.stock) || l.stock < 0 || l.stock > LIMITS.maxQuantity * 100) p.push("stock must be a non-negative integer");
   return p;
@@ -72,13 +94,15 @@ export function termsKey(m) {
  *   upper = min(max_total_cents, ask_cents × quantity)  (buyer's walk-away, capped at list price)
  *
  * Prices are on a grid, so an agreed price reveals little about either limit:
- *   g  = unitStep(ask_cents) × quantity
+ *   g  = unitStep(ask_cents) × quantity   (unitStep = ₦100 × 2^k, at most 2.5% of the unit list price)
  *   L' = ceil(lower / g) × g,  U' = floor(upper / g) × g   (the zone, snapped inwards to the grid)
  *   L' > U' → no agreement with this listing
  *   price = the grid point nearest (L' + U') / 2, ties toward the buyer
  * The price depends on the floor only through ceil(floor / unitStep), the same cells at every
  * quantity, so any number of deals narrows a floor to no less than one step (and the buyer's
- * maximum to no less than g). The price stays within [lower, upper].
+ * maximum to no less than g). Steps of different list prices nest, and checkListing keeps a floor's
+ * cell wholly at or below the ask, so this holds across list-price changes too, with the smallest
+ * step used. The price stays within [lower, upper].
  *
  * A listing is eligible only if it has the stock and can deliver within the buyer's deadline.
  * Offers are ranked by price, then delivery time, then vendor id, so the order is fully

@@ -30,6 +30,8 @@ const BANNED = [
   [/maximum never leaves/i, "says the maximum never leaves the arbiter"],
   [/rather than trusting the (server|arbiter)/i, "says browser verification is independent of the arbiter"],
   [/does not trust the arbiter/i, "says browser verification is independent of the arbiter"],
+  // Mechanism 3.0.0 (Phase 0 gate, R1): the step is ₦100 × 2^k, at most 2.5% of the list price.
+  [/step (is |of )?(=\s*)?2\.5%|\(2\.5% of (the|your)|at least (₦|100 naira)?100 per unit/i, "gives the 2.0.0 step (2.5%, at least ₦100)"],
 ];
 
 test("no shipped copy makes a banned claim", () => {

@@ -12,8 +12,12 @@ export class ArbiterError extends Error {
 }
 
 const DAY = 86_400;
-const CHAIN_ATTEMPTS = 8;
-const CHAIN_BACKOFF_MS = 4; // first retry waits up to 4 ms, doubling: at most ~0.5 s in total
+// Chain-head contention: 12 attempts; the jittered wait before retry k is up to 4 ms × 2^k, capped at
+// 128 ms, so at most ~0.9 s in total before 503 "busy". 8 attempts uncapped (~0.5 s) let one of 36
+// concurrent writers run out under CPU load (Phase 0 gate review, R4: 6 of 15 full test runs).
+const CHAIN_ATTEMPTS = 12;
+const CHAIN_BACKOFF_MS = 4;
+const CHAIN_BACKOFF_CAP_MS = 128;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const EVENT_COLUMNS = "mandate_id, kind, payload, prev_hash, hash, created_at";
 
@@ -142,7 +146,7 @@ export class Arbiter {
       } catch (e) {
         if (!isPrevHashConflict(e)) throw e;
         // Jitter is not pricing: mechanism.js stays free of randomness and clocks.
-        if (attempt < CHAIN_ATTEMPTS - 1) await sleep(this.random() * CHAIN_BACKOFF_MS * 2 ** attempt);
+        if (attempt < CHAIN_ATTEMPTS - 1) await sleep(this.random() * Math.min(CHAIN_BACKOFF_MS * 2 ** attempt, CHAIN_BACKOFF_CAP_MS));
       }
     }
     throw new ArbiterError("busy", "The arbiter's audit log is busy. Try again in a moment.", 503);
