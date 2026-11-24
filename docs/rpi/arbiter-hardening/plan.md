@@ -36,7 +36,7 @@ The owner's production plan numbers Phase 0 tasks P0.0 to P0.10 (mapping confirm
 | P0.6 | F5 (`?arbiter=` on loopback pages only) and F6 (pinned key set with kid) | 5 | done |
 | P0.7 | F8: copy, with a copy-lint test | 5 | done |
 | P0.8 | Strict page CSP, verified with `browser_check.py` (zero violations). **Added by the owner 2026-11-23; it was out of scope in §1.** | 5 | done |
-| P0.9 | Update the CLAUDE.md invariants (3: cap, identical terms, retry with the same secret; new: schema guard, client-made buyer secret, pinned key set with kid, strict CSP) and this plan | Phase 0 gate | open |
+| P0.9 | Update the CLAUDE.md invariants (3: cap, identical terms, retry with the same secret; new: schema guard, client-made buyer secret, pinned key set with kid, strict CSP) and this plan | Phase 0 gate | done (2026-11-24) |
 | P0.10 | Negotiate survives a lost answer: the client makes the buyer secret and sends only its hash; a retry with the same secret and terms returns the existing mandate; the daily cap holds. **Added by the owner 2026-11-23.** | 5 | done |
 | (extra) | Schema check (`ensureSchema`, slice 4) cached per database per Worker instance | 5 | done |
 
