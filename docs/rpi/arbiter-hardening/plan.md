@@ -41,6 +41,20 @@ The owner's production plan numbers Phase 0 tasks P0.0 to P0.10 (mapping confirm
 | (extra) | Schema check (`ensureSchema`, slice 4) cached per database per Worker instance | 5 | done |
 | Gate | Phase 0 gate: three ADRs (`docs/decisions/`); independent review triaged (`evidence/gate-review.md`): R3 fixed (binding 5xx is unknown), R1+R2 fixed (mechanism 3.0.0, nested grid, owner decision), R4 flake fixed (retry budget); the rest recorded. Final runs: `npm test` 3 × 126/126, `test:worker` 3 × 12 PASS / 0 FAIL, `browser_check.py` 3 × OK with 0 CSP violations (`evidence/gate-final-*.txt`) | 2026-11-24 | done, tagged `v0.0` |
 
+## 0c. Recorded review findings → production-plan tasks (owner, 2026-11-24)
+
+The Phase 0 gate review (`evidence/gate-review.md`) left these findings recorded, not fixed. The owner mapped each to a later task:
+
+| Task | Findings | What to do |
+| --- | --- | --- |
+| **P1.2** | R6 | Before migrating any database with real data: find mandates that are `SETTLED` with no receipt (left by the old non-atomic accept), and resolve them, or block the migration. Alternatively, make `settledByUs` require that this batch settled the mandate |
+| **P2.5** | R7 | The out-of-stock `VOID` goes through `commit()` with an audit event. Accept guards also require the listing to exist (`EXISTS listing`), so a deleted listing cannot produce a receipt with no stock reserved |
+| **P2.7** | R8, R9, R10 | Client robustness. R8: clear the request timer only after the body is parsed. R9: a negotiate with an unknown outcome throws as accept does (the runtime records "unknown"), not `ok:false`; its message is already fixed. R10: keep the "unknown" mark while the offer is still OPEN and the original accept may still be in flight |
+| **P6.5** | R5 | Replay oracle: a test that `token_hash` never appears in any output or log; consider making a replay prove the preimage instead of presenting the hash |
+| **P7.5** | R11, plus a `style-src` fallback | CSP hygiene. The production `connect-src` gets the real arbiter origin at deploy; the bridge CSP drops the LLM origins it never uses; `isBlockedProviderCall` compares against the arbiter in use. Add `style-src 'self' 'sha256-…'` as a fallback for browsers without `style-src-elem` (Firefox < 108, Safari < 15.4), which otherwise fall back to `default-src 'none'` and render unstyled |
+
+R1, R2, R3 and the R4 flake were fixed at the gate. R4's scaling limit itself stays in ADR 0003.
+
 ## 1. Objective and boundaries
 
 **Outcome:** The arbiter's advertised guarantees become true, and are stated honestly:

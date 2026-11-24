@@ -110,4 +110,6 @@ The reviewer also listed what it checked and found correct. Highlights:
 
 ### Still recorded, not fixed
 
-R5, R6, R7, R8, R10, R11 and the `ok:false` shape of R9, as triaged above.
+R5, R6, R7, R8, R10, R11 and the `ok:false` shape of R9, as triaged above. Mapped by the owner to production-plan tasks (`plan.md` §0c): R6 → P1.2, R7 → P2.5, R8/R9/R10 → P2.7, R5 → P6.5, R11 + `style-src` fallback → P7.5.
+
+**Correction (2026-11-24):** this record, the README and `vendor.html` described the listing rule as "at least one step below the list price". The rule is `floor ≤ floor(ask/u)·u`: the floor may not fall inside the partial step just under the ask, and the gap can be anywhere from 0 to just under one step. README and `vendor.html` are corrected; ADR 0001 states it exactly.

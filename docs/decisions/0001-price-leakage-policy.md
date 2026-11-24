@@ -1,7 +1,7 @@
 # ADR 0001: Price leakage policy (B2 snap-then-midpoint on a nested per-unit grid)
 
 - **Status:** accepted, 2026-11-23 (owner decision B2, amendments A1 and A2 in `docs/rpi/arbiter-hardening/plan.md`). **Amended 2026-11-24** after review finding R1: nested ₦100 × 2^k steps and valid listings only (mechanism 3.0.0, owner decision).
-- **Task:** P0.5 (F1), slice 5, commit `14aac06`
+- **Task:** P0.5 (F1), slice 5, commit `14aac06`; amended at the Phase 0 gate, commit `175b4d1`
 - **Code:** `arbiter/src/mechanism.js` (`unitStep`, `maxFloor`, `checkListing`, `resolve`, `MECHANISM` 3.0.0)
 - **Tests:** `arbiter/test/mechanism.test.mjs` (AC-F1-1 to AC-F1-7, R1)
 
@@ -25,6 +25,20 @@ price    = the grid point nearest (L' + U') / 2; a tie goes to the buyer (lower 
 ```
 
 Only **valid listings** are accepted: `floor ≤ maxFloor(ask) = floor(ask / unit_step) × unit_step`, and `ask ≥ ₦100`. The floor's step then lies wholly at or below the ask (no cut-off top step).
+
+In words: **the floor may not fall inside the partial step just below the ask.** It must be at most the last whole step at or below the ask. The gap between the highest allowed floor and the ask is between 0 and just under one step. When the ask is an exact multiple of the step, the floor may equal the ask.
+
+### Worked example: ask ₦90,000 per unit
+
+| Quantity | Value |
+| --- | --- |
+| 2.5% of the ask | ₦2,250 |
+| `unit_step`: the largest of ₦100, ₦200, ₦400, ₦800, ₦1,600, ₦3,200, … not above ₦2,250 | **₦1,600** (1.78% of the ask) |
+| Highest allowed floor, `maxFloor`: 56 × ₦1,600 (90,000 / 1,600 = 56.25) | ₦89,600 |
+| What any number of deals can leave about this floor | **at least ₦1,600** of possible floors per unit: a floor of ₦79,000 can be narrowed to its step, (₦78,400, ₦80,000], and no further |
+| What one deal at quantity q leaves about a buyer's maximum | at least `g = ₦1,600 × q` |
+
+Under 2.0.0 the same listing had a ₦2,250 step. That held only while the ask stayed ₦90,000.
 
 `MECHANISM = open-arbiter/nash-midpoint-grid 3.0.0` with `grid_bps 250`, `grid_min_unit_cents 10000`, `grid_rule "pow2"`, `tie: "buyer"`. Every offer and receipt carries `unit_step_cents` and `grid_step_cents`.
 
@@ -71,11 +85,26 @@ So **any number of deals narrows a floor to no less than one step** (1.25–2.5%
 | Random noise | Breaks invariant 2 (deterministic pricing) and makes receipts non-reproducible |
 | Hide the price | Defeats the product |
 
+## Future option: fixed-price listings (recorded, not built)
+
+A listing type with **no sealed floor**: it sells at its list price, or at a fixed price the seller publishes, with no negotiation. It reveals nothing beyond the public price, so the leak bound does not apply to it. It would suit:
+- sellers who accept no floor leakage at all;
+- items under ₦100, which the grid cannot serve;
+- sellers who want to sell at, or just under, the list price, where the valid-listing rule refuses a floor inside the partial top step.
+
+Open questions before building it:
+- whether the arbiter should still settle these sales, with a signed receipt and the audit chain, or the page should;
+- how a fixed-price offer is ranked against negotiated offers in one outcome;
+- how anti-probing applies, since there is nothing to probe;
+- whether a mandate's maximum is still sealed. It is still compared with the price, so "no deal" says the maximum is below that price.
+
+Needs an owner decision and its own ADR.
+
 ## Consequences
 
 - Prices move by up to one step from earlier versions (listed in `evidence/slice5.md` for 2.0.0 and `evidence/gate-review.md` for 3.0.0). A deal whose zone holds no grid point gets no offer, even though the zone is non-empty.
 - The step is smaller than 2.0.0's for most asks (1.25–2.5% instead of 2.5%): finer prices, but the leak bound shrinks with it. For example, ₦90,000 → ₦1,600 instead of ₦2,250.
-- Sellers must set the floor at least one step under the list price. Such listings could never trade anyway. `upsertListing` refuses them with a message naming the highest allowed floor, and asks under ₦100 are refused.
+- A floor inside the partial step just under the list price is refused, and so is an ask under ₦100. Such listings could never trade anyway. `upsertListing` refuses them with a message naming the highest allowed floor (`maxFloor`).
 - Each side gives up at most one step of surplus to rounding, and ties favour the buyer.
 - Receipts issued under 1.0.0 still verify, because each signature covers its own payload, including the mechanism version.
 - CLAUDE.md invariant 1 states this bound, and the property tests must keep passing.
