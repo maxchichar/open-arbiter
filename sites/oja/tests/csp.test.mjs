@@ -2,7 +2,8 @@
 // Scripts run only from Oja's own origin: no inline script, no eval, no third-party script.
 // Styles: Oja's stylesheets plus the runtime's one <style> block by hash; inline style attributes
 // are allowed (the runtime, which we do not edit, renders some; they cannot run code).
-// connect-src: Oja, the arbiter and the LLM providers the runtime's settings offer. Nothing else.
+// connect-src: Oja, the arbiter, the LLM providers the runtime's settings offer and the endpoints its
+// key sign-ins fetch the key from (Connect with Otari, Connect with OpenRouter). Nothing else.
 // The browser half (zero CSP violations in a real page) is browser_check.py.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -10,6 +11,8 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { PRESENTATION_CSS } from "../runtime/cruse-render.js";
 import { API_KEY_PROVIDERS } from "../runtime/ui.js";
+import { OtariConnect } from "../runtime/otari-connect.js";
+import { OpenRouterConnect } from "../runtime/openrouter-connect.js";
 import { DEFAULT_ARBITER_URL } from "../js/config.js";
 
 const SITE = new URL("../", import.meta.url);
@@ -71,11 +74,15 @@ test("the page CSP is strict for scripts and locked down elsewhere", () => {
   }
 });
 
-test("connect-src allows exactly Oja, the arbiter and the runtime's LLM providers", () => {
+/** Where the runtime's key sign-ins (Connect with Otari, Connect with OpenRouter) fetch a key. */
+export const RUNTIME_SIGN_IN_ORIGINS = [OtariConnect.TOKEN_URL, OpenRouterConnect.KEYS_URL].map((u) => new URL(u).origin);
+
+test("connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins", () => {
   const d = directives(rules()["/"]["content-security-policy"]);
   const manifest = JSON.parse(read("agent-manifest.json"));
   const expected = new Set(["'self'", new URL(DEFAULT_ARBITER_URL).origin,
     ...API_KEY_PROVIDERS.map((p) => new URL(p.router).origin),
+    ...RUNTIME_SIGN_IN_ORIGINS,
     ...[manifest.llm_router?.base_url, manifest.llm_router?.byok_router].filter(Boolean).map((u) => new URL(u).origin)]);
   assert.deepEqual(new Set(d["connect-src"]), expected);
 });

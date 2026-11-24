@@ -4,22 +4,29 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { API_KEY_PROVIDERS } from "../runtime/ui.js";
+import { OtariConnect } from "../runtime/otari-connect.js";
+import { OpenRouterConnect } from "../runtime/openrouter-connect.js";
 import { DEFAULT_ARBITER_URL } from "../js/config.js";
 import {
-  ALLOWED_PROVIDER_NAMES, ALLOWED_PROVIDER_ORIGINS, blockedProviderOrigin, blockedProviderMessage, isBlockedProviderCall,
+  ALLOWED_PROVIDER_NAMES, ALLOWED_PROVIDER_ORIGINS, SIGN_IN_ORIGINS, blockedProviderOrigin, blockedProviderMessage, isBlockedProviderCall,
 } from "../js/provider-guard.js";
 
 const PROD = "https://oja.example/";
 const DEV = "http://127.0.0.1:8080/";
 
-test("the allowed providers are exactly the CSP's model origins", () => {
+test("the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter)", () => {
+  assert.deepEqual(SIGN_IN_ORIGINS, new Set([OtariConnect.TOKEN_URL, OpenRouterConnect.KEYS_URL].map((u) => new URL(u).origin)));
+  assert.ok(SIGN_IN_ORIGINS.has("https://otari.ai"));
+});
+
+test("model routers plus sign-in endpoints are exactly the CSP's other origins", () => {
   // The / policy's connect-src (csp.test.mjs checks every page has the same policy).
   const headers = readFileSync(new URL("../_headers", import.meta.url), "utf8");
   const policy = headers.split("\n/\n")[1].split("\n")[0];
   const connect = new Set(policy.match(/connect-src ([^;]*)/)[1].trim().split(/\s+/));
   connect.delete("'self'");
   connect.delete(new URL(DEFAULT_ARBITER_URL).origin);
-  assert.deepEqual(connect, ALLOWED_PROVIDER_ORIGINS);
+  assert.deepEqual(connect, new Set([...ALLOWED_PROVIDER_ORIGINS, ...SIGN_IN_ORIGINS]));
 });
 
 test("every runtime provider URL is allowed", () => {
@@ -57,4 +64,12 @@ test("only connect-src blocks of a model URL count, not the arbiter or this page
   assert.equal(isBlockedProviderCall(ev("https://oja.example/x"), PROD), false);
   assert.equal(isBlockedProviderCall(ev("https://llm.example.com/v1", "style-src-elem"), PROD), false);
   assert.equal(isBlockedProviderCall(ev("inline"), PROD), false);
+});
+
+test("a key sign-in is never reported as a blocked AI provider", () => {
+  const ev = (blockedURI) => ({ blockedURI, effectiveDirective: "connect-src" });
+  assert.equal(isBlockedProviderCall(ev(OtariConnect.TOKEN_URL), PROD), false, "the Otari key exchange is not a model call");
+  assert.equal(isBlockedProviderCall(ev(OpenRouterConnect.KEYS_URL), PROD), false);
+  assert.equal(blockedProviderOrigin(OtariConnect.ISSUER, PROD), null, "otari.ai is allowed by the CSP");
+  assert.ok(!ALLOWED_PROVIDER_ORIGINS.has("https://otari.ai"), "otari.ai is a sign-in endpoint, not a model router");
 });

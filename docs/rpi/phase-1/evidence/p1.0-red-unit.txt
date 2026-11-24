@@ -1,0 +1,135 @@
+✔ ArbiterClient.accept, response lost (hang): unknown, sent once (285.267786ms)
+✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (174.165727ms)
+✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (11.525973ms)
+✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (15.047296ms)
+✔ through the runtime: a lost accept response is a receipt with status unknown, run once (161.636009ms)
+✔ accept answered by a platform 502 page after the arbiter settled: unknown, sent once, re-accept blocked (165.164877ms)
+✔ mandate create answered by a platform 502 page after the arbiter made it: unknown, secret kept, asking again recovers it (22.698731ms)
+✔ accept answered by a platform 500 JSON without the arbiter's shape after the arbiter settled: unknown, sent once, re-accept blocked (12.750213ms)
+✔ mandate create answered by a platform 500 JSON without the arbiter's shape after the arbiter made it: unknown, secret kept, asking again recovers it (14.868288ms)
+✔ accept answered by a arbiter catch-all internal 500 after the arbiter settled: unknown, sent once, re-accept blocked (13.541295ms)
+✔ mandate create answered by a arbiter catch-all internal 500 after the arbiter made it: unknown, secret kept, asking again recovers it (11.287172ms)
+✔ a definite arbiter refusal on a binding call stays definite (busy 503) (13.467766ms)
+✔ no shipped copy makes a banned claim (16.615615ms)
+✔ every mention of the midpoint also mentions the price step (3.207711ms)
+✔ README and the page state the bounded leak and the AI-provider caveat (1.088023ms)
+✔ every HTML page gets the same page CSP from _headers (3.175681ms)
+✖ the page CSP is strict for scripts and locked down elsewhere (7.573247ms)
+✖ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (1.677114ms)
+✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.560047ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.425693ms)
+✔ Oja's own HTML has no inline script, event handler or style attribute (1.796619ms)
+✔ negotiate, accept and verify through the page; budget and tokens never in state (160.505527ms)
+✔ page checks refuse bad input before anything is sent (7.360005ms)
+✔ repeat terms are refused with the arbiter's reason (13.05584ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (4.119351ms)
+✔ one lost answer (network-error): the client retries with the same secret and gets the same mandate (130.788848ms)
+✔ one lost answer (hang): the client retries with the same secret and gets the same mandate (167.632021ms)
+✔ only the hash of the secret is sent; the secret is not in the page state (9.328157ms)
+✔ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (10.269223ms)
+✔ a new budget for the same terms is a new secret, and is refused as identical terms (10.881107ms)
+✔ AC-F5-1: ?arbiter= is ignored on a non-loopback page (3.54098ms)
+✔ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (1.379282ms)
+✔ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (145.333415ms)
+✔ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (19.135679ms)
+✔ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (15.075048ms)
+✔ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (16.473877ms)
+✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (15.777504ms)
+✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (1.97226ms)
+✔ the tripwire itself: a public URL with no keys is refused (0.34468ms)
+file:///home/maxchichar/open-arbiter/sites/oja/tests/provider-guard.test.mjs:11
+  ALLOWED_PROVIDER_NAMES, ALLOWED_PROVIDER_ORIGINS, SIGN_IN_ORIGINS, blockedProviderOrigin, blockedProviderMessage, isBlockedProviderCall,
+                                                    ^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../js/provider-guard.js' does not provide an export named 'SIGN_IN_ORIGINS'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:455:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:553:5)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
+✖ sites/oja/tests/provider-guard.test.mjs (170.503117ms)
+✖ needsKey matches the runtime's needsByok rule (2.231921ms)
+✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (1.975827ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 38
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 802.994475
+
+✖ failing tests:
+
+test at sites/oja/tests/csp.test.mjs:58:1
+✖ the page CSP is strict for scripts and locked down elsewhere (7.573247ms)
+  AssertionError [ERR_ASSERTION]: stylesheets plus the runtime's <style> by hash
+  + actual - expected
+  
+    [
+      "'self'",
+  +   "'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='"
+  -   "'sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='"
+    ]
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:68:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ "'self'", "'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='" ],
+    expected: [ "'self'", "'sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='" ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/csp.test.mjs:80:1
+✖ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (1.677114ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+  + Set(9) {
+  - Set(10) {
+      "'self'",
+      'http://localhost:8787',
+      'https://api.anthropic.com',
+      'https://api.groq.com',
+      'https://api.openai.com',
+  ...
+      'https://openrouter.ai',
+  -   'https://otari.ai'
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:87:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Set(9) { "'self'", 'http://localhost:8787', 'https://api.otari.ai', 'https://eu.api.otari.ai', 'https://generativelanguage.googleapis.com', 'https://api.groq.com', 'https://openrouter.ai', 'https://api.openai.com', 'https://api.anthropic.com' },
+    expected: Set(10) { "'self'", 'http://localhost:8787', 'https://api.otari.ai', 'https://eu.api.otari.ai', 'https://generativelanguage.googleapis.com', 'https://api.groq.com', 'https://openrouter.ai', 'https://api.openai.com', 'https://api.anthropic.com', 'https://otari.ai' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/provider-guard.test.mjs:1:1
+✖ sites/oja/tests/provider-guard.test.mjs (170.503117ms)
+  'test failed'
+
+test at sites/oja/tests/site-status.test.mjs:9:1
+✖ needsKey matches the runtime's needsByok rule (2.231921ms)
+  TypeError: AssistantMount.needsKey is not a function
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/site-status.test.mjs:17:76)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+exit 1

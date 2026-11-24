@@ -56,10 +56,7 @@ export class AssistantMount {
       booted.engine.onActionConfirm = AssistantMount.review;
       AssistantMount.defaultConsent = booted.engine.onConsent;
       booted.engine.onConsent = AssistantMount.consent;
-      // Without a key the chat cannot answer yet. This is the same test as the
-      // runtime's "API key required" badge in runtime/ui.js.
-      const needsKey = !booted.engine.mockLLM
-        && (!booted.engine.byokKey || booted.engine.byokKey === "demo");
+      const needsKey = AssistantMount.needsKey(booted.engine);
       status.textContent = needsKey
         ? "Assistant needs your AI provider key. Add it in AI model settings below."
         : "Assistant connected to this page.";
@@ -76,6 +73,18 @@ export class AssistantMount {
       console.error("Assistant startup failed", error);
       return null;
     }
+  }
+
+  /**
+   * Say whether the chat cannot answer yet for want of the visitor's key. This is the runtime's
+   * own test (needsByok in runtime/ui.js; tests/site-status.test.mjs fails if it changes): no key
+   * is needed with the scripted LLM or with a router the site pays for (publisher_funded).
+   *
+   * :param engine: The booted runtime engine.
+   * :return: True when the visitor must add a key first.
+   */
+  static needsKey(engine) {
+    return !engine.mockLLM && !engine.publisherFundedLLM && (!engine.byokKey || engine.byokKey === "demo");
   }
 
   /**

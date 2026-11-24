@@ -1,0 +1,14 @@
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://otari.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+console error: Applying inline style violates the following Content Security Policy directive 'style-src-elem 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+catalogue: 4 items; assistant: Assistant connected to this page.
+manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 2:33:26 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 2:33:26 PM Accept
+manual receipt: rct_MJq5u9ABVR3iWNMZ | badge: Signature verified (dev key, not pinned)
+agent offers: SELLER	TOTAL	SAVING Iya Basira Foodstuff	₦166,400	₦17,600 Chika Provisions	₦169,600	₦8,400  Which one would you like?
+agent: Done. Receipt rct_ZL_BboYhJ3QEiQPW; the arbiter's signature was checked in your browser.
+<style> elements: 1; all allowed by hash: False
+Traceback (most recent call last):
+  File "/home/maxchichar/open-arbiter/sites/oja/tests/browser_check.py", line 174, in <module>
+    assert style_hashes_allowed(page), "a live <style> element is not allowed by the policy's hashes"
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+AssertionError: a live <style> element is not allowed by the policy's hashes
+browser_check exit 1

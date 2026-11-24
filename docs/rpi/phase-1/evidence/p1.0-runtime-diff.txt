@@ -1,0 +1,10 @@
+# before
+Files ../agentic-web/skills/agentify-website/runtime/engine.js and sites/oja/runtime/engine.js differ
+Files ../agentic-web/skills/agentify-website/runtime/index.js and sites/oja/runtime/index.js differ
+Files ../agentic-web/skills/agentify-website/runtime/in-use-line.js and sites/oja/runtime/in-use-line.js differ
+Files ../agentic-web/skills/agentify-website/runtime/llm.js and sites/oja/runtime/llm.js differ
+Only in ../agentic-web/skills/agentify-website/runtime: otari-connect.js
+Files ../agentic-web/skills/agentify-website/runtime/README.md and sites/oja/runtime/README.md differ
+Files ../agentic-web/skills/agentify-website/runtime/ui.js and sites/oja/runtime/ui.js differ
+# after (empty = identical)
+exit 0

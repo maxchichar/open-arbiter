@@ -1,0 +1,162 @@
+
+> open-arbiter@1.0.0 test
+> node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+
+✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (77.39913ms)
+✔ fault at "decrement stock": nothing of the accept is committed, and a later accept works (36.12023ms)
+✔ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (21.800797ms)
+✔ fault at "insert receipt": nothing of the accept is committed, and a later accept works (26.247084ms)
+✔ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (21.263843ms)
+✔ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (20.467922ms)
+✔ concurrent accepts of the same offer: exactly one receipt (30.289199ms)
+✔ concurrent accepts of different offers on one mandate: exactly one receipt (25.627826ms)
+✔ the schema refuses negative stock (CHECK stock_nonneg) (9.169659ms)
+✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (16.558006ms)
+✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (10.36347ms)
+✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (28.058631ms)
+✔ batch commits every statement together (3.947918ms)
+✔ batch rolls back everything when one statement fails (2.233834ms)
+✔ injected fault aborts a batch at the chosen statement (2.233463ms)
+✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (290.258971ms)
+✔ 5 concurrent identical terms: one succeeds, four get identical_terms (25.234083ms)
+✔ a refused mandate writes no row and no event (9.506464ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (6.114084ms)
+✔ concurrent writes of every kind keep one linear chain (319.568473ms)
+✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (20.497588ms)
+✔ chain-head conflicts are retried with a fresh head (16.160757ms)
+✔ when retries run out: 503 busy, and the business write is not committed (574.37822ms)
+✔ createVendor: a failed event insert rolls back the business write (4.269945ms)
+✔ upsertListing: a failed event insert rolls back the business write (3.493169ms)
+✔ createMandate: a failed event insert rolls back the business write (3.497578ms)
+✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (6.968105ms)
+✔ the detector finds DEV however it is written, and ignores comments (3.390577ms)
+✔ arbiter/wrangler.toml never defines DEV (3.63687ms)
+✔ midpoint of the zone of agreement (4.048768ms)
+✔ budget above list price is capped at list price (0.458865ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (2.303195ms)
+✔ offers ranked by price, then delivery, then vendor id (0.827972ms)
+✔ vendor filter is respected (0.691866ms)
+✔ listing validation (0.850645ms)
+✔ terms key ignores budget and vendor order (0.39743ms)
+✔ canonical json sorts keys at every level (0.939953ms)
+✔ catalog never exposes floors (61.639801ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (48.639927ms)
+✔ cannot accept twice, with a wrong token, or after expiry (21.090126ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (16.935628ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (14.854392ms)
+✔ tampering with the audit log is detected (7.661223ms)
+✔ a client-made secret: only its hash is sent, and the secret then works as the buyer token (39.292434ms)
+✔ a retry with the same secret and terms returns the same mandate: no new row, no new event (15.490542ms)
+✔ the same secret with different terms or a different budget is refused, and writes nothing (12.732649ms)
+✔ the daily cap still holds, and a retry of an existing mandate is not counted against it (13.743938ms)
+✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (13.462617ms)
+✔ concurrent retries with one secret create exactly one mandate (13.290051ms)
+✔ a malformed hash is refused (5.010733ms)
+✔ over HTTP: 201 when created, 200 when replayed, never a token in the body (89.080646ms)
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (4.776661ms)
+✔ AC-F1-6: mechanism identity, and each offer names its step (2.368498ms)
+✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.418109ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.398321ms)
+✔ tie between two grid points goes to the buyer (lower) (0.516695ms)
+✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (112.875915ms)
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (380.648126ms)
+✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (4.450526ms)
+✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (42.558525ms)
+✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (43.337233ms)
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (7.254966ms)
+✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (3.400084ms)
+✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (0.969729ms)
+✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.687147ms)
+✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (99.924683ms)
+✔ pubkey.mjs prints only the public key, with the kid the arbiter signs under (156.269806ms)
+✔ the stripped schemas really lack the constraint (2.445453ms)
+Open Arbiter: database schema is out of date (missing: listings CHECK stock_nonneg (accept cannot oversell)); refusing to write.
+✔ outdated database (no CHECK stock_nonneg): writes refused with 500 misconfigured, nothing written (41.058425ms)
+Open Arbiter: database schema is out of date (missing: UNIQUE events.prev_hash (linear audit chain)); refusing to write.
+✔ outdated database (no UNIQUE events.prev_hash): writes refused with 500 misconfigured, nothing written (7.328245ms)
+Open Arbiter: database schema is out of date (missing: UNIQUE mandates.token_hash (idempotent mandate create)); refusing to write.
+✔ outdated database (no UNIQUE mandates.token_hash): writes refused with 500 misconfigured, nothing written (7.063665ms)
+✔ current schema: writes work (8.318372ms)
+✔ schema check: one sqlite_master query per Worker instance, not one per write (95.6767ms)
+Open Arbiter: database schema is out of date (missing: listings CHECK stock_nonneg (accept cannot oversell)); refusing to write.
+Open Arbiter: database schema is out of date (missing: listings CHECK stock_nonneg (accept cannot oversell)); refusing to write.
+✔ schema check cache is per database: an outdated binding is still refused (16.285722ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (129.177227ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (20.689901ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (21.033739ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (14.142419ms)
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (27.514475ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ a configured signing key works without DEV and is never stored (20.362814ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (4.087952ms)
+✔ ArbiterClient.accept, response lost (hang): unknown, sent once (338.487974ms)
+✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (175.345712ms)
+✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (13.122886ms)
+✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (18.308579ms)
+✔ through the runtime: a lost accept response is a receipt with status unknown, run once (165.466686ms)
+✔ accept answered by a platform 502 page after the arbiter settled: unknown, sent once, re-accept blocked (167.677196ms)
+✔ mandate create answered by a platform 502 page after the arbiter made it: unknown, secret kept, asking again recovers it (23.618936ms)
+✔ accept answered by a platform 500 JSON without the arbiter's shape after the arbiter settled: unknown, sent once, re-accept blocked (18.0657ms)
+✔ mandate create answered by a platform 500 JSON without the arbiter's shape after the arbiter made it: unknown, secret kept, asking again recovers it (20.388622ms)
+✔ accept answered by a arbiter catch-all internal 500 after the arbiter settled: unknown, sent once, re-accept blocked (20.883936ms)
+✔ mandate create answered by a arbiter catch-all internal 500 after the arbiter made it: unknown, secret kept, asking again recovers it (14.325234ms)
+✔ a definite arbiter refusal on a binding call stays definite (busy 503) (16.207254ms)
+✔ no shipped copy makes a banned claim (11.627154ms)
+✔ every mention of the midpoint also mentions the price step (2.291793ms)
+✔ README and the page state the bounded leak and the AI-provider caveat (1.4472ms)
+✔ README explains Connect with Otari and why otari.ai is in connect-src (P1.0) (3.188825ms)
+✔ every HTML page gets the same page CSP from _headers (2.814559ms)
+✔ the page CSP is strict for scripts and locked down elsewhere (5.467344ms)
+✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (1.313308ms)
+✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.745657ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.612276ms)
+✔ Oja's own HTML has no inline script, event handler or style attribute (1.560324ms)
+✔ negotiate, accept and verify through the page; budget and tokens never in state (140.237402ms)
+✔ page checks refuse bad input before anything is sent (7.806737ms)
+✔ repeat terms are refused with the arbiter's reason (13.514675ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (3.610592ms)
+✔ one lost answer (network-error): the client retries with the same secret and gets the same mandate (122.558451ms)
+✔ one lost answer (hang): the client retries with the same secret and gets the same mandate (164.293302ms)
+✔ only the hash of the secret is sent; the secret is not in the page state (11.622546ms)
+✔ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (10.645663ms)
+✔ a new budget for the same terms is a new secret, and is refused as identical terms (12.289453ms)
+✔ AC-F5-1: ?arbiter= is ignored on a non-loopback page (3.432725ms)
+✔ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (1.10755ms)
+✔ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (142.557909ms)
+✔ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (20.157687ms)
+✔ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (14.184368ms)
+✔ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (16.766379ms)
+✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (16.445814ms)
+✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (1.954618ms)
+✔ the tripwire itself: a public URL with no keys is refused (0.281662ms)
+✔ the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter) (4.136293ms)
+✔ model routers plus sign-in endpoints are exactly the CSP's other origins (1.372419ms)
+✔ every runtime provider URL is allowed (0.68948ms)
+✔ a custom provider is blocked on the published site, with its origin named (0.722463ms)
+✔ empty, invalid and same-origin values are not reported; local models are fine on a dev page (0.671196ms)
+✔ the message names the blocked origin and every allowed provider (0.643333ms)
+✔ only connect-src blocks of a model URL count, not the arbiter or this page (0.755095ms)
+✔ a key sign-in is never reported as a blocked AI provider (0.579964ms)
+✔ needsKey matches the runtime's needsByok rule (1.751695ms)
+✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (1.384061ms)
+ℹ tests 131
+ℹ suites 0
+ℹ pass 131
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1119.209882

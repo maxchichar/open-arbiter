@@ -7,15 +7,18 @@ site on :8080, tests/fake-llm.mjs on :8799.
 The local file server does not send _headers, so this script applies the page CSP from _headers
 to each HTML page itself, adding only the scripted LLM's origin to connect-src (it stands in for
 the visitor's AI provider). Any CSP violation fails the check. CSP_DROP_STYLE_HASH=1 removes the
-runtime style hash from the policy: a negative control that must fail.
+runtime style hash from the policy: a negative control that must fail. Step 9 runs Connect with
+Otari against a mocked otari.ai (Playwright routes; every other external host is refused).
 """
 import base64
 import hashlib
+import html
 import json
 import os
 import re
 import sys
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 from playwright.sync_api import sync_playwright, expect
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "/tmp"
@@ -51,11 +54,15 @@ def policy_for(path):
     return csp
 
 
+CSP_SERVED = []  # every URL this script served with the page CSP
+
+
 def with_csp(route):
     path = route.request.url[len(ORIGIN):].split("?")[0]
     csp = policy_for(path)
     if csp is None:
         return route.continue_()
+    CSP_SERVED.append(route.request.url)
     response = route.fetch()
     route.fulfill(response=response, headers={**response.headers, "content-security-policy": csp})
 
@@ -210,6 +217,83 @@ with sync_playwright() as p:
     assert expected and all(v.startswith("connect-src blocked https://llm.blocked.example") for v in expected), expected
     print("blocked provider, after sending:", bpage.locator("#assistant-status").inner_text())
     blocked_ctx.close()
+
+    # 9. Connect with Otari (runtime d67755e), with otari.ai mocked: the authorize step is a top-level
+    # navigation that the mock answers with a redirect back, and the key exchange is a fetch from the
+    # page, which connect-src must allow. Every other external host is refused, so nothing reaches
+    # the real network.
+    otari_ctx = browser.new_context(viewport={"width": 1280, "height": 900})
+    otari_ctx.grant_permissions(["local-network-access"], origin=ORIGIN)
+    otari = {"authorize": None, "token": None, "refused": []}
+
+    def refuse(route):
+        otari["refused"].append(route.request.url)
+        route.abort()
+
+    def otari_site(route):
+        req = route.request
+        if req.url.startswith("https://otari.ai/api/v1/oauth/apps/authorize"):
+            otari["authorize"] = req.url
+            q = parse_qs(urlparse(req.url).query)
+            back = f"{q['redirect_uri'][0]}?code=test-code&state={q['state'][0]}&iss=https%3A%2F%2Fotari.ai"
+            # Not a 302: Playwright does not route the request after a redirect it fulfilled, so the
+            # page would come back without the CSP. A refresh makes the return a new, routed load.
+            return route.fulfill(status=200, content_type="text/html",
+                                 body=f'<meta http-equiv="refresh" content="0;url={html.escape(back)}">')
+        if req.url == "https://otari.ai/api/v1/oauth/apps/token" and req.method == "POST":
+            otari["token"] = parse_qs(req.post_data or "")
+            return route.fulfill(status=200, content_type="application/json",
+                                 headers={"access-control-allow-origin": ORIGIN},
+                                 body=json.dumps({"access_token": "otk_test_oja_key"}))
+        refuse(route)
+
+    def otari_api(route):
+        # A model call with the new key: answer like an OpenAI-compatible router, never the real one.
+        route.fulfill(status=200, content_type="application/json",
+                      headers={"access-control-allow-origin": "*", "access-control-allow-headers": "*"},
+                      body=json.dumps({"data": [{"id": "alibaba/qwen3.8-flash"}]}))
+
+    otari_ctx.route("https://**", refuse)
+    otari_ctx.route("https://otari.ai/**", otari_site)
+    otari_ctx.route("https://api.otari.ai/**", otari_api)
+    otari_ctx.route(f"{ORIGIN}/**", with_csp)
+    opage = otari_ctx.new_page()
+    opage.on("pageerror", lambda e: errors.append(f"otari page: {e}"))
+    opage.on("console", lambda m: csp_console.append(f"otari: {m.text}") if "Content Security Policy" in m.text else None)
+    opage.add_init_script(CSP_LISTENER)
+    opage.goto(SITE)
+    connect = opage.locator("#ns-connect-otari")
+    expect(connect).to_be_visible(timeout=15000)
+    connect.click()
+    opage.wait_for_function("""() => (localStorage.getItem('nsweb-byok-profiles-v1') || '').includes('otk_test_oja_key')
+      || [...(window.__csp || [])].length > 0""", timeout=15000)
+    print("otari: CSP violations so far:", opage.evaluate("window.__csp || []"))
+    print("otari: authorize", otari["authorize"])
+    print("otari: token exchange", otari["token"])
+    assert otari["authorize"], "the Connect button did not navigate to otari.ai"
+    q = parse_qs(urlparse(otari["authorize"]).query)
+    assert q["client_id"] == [ORIGIN] and q["redirect_uri"] == [f"{ORIGIN}/"], q
+    assert q["response_type"] == ["code"] and q["code_challenge_method"] == ["S256"] and q["state"][0], q
+    assert "code_verifier" not in q, "the PKCE verifier must never be in a URL"
+    assert otari["token"], "the key exchange never reached otari.ai (blocked by connect-src?)"
+    t = otari["token"]
+    assert t["grant_type"] == ["authorization_code"] and t["code"] == ["test-code"] and t["client_id"] == [ORIGIN], t
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(t["code_verifier"][0].encode()).digest()).decode().rstrip("=")
+    assert challenge == q["code_challenge"][0], "the verifier does not match the challenge"
+    returned = [u for u in CSP_SERVED if "code=test-code" in u]
+    assert returned, "the page otari.ai sent the visitor back to was not served with the page CSP"
+    expect(opage.locator("#ns-in-use")).to_contain_text("Otari", timeout=10000)
+    assert "code=" not in opage.url, opage.url
+    print("otari: returned with CSP:", returned[0])
+    print("otari: in use:", opage.locator("#ns-in-use").text_content(), "| refused:", otari["refused"])
+    assert not otari["refused"], otari["refused"]
+    expect(opage.locator("#ns-msgs")).to_contain_text("Connected to Otari", timeout=5000)
+    expect(opage.locator("#assistant-status")).to_contain_text("connected", timeout=5000)
+    opage.evaluate("document.querySelector('details.ns-settings').open = true")
+    opage.locator("#assistant").scroll_into_view_if_needed()
+    opage.screenshot(path=f"{OUT}/9-otari-connected.png", full_page=False)
+    violations += collect_csp(opage, "index (Connect with Otari)")
+    otari_ctx.close()
     browser.close()
 
 violations += [f"console: {m}" for m in csp_console]

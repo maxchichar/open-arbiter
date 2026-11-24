@@ -1,0 +1,10 @@
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self' 'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+console error: Applying inline style violates the following Content Security Policy directive 'style-src-elem 'self' 'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4=''. Either the 'unsafe-inline' keyword, a hash ('sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='), or a nonce ('nonce-...') is required to en
+catalogue: 4 items; assistant: Assistant connected to this page.
+<style> elements: 1; all allowed by hash: False
+Traceback (most recent call last):
+  File "/home/maxchichar/open-arbiter/sites/oja/tests/browser_check.py", line 168, in <module>
+    assert style_hashes_allowed(page), "a live <style> element is not allowed by the policy's hashes"
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+AssertionError: a live <style> element is not allowed by the policy's hashes
+browser_check exit 1

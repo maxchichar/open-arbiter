@@ -67,3 +67,9 @@ test("README and the page state the bounded leak and the AI-provider caveat", ()
   }
   assert.match(readme, /2\.5%/, "README gives the step size");
 });
+
+test("README explains Connect with Otari and why otari.ai is in connect-src (P1.0)", () => {
+  const readme = readFileSync(new URL("../../../README.md", import.meta.url), "utf8");
+  assert.match(readme, /Connect with Otari/);
+  assert.match(readme, /https:\/\/otari\.ai/);
+});

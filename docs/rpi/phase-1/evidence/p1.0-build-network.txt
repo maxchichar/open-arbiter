@@ -1,0 +1,17 @@
+# build_network.mjs from ../agentic-web at d67755e
+Network: oja_market
+Front agent: oja_steward
+Agents: 1
+  - oja_steward: 4601 instruction chars (+1612 CRUSE context added by the runtime); tools: []
+Website tools from actions.agentTools: website_get_market_state, website_negotiate, website_accept_offer, website_verify_receipt
+  On this site's page, an agent gets the ones the page registers as local-only. Called from another site, it gets the ones bridge/bridge-actions.js shares with that site.
+Added to every agent by the runtime: render_cruse
+Bridge: bridge/action-bridge.html (shares the actions in bridge/bridge-actions.js with the callers they list)
+OK: wrote these files:
+  - oja_market.network.json
+  - agent-mcp.json
+  - .well-known/nsdeploy.json
+  - .well-known/nsdeploy-agent.json
+  - bridge/action-bridge.html
+  - bridge/agent-manifest.json
+exit 0
