@@ -6,7 +6,7 @@ An entry in the Open Agentic Web Challenge (Devpost, deadline **11 Jan 2027, 16:
 - `arbiter/`: **Open Arbiter**, shared infrastructure. A Cloudflare Worker + D1 that runs deterministic sealed-bid negotiation (Nash midpoint), anti-probing limits, ECDSA P-256 signed receipts and a hash-chained audit log. REST + MCP (`/mcp`).
 - `sites/oja/`: **Oja**, the first agentic website using it. A static site whose agent network runs in the visitor's browser on their own LLM key.
 
-Target spec: Worldwide Agentic Web MVP spec, Profile 0.3 (18 Nov 2026), in `cognizant-ai-labs/agentic-web`, pinned at commit `c178171d7ef3d0cf5c28208da1263bf954435e70`. Before any change touching the runtime, the manifest or the network format, check upstream for spec or runtime changes since that commit.
+Target spec: Worldwide Agentic Web MVP spec, Profile 0.3 (18 Nov 2026), in `cognizant-ai-labs/agentic-web`, pinned at commit `d67755e762545de983e38a395ec45d89b77c9311` (2026-11-23; the spec text is unchanged since `c178171`). `sites/oja/runtime/` is still the `c178171` copy until P1.0 replaces it, so `diff -rq` against `../agentic-web` differs until then. Before any change touching the runtime, the manifest or the network format, check upstream for spec or runtime changes since the pin.
 
 ## Workflow
 
