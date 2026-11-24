@@ -163,3 +163,27 @@ test("AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step", replayable((
   }
   assert.ok(agreed > 50, `only ${agreed} agreeing sequences`);
 }));
+
+// Review finding R1 (Phase 0 gate, 2026-11-24): the bound above holds for a fixed ask. A seller who
+// re-lists at a new ask, keeping its floor, moves the grid, and deals on both grids intersect to
+// less than one step. Reviewer's example: floor ₦162,000; asks ₦184,000 (step 460,000 kobo) then
+// ₦180,000 (step 450,000); possible floors (16,100,000, 16,200,000], 100,000 kobo wide.
+// TODO until the owner picks a fix (see ADR 0001, caveat 2). A todo test runs and reports but does
+// not fail the suite; remove `todo` when the fix lands.
+test("R1: deals before and after an ask change still leave at least one step of possible floors", { todo: "R1: owner decision pending (ADR 0001 caveat 2)" }, () => {
+  const floor = 16_200_000;
+  const intersect = ([a, b], [c, d]) => [Math.max(a, c), Math.min(b, d)];
+  let range = [1, Infinity];
+  let minStep = Infinity;
+  for (const ask of [18_400_000, 18_000_000]) {
+    minStep = Math.min(minStep, unitStep(ask));
+    for (const max of [floor + 100_000, floor + 500_000, ask]) { // the buyer varies the budget (distinct terms via deadline)
+      const deal = { ask, q: 1, max };
+      const observed = key(floor, deal);
+      range = intersect(range, consistentFloors(deal, observed));
+    }
+  }
+  const width = range[1] - range[0] + 1;
+  assert.ok(range[0] <= floor && floor <= range[1], "the true floor is consistent");
+  assert.ok(width >= minStep, `floors ${range[0]}..${range[1]} (${width}) < one step ${minStep}`);
+});

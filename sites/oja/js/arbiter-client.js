@@ -57,7 +57,8 @@ export class ArbiterClient {
    */
   async #call(method, path, { body, token, binding = false, signal } = {}) {
     const host = new URL(this.baseUrl).host;
-    const unknown = { ok: false, unknown: true, reason: `No answer from the arbiter at ${host}, so the outcome is unknown: it may have gone through. Check the market state before trying again.` };
+    const unknownBecause = (cause) => ({ ok: false, unknown: true, cause, reason: `${cause}, so the outcome is unknown: it may have gone through. Check the market state before trying again.` });
+    const unknown = unknownBecause(`No answer from the arbiter at ${host}`);
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     const onAbort = () => controller.abort();
@@ -78,7 +79,14 @@ export class ArbiterClient {
     }
     let data;
     try { data = await res.json(); } catch { data = null; }
-    if (!res.ok) return { ok: false, reason: data?.message || `The arbiter answered ${res.status}.`, code: data?.error };
+    if (!res.ok) {
+      // On a binding call only the arbiter's own refusal ({error, message}, thrown before anything
+      // commits or rolled back) is definite. A platform error page or the arbiter's catch-all
+      // "internal" can follow a committed write, so the outcome is unknown.
+      const refusal = typeof data?.error === "string" && typeof data?.message === "string" && data.error !== "internal";
+      if (binding && !refusal) return unknownBecause(`The arbiter at ${host} answered ${res.status} without saying whether it went through`);
+      return { ok: false, reason: data?.message || `The arbiter answered ${res.status}.`, code: data?.error };
+    }
     if (data === null) return binding ? unknown : { ok: false, reason: `The arbiter at ${host} sent an unreadable answer.` };
     return { ok: true, data };
   }
@@ -116,7 +124,7 @@ export class ArbiterClient {
       if (!created.unknown) break;
     }
     if (created.unknown) {
-      return { ok: false, unknown: true, reason: `${created.reason.split(":")[0]}. Nothing is lost: asking again with the same terms and maximum picks up the same negotiation without using another attempt.` };
+      return { ok: false, unknown: true, reason: `${created.cause}. Nothing is lost: asking again with the same terms and maximum picks up the same negotiation without using another attempt.` };
     }
     if (!created.ok) {
       this.#pending.delete(key); // refused: nothing was made with this secret
