@@ -1,0 +1,5 @@
+# schema check caching on wrangler dev (workerd), current schema
+1. write on a fresh instance:                       201
+2. index mandates_token_unique dropped under the running Worker
+3. write on the same instance (check cached):       201
+4. Worker restarted (new instance); write:          500

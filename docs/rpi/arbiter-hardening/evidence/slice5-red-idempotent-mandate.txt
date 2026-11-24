@@ -1,0 +1,129 @@
+✖ a client-made secret: only its hash is sent, and the secret then works as the buyer token (23.19556ms)
+✖ a retry with the same secret and terms returns the same mandate: no new row, no new event (7.201653ms)
+✖ the same secret with different terms or a different budget is refused, and writes nothing (7.536149ms)
+✖ the daily cap still holds, and a retry of an existing mandate is not counted against it (7.660785ms)
+✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (8.147089ms)
+✖ concurrent retries with one secret create exactly one mandate (5.065794ms)
+ℹ replay with TEST_SEED=241089438
+✖ a malformed hash is refused (5.266856ms)
+✖ over HTTP: 201 when created, 200 when replayed, never a token in the body (47.147136ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 1
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 224.967431
+
+✖ failing tests:
+
+test at arbiter/test/idempotent-mandate.test.mjs:24:1
+✖ a client-made secret: only its hash is sent, and the secret then works as the buyer token (23.19556ms)
+  AssertionError [ERR_ASSERTION]: the arbiter cannot return a secret it never saw
+  + actual - expected
+  
+  + 'bt_<redacted: in-memory test token>'
+  - undefined
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:28:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'bt_<redacted: in-memory test token>',
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/idempotent-mandate.test.mjs:34:1
+✖ a retry with the same secret and terms returns the same mandate: no new row, no new event (7.201653ms)
+  Error: These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.
+      at Arbiter.createMandate (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:269:15)
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:39:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'identical_terms',
+    status: 409
+  }
+
+test at arbiter/test/idempotent-mandate.test.mjs:52:1
+✖ the same secret with different terms or a different budget is refused, and writes nothing (7.536149ms)
+  AssertionError [ERR_ASSERTION]: {"max_total_cents":17500000}
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:58:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.
+        at Arbiter.createMandate (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:269:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:58:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),
+    expected: { code: 'token_reused', status: 409 },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at arbiter/test/idempotent-mandate.test.mjs:63:1
+✖ the daily cap still holds, and a retry of an existing mandate is not counted against it (7.660785ms)
+  Error: At most 3 negotiations per item per day. This stops repeated bids from mapping a seller's floor.
+      at Arbiter.createMandate (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:274:13)
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:71:17)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'rate_limited',
+    status: 429
+  }
+
+test at arbiter/test/idempotent-mandate.test.mjs:85:1
+✖ concurrent retries with one secret create exactly one mandate (5.065794ms)
+  Error: replay with TEST_SEED=241089438
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: Error: These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.
+        at Arbiter.createMandate (file:///home/maxchichar/open-arbiter/arbiter/src/core.js:269:15)
+        at async Promise.all (index 1)
+        at async file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:88:14
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      code: 'identical_terms',
+      status: 409
+    }
+  }
+
+test at arbiter/test/idempotent-mandate.test.mjs:95:1
+✖ a malformed hash is refused (5.266856ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection: abc
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:98:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'invalid' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at arbiter/test/idempotent-mandate.test.mjs:102:1
+✖ over HTTP: 201 when created, 200 when replayed, never a token in the body (47.147136ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  409 !== 200
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/idempotent-mandate.test.mjs:108:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -20,7 +20,10 @@ CREATE TABLE IF NOT EXISTS listings (
   delivery_hours INTEGER NOT NULL,
   stock INTEGER NOT NULL,
   updated_at INTEGER NOT NULL,
-  PRIMARY KEY (vendor_id, sku)
+  PRIMARY KEY (vendor_id, sku),
+  -- Overselling fails the whole accept batch (core.js maps it to out_of_stock). A constraint, not a
+  -- trigger: no dependence on trigger behaviour in hosted D1, and it ports to PostgreSQL unchanged.
+  CONSTRAINT stock_nonneg CHECK (stock >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS mandates (
@@ -39,6 +42,9 @@ CREATE TABLE IF NOT EXISTS mandates (
   UNIQUE (buyer_key, terms_key)
 );
 CREATE INDEX IF NOT EXISTS mandates_by_buyer ON mandates (buyer_key, sku, created_at);
+-- A buyer's page may make its own secret and send only its hash. A retry with the same hash (the
+-- answer to the first create was lost) must find the existing mandate, never make a second one.
+CREATE UNIQUE INDEX IF NOT EXISTS mandates_token_unique ON mandates (token_hash);
 
 CREATE TABLE IF NOT EXISTS offers (
   id TEXT PRIMARY KEY,
@@ -74,6 +80,10 @@ CREATE TABLE IF NOT EXISTS events (
   hash TEXT NOT NULL,
   created_at INTEGER NOT NULL
 );
+
+-- One child per event: two writers extending the same head conflict here, and the loser retries
+-- with the new head (core.js commit()), so the chain stays linear under concurrent writes.
+CREATE UNIQUE INDEX IF NOT EXISTS events_prev_unique ON events (prev_hash);
 
 -- Used only when no ARBITER_SIGNING_JWK secret is configured (local dev).
 CREATE TABLE IF NOT EXISTS signing_keys (

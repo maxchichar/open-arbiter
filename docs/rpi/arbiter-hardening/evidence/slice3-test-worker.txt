@@ -1,0 +1,33 @@
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"ff4b71ed2808b3e39aa79f9f6707bbc668c210e37ee4978f1f0ad043c680642a"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"3c8a7063cc15ff4e875f7dfdf9c184232d66ff95f33525c178d24171637ae629"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"55a01ee9c0cf34fe0edfe65fb875ae98c9d4e0602ff2173ef136872167933d06"}
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"0c778767c1774b758e218d7e52e79d6298028085f74f4ef3c81c99efd065af1b"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"adf580604f9dda48c33f62c411bae26b641d1aeb9ccb6a8b164ed5b2217d9f7b"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"4c4aa3c69ffe93b38744fe46ee44189168c1f87c05138258a2e88d015530b9e3"}
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"12cbae9ec0b6b0115bb80b70c7c3983d50f0f452035c0024abcb8a9f9186bd41"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"cbaf060d250156efca12b87591e37edd054c221d740cac46cd94daee0e42fca7"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"0fdc111e7638422fdfe2c2caf0d1ff4223e1c98e122efcd80cddaeeced9221eb"}
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---

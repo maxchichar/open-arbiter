@@ -78,5 +78,9 @@
       "accept_offer",
       "verify_receipt"
     ]
+  },
+  "open_arbiter": {
+    "url": "http://localhost:8787",
+    "keys": []
   }
 }

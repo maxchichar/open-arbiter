@@ -1,0 +1,64 @@
+
+> open-arbiter@1.0.0 test
+> node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+
+✔ batch commits every statement together (4.535508ms)
+✔ batch rolls back everything when one statement fails (3.062305ms)
+✔ injected fault aborts a batch at the chosen statement (2.4611ms)
+✔ concurrent writes of every kind keep one linear chain (376.051755ms)
+✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (10.473295ms)
+✔ chain-head conflicts are retried with a fresh head (17.982611ms)
+✔ when retries run out: 503 busy, and the business write is not committed (209.916115ms)
+✔ createVendor: a failed event insert rolls back the business write (4.454565ms)
+✔ upsertListing: a failed event insert rolls back the business write (3.538715ms)
+✔ createMandate: a failed event insert rolls back the business write (3.328347ms)
+✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (5.572897ms)
+✔ the detector finds DEV however it is written, and ignores comments (2.701734ms)
+✔ arbiter/wrangler.toml never defines DEV (1.946136ms)
+✔ midpoint of the zone of agreement (2.821089ms)
+✔ budget above list price is capped at list price (0.490396ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (1.573983ms)
+✔ offers ranked by price, then delivery, then vendor id (0.509543ms)
+✔ vendor filter is respected (0.34426ms)
+✔ listing validation (0.565829ms)
+✔ terms key ignores budget and vendor order (0.294998ms)
+✔ canonical json sorts keys at every level (0.383334ms)
+✔ catalog never exposes floors (28.566946ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (21.297023ms)
+✔ cannot accept twice, with a wrong token, or after expiry (11.059122ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (8.087979ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (9.119568ms)
+✔ tampering with the audit log is detected (3.726129ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (83.845904ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (11.581779ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (11.539931ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (10.230947ms)
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (19.316491ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ a configured signing key works without DEV and is never stored (11.66186ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (2.109355ms)
+✔ negotiate, accept and verify through the page; budget and tokens never in state (119.367439ms)
+✔ page checks refuse bad input before anything is sent (10.764215ms)
+✔ repeat terms are refused with the arbiter's reason (10.368497ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (3.108994ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 756.292733

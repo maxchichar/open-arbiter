@@ -1,0 +1,275 @@
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (2.839248ms)
+✖ AC-F1-6: mechanism identity, and each offer names its step (1.614021ms)
+✖ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.785074ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.297132ms)
+✔ tie between two grid points goes to the buyer (lower) (0.293094ms)
+✖ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (0.931411ms)
+ℹ replay with TEST_SEED=3867239562
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (281.279352ms)
+✖ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (0.855367ms)
+ℹ replay with TEST_SEED=3867239562
+✖ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (13.035536ms)
+ℹ replay with TEST_SEED=3867239562
+✖ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (4.827276ms)
+ℹ replay with TEST_SEED=3867239562
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (7.343193ms)
+✖ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (0.526896ms)
+ℹ replay with TEST_SEED=3867239562
+✖ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (1.536626ms)
+✖ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.453858ms)
+✖ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (0.840389ms)
+ℹ replay with TEST_SEED=3867239562
+ℹ tests 15
+ℹ suites 0
+ℹ pass 5
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 448.7471
+
+✖ failing tests:
+
+test at arbiter/test/mechanism.test.mjs:52:1
+✖ AC-F1-6: mechanism identity, and each offer names its step (1.614021ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '2.0.0' !== '3.0.0'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:54:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2.0.0',
+    expected: '3.0.0',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/mechanism.test.mjs:69:1
+✖ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.785074ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 15750000
+  - 16000000
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:72:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 15750000,
+    expected: 16000000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/mechanism.test.mjs:91:1
+✖ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (0.931411ms)
+  Error: replay with TEST_SEED=3867239562
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      ... 4 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: total 51048125 not a multiple of 1600000 (ask 16335403, q 5)
+    
+    1448125 !== 0
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:99:12
+        at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:11)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: 1448125,
+      expected: 0,
+      operator: 'strictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/mechanism.test.mjs:114:1
+✖ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (0.855367ms)
+  Error: replay with TEST_SEED=3867239562
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      ... 4 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: floors 19347368, 19792071 (cell 31, u 640000, ask 46254094, q 1, max 30533135)
+    + actual - expected
+    
+    + 24283392
+    - 25439744
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:120:12
+        at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:11)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: 24283392,
+      expected: 25439744,
+      operator: 'strictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/mechanism.test.mjs:124:1
+✖ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (13.035536ms)
+  Error: replay with TEST_SEED=3867239562
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      ... 4 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: floors 36753016..37120000 (366985) < unit_step 640000 (ask 37695410, q 4, max 258351674, price 150781600)
+        at file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:134:12
+        at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:11)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: false,
+      expected: true,
+      operator: '==',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/mechanism.test.mjs:158:1
+✖ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (4.827276ms)
+  Error: replay with TEST_SEED=3867239562
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      ... 4 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: floors 44253496..44800000 (546505) < 640000 (ask 45388219, floor 44645864)
+        at file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:164:12
+        at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:11)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: false,
+      expected: true,
+      operator: '==',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/mechanism.test.mjs:188:1
+✖ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (0.526896ms)
+  Error: replay with TEST_SEED=3867239562
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      ... 4 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: steps 408385 and 302100 do not nest
+    
+    106285 !== 0
+    
+        at file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:192:12
+        at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:11)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: 106285,
+      expected: 0,
+      operator: 'strictEqual',
+      diff: 'simple'
+    }
+  }
+
+test at arbiter/test/mechanism.test.mjs:197:1
+✖ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (1.536626ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /floor_cents must be at most 90000/. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:201:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /floor_cents must be at most 90000/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at arbiter/test/mechanism.test.mjs:208:1
+✖ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.453858ms)
+  AssertionError [ERR_ASSERTION]: floors 16100001..16200000 (100000) < one step 320000
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:220:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at arbiter/test/mechanism.test.mjs:223:1
+✖ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (0.840389ms)
+  Error: replay with TEST_SEED=3867239562
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      ... 4 lines matching cause stack trace ...
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: AssertionError [ERR_ASSERTION]: floors 15664441..15819270 (154830) < smallest step 320000 (asks 21092350,20885930, floor 15734407)
+        at file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:245:12
+        at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:11)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+        at Test.postRun (node:internal/test_runner/test:1542:19)
+        at Test.run (node:internal/test_runner/test:1467:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: false,
+      expected: true,
+      operator: '==',
+      diff: 'simple'
+    }
+  }

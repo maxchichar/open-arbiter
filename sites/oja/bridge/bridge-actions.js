@@ -3,7 +3,7 @@
 // file in a hidden frame on Oja's origin. Only reads of public facts are shared:
 // negotiating and accepting need the visitor on Oja's own page (or the arbiter's MCP).
 import { ArbiterClient } from "../js/arbiter-client.js";
-import { DEFAULT_ARBITER_URL } from "../js/config.js";
+import { DEFAULT_ARBITER_URL, ARBITER_KEYS } from "../js/config.js";
 
 class BridgeActions {
   /** The catalogue is public (the page shows it), so any site may read it. */
@@ -29,7 +29,7 @@ class BridgeActions {
   static verifyAction() {
     return {
       name: "verify_receipt",
-      description: "Check a receipt's signature against the arbiter's published key. Changes nothing.",
+      description: "Check a receipt's signature against the arbiter key pinned in Oja's site. Changes nothing.",
       effect: "read",
       availability: "bridge",
       callerOrigins: BridgeActions.CALLERS,
@@ -42,7 +42,7 @@ class BridgeActions {
   }
 
   static async readState() {
-    const client = new ArbiterClient(DEFAULT_ARBITER_URL);
+    const client = new ArbiterClient(DEFAULT_ARBITER_URL, { pinnedKeys: ARBITER_KEYS });
     const r = await client.catalog();
     if (!r.ok) return r;
     return {
@@ -56,12 +56,12 @@ class BridgeActions {
   }
 
   static async verify({ receipt_id }) {
-    const client = new ArbiterClient(DEFAULT_ARBITER_URL);
+    const client = new ArbiterClient(DEFAULT_ARBITER_URL, { pinnedKeys: ARBITER_KEYS });
     const r = await client.receipt(receipt_id);
     if (!r.ok) return r;
     const v = await client.verify(r);
     if (!v.ok) return v;
-    return { ok: true, receipt_id, valid: v.valid, seller: r.receipt.vendor.name, total: r.receipt.total_cents / 100, item: r.receipt.item.title, quantity: r.receipt.item.quantity };
+    return { ok: true, receipt_id, valid: v.valid, key_source: v.key_source, seller: r.receipt.vendor.name, total: r.receipt.total_cents / 100, item: r.receipt.item.title, quantity: r.receipt.item.quantity };
   }
 }
 

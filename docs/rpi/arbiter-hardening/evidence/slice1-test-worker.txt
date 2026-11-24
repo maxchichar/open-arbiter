@@ -1,0 +1,34 @@
+
+> open-arbiter@1.0.0 test:worker
+> node arbiter/scripts/worker-harness.mjs
+
+harness: worker at http://127.0.0.1:44967, state in /tmp/open-arbiter-harness-qrZXZC
+
+=== seed ===
+Iya Basira Foodstuff: ven_2ytdNVVEx-dwEJ6z (3 sealed listings)
+Chika Provisions: ven_w1WNP2YGgMe2EPKE (2 sealed listings)
+Alhaji Musa Grains: ven_y9bDbDvVSuE58ukh (3 sealed listings)
+Vendor keys written to /tmp/open-arbiter-harness-qrZXZC/seed-keys.json
+
+=== e2e ===
+catalog: 3 rice listings, no floors exposed
+REST offers: Iya Basira Foodstuff ₦169,000 (list ₦184,000, 24h); Chika Provisions ₦172,000 (list ₦178,000, 6h)
+receipt rct_s9wW1-m0uggpuVv7 signed by key ccea1297e036badc; verifies, tampered copy fails
+same terms, new budget -> 409 identical_terms
+MCP offers: Alhaji Musa Grains ₦143,250; Iya Basira Foodstuff ₦145,500
+MCP low bid -> agreement=false: "No seller could meet these terms. Neither side's limits are revealed."
+audit chain intact: 19 events
+E2E OK
+
+=== concurrency ===
+PASS chain intact before: {"ok":true,"events":19,"head":"47708194863bb28670c3aa24b0d8513c99d35a2332e6a92a02a6c85d8c78b33a"}
+FAIL F2 daily cap holds under concurrency: most 201s in a round: 25 (cap 3); rounds [{"201":25},{"201":9,"429":16},{"201":7,"429":18},{"201":13,"429":12},{"201":11,"429":14},{"201":6,"429":19},{"201":10,"429":15},{"201":8,"429":17}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+FAIL F3 audit chain intact after concurrent writes: {"ok":false,"broken_at":23}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+FAIL F4 audit chain intact after accepts: {"ok":false,"broken_at":23}
+CONCURRENCY FAILED: F2 daily cap holds under concurrency; F3 audit chain intact after concurrent writes; F4 audit chain intact after accepts
+
+harness results: {"seed":true,"e2e":true,"concurrency":false}

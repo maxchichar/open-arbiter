@@ -1,0 +1,13 @@
+# red: wrangler.toml copy with [vars] DEV = "1" appended
+✔ the detector finds DEV however it is written, and ignores comments (1.791712ms)
+✖ arbiter/wrangler.toml never defines DEV (2.594878ms)
+✖ failing tests:
+  AssertionError [ERR_ASSERTION]: DEV must come only from .dev.vars, found in wrangler.toml: 18: DEV = "1"
+ℹ fail 1
+ℹ pass 1
+
+# green: real arbiter/wrangler.toml
+✔ the detector finds DEV however it is written, and ignores comments (1.74849ms)
+✔ arbiter/wrangler.toml never defines DEV (1.356882ms)
+ℹ pass 2
+ℹ fail 0

@@ -1,0 +1,5 @@
+# F7 on workerd without DEV (env file: ADMIN_TOKEN, BUYER_SALT only)
+GET /.well-known/jwks.json -> {"error":"misconfigured","message":"Signingkeynotconfigured."}[500]
+POST /v1/receipts/verify -> {"error":"misconfigured","message":"Signingkeynotconfigured."}[500]
+signing_keys rows -> 0
+worker log: Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"

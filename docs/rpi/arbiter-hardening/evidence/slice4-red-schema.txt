@@ -1,0 +1,42 @@
+✔ the stripped schemas really lack the constraint (0.778782ms)
+✖ outdated database (no CHECK stock_nonneg): writes refused with 500 misconfigured, nothing written (9.388517ms)
+✖ outdated database (no UNIQUE events.prev_hash): writes refused with 500 misconfigured, nothing written (2.008477ms)
+✔ current schema: writes work (1.574556ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.325808
+
+✖ failing tests:
+
+test at arbiter/test/schema-guard.test.mjs:18:3
+✖ outdated database (no CHECK stock_nonneg): writes refused with 500 misconfigured, nothing written (9.388517ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/schema-guard.test.mjs:21:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'misconfigured', status: 500 },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at arbiter/test/schema-guard.test.mjs:18:3
+✖ outdated database (no UNIQUE events.prev_hash): writes refused with 500 misconfigured, nothing written (2.008477ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/schema-guard.test.mjs:21:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'misconfigured', status: 500 },
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,40 @@
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (2.551844ms)
+✔ AC-F1-6: mechanism identity, and each offer names its step (0.431906ms)
+✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦157,500 (0.18498ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.172015ms)
+✔ tie between two grid points goes to the buyer (lower) (0.199157ms)
+✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (20.800195ms)
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (202.597695ms)
+✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (4.544682ms)
+✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (34.711917ms)
+✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences) (40.936065ms)
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (6.694848ms)
+⚠ R1: deals before and after an ask change still leave at least one step of possible floors (1.199678ms) # R1: owner decision pending (ADR 0001 caveat 2)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 400.663142
+
+✖ failing tests:
+
+test at arbiter/test/mechanism.test.mjs:173:1
+⚠ R1: deals before and after an ask change still leave at least one step of possible floors (1.199678ms) # R1: owner decision pending (ADR 0001 caveat 2)
+  AssertionError [ERR_ASSERTION]: floors 16100001..16200000 (100000) < one step 450000
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mechanism.test.mjs:188:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

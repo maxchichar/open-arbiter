@@ -1,0 +1,81 @@
+# ADR 0001: Price leakage policy (B2 snap-then-midpoint on a nested per-unit grid)
+
+- **Status:** accepted, 2026-11-23 (owner decision B2, amendments A1 and A2 in `docs/rpi/arbiter-hardening/plan.md`). **Amended 2026-11-24** after review finding R1: nested ₦100 × 2^k steps and valid listings only (mechanism 3.0.0, owner decision).
+- **Task:** P0.5 (F1), slice 5, commit `14aac06`
+- **Code:** `arbiter/src/mechanism.js` (`unitStep`, `maxFloor`, `checkListing`, `resolve`, `MECHANISM` 3.0.0)
+- **Tests:** `arbiter/test/mechanism.test.mjs` (AC-F1-1 to AC-F1-7, R1)
+
+## Context
+
+The arbiter offers the Nash bargaining midpoint of the zone `[lower, upper]`, where `lower = floor × q` and `upper = min(max, ask × q)`. Version 1.0.0 offered the exact midpoint. A buyer who knows `max`, `ask` and `q` and sees one agreed price could solve for the seller's floor exactly: the red run recovered `floors 3164..3164` from one deal (`evidence/slice5-red-mechanism.txt`). The page and README said that limits are never revealed, which was false.
+
+An agreed price always reveals *something* about the zone. Hiding a limit completely would mean refusing to show the price. The aim is a **stated, bounded** leak.
+
+## Decision
+
+Prices are on a per-unit grid, and the zone is snapped to the grid before taking the midpoint (option B2):
+
+```text
+unit_step = 10,000 × 2^k, the largest ≤ round_half_up(2.5% × ask)   kobo per unit
+            (10,000 = ₦100 when 2.5% is below that), so 1.25–2.5% of the list price
+g         = unit_step × q
+L' = ceil(lower / g) × g      U' = floor(upper / g) × g
+L' > U'  → no offer from this listing
+price    = the grid point nearest (L' + U') / 2; a tie goes to the buyer (lower price)
+```
+
+Only **valid listings** are accepted: `floor ≤ maxFloor(ask) = floor(ask / unit_step) × unit_step`, and `ask ≥ ₦100`. The floor's step then lies wholly at or below the ask (no cut-off top step).
+
+`MECHANISM = open-arbiter/nash-midpoint-grid 3.0.0` with `grid_bps 250`, `grid_min_unit_cents 10000`, `grid_rule "pow2"`, `tie: "buyer"`. Every offer and receipt carries `unit_step_cents` and `grid_step_cents`.
+
+**History.** 2.0.0 (2026-11-23) used `unit_step = max(₦100, 2.5% × ask)`. The independent review at the Phase 0 gate (R1) showed that this bound held only for a fixed ask. A seller who re-listed at a new ask kept its floor but moved the grid, and deals on both grids intersected to less than one step: 100,000 kobo of possible floors against a 450,000 step in the reviewer's example. Floors in the cut-off top step were a second hole (R2). Such a listing could never trade, and "no deal even at list price" pinned the floor to less than one step. 3.0.0 closes both.
+
+## The bound
+
+`lo = ceil(floor × q / (unit_step × q)) = ceil(floor / unit_step)`. **The outcome depends on the floor only through which `unit_step` cell it is in, `((k−1)·u, k·u]`, and the cells are the same at every quantity.**
+
+**Across list-price changes:** every step is ₦100 × 2^k, so a cell of a larger step is a union of cells of any smaller step. Each observation is a set of possible floors: an agreed price gives one or two adjacent cells, and a no-deal gives every cell above a threshold. With the valid-listing rule, each such set is a union of whole cells of its own grid, and so of the finest grid used, `u_min`. The intersection of all observations contains the true floor's whole `u_min` cell. **So any sequence of deals and no-deals, at any quantities, budgets and list prices, leaves at least `u_min` possible floors**, where `u_min` is the smallest step the listing used while that floor was sealed.
+
+This follows from the code, and the property tests check it:
+
+| Property | Test |
+| --- | --- |
+| Totals are on the grid and inside `[floor·q, min(max, ask·q)]` | AC-F1-1, 20,000 seeded cases |
+| Two floors in the same cell give the same result, q = 1..12 | AC-F1-4, 3,000 cases |
+| One agreed price leaves ≥ `unit_step` possible floors, and ≥ `g` possible maxima (or every max ≥ list) | AC-F1-3, 2,000 cases |
+| Three deals at q = 1, 2, 3 with independent maxima (prices and no-deals) still leave ≥ `unit_step` possible floors, **also when no deal agreed** | AC-F1-7, 2,000 sequences, plus ask ₦610 where the ₦100 minimum applies |
+| Steps of any two asks nest (each is ₦100 × 2^k) | R1, 5,000 pairs |
+| Deals across 2–4 list prices (same floor, q 1–3, any budgets) leave ≥ the smallest step used | R1, 2,000 sequences (> 300 with a step change), plus the reviewer's example |
+| A floor in the cut-off top step, or an ask under ₦100, is refused by `checkListing` | R1/R2 |
+
+So **any number of deals narrows a floor to no less than one step** (1.25–2.5% of the unit list price, at least ₦100), and across list-price changes to no less than the smallest step used. The buyer's maximum is narrowed only to one `g` per mandate.
+
+## Multi-deal caveat (what the bound does *not* say)
+
+1. **One step is reachable.** The bound is a floor on what is left, not a promise that deals reveal less than that. Enough deals with chosen budgets can pin the floor to its exact cell, one step wide (1.25–2.5% of the list price). The anti-probing limits (3 mandates per item per buyer per day, identical terms once) slow this down but do not prevent it. They key on a salted IP hash, so a prober with many IPs gets more attempts.
+2. **List-price changes cost at most a coarser step.** In 2.0.0 the grid moved with the ask (finding R1). Since 3.0.0 the grids nest, so a change leaves the bound at the smallest step used, never below it. A seller who lowers its list price by enough to halve the step lowers its own bound to that smaller step.
+3. **Floor changes are visible.** If a seller moves its floor into another cell, outcomes before and after differ. That reveals that a change happened and which cells were involved, not the exact values.
+4. **No-agreement outcomes carry information too.** A no-deal says `ceil(floor/u) > hi`, which is a union of whole cells, so the bound includes it. AC-F1-7 counts no-deals and asserts the bound on every sequence.
+5. **Out of scope of this policy:** the arbiter operator sees both limits. The visitor's AI provider sees whatever the visitor types, including a maximum.
+
+## Alternatives considered
+
+| Option | Why not |
+| --- | --- |
+| Exact midpoint (1.0.0) | Reveals the floor exactly from one deal |
+| B1: midpoint, then round to the grid and clamp | Failed the one-step property in 17 of 1,789 agreements near the domain edge (plan D1) |
+| Grid step `g` fixed per total (not per unit) | Cells differ by quantity, so deals at q = 1, 2, 3 intersect to less than a step (plan risk R1). Replaced by A1 |
+| 2.0.0: step = 2.5% of the ask | Grids of different asks do not nest (review R1). Replaced by 3.0.0 |
+| Lock the step per listing until the floor changes | Keeps 2.5%, but a seller who moves its floor and back gets two grids again; needs a schema change |
+| Restate the bound as per-ask | Leaves a hole that a normal repricing opens |
+| Random noise | Breaks invariant 2 (deterministic pricing) and makes receipts non-reproducible |
+| Hide the price | Defeats the product |
+
+## Consequences
+
+- Prices move by up to one step from earlier versions (listed in `evidence/slice5.md` for 2.0.0 and `evidence/gate-review.md` for 3.0.0). A deal whose zone holds no grid point gets no offer, even though the zone is non-empty.
+- The step is smaller than 2.0.0's for most asks (1.25–2.5% instead of 2.5%): finer prices, but the leak bound shrinks with it. For example, ₦90,000 → ₦1,600 instead of ₦2,250.
+- Sellers must set the floor at least one step under the list price. Such listings could never trade anyway. `upsertListing` refuses them with a message naming the highest allowed floor, and asks under ₦100 are refused.
+- Each side gives up at most one step of surplus to rounding, and ties favour the buyer.
+- Receipts issued under 1.0.0 still verify, because each signature covers its own payload, including the mechanism version.
+- CLAUDE.md invariant 1 states this bound, and the property tests must keep passing.

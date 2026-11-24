@@ -1,0 +1,4 @@
+# slice-4 code against the slice-3 schema (commit e63c362), which has no CHECK (stock >= 0)
+FAIL F4 oversell refused as out_of_stock: 200 undefined
+FAIL F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state SETTLED, offer ACCEPTED, stock -1, receipt rct_zqh8bbH2buVEmvVe
+CONCURRENCY FAILED: F4 oversell refused as out_of_stock; F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt

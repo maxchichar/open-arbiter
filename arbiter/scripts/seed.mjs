@@ -48,5 +48,7 @@ for (const v of vendors) {
   }
   console.log(`${v.name}: ${reg.vendor_id} (${v.listings.length} sealed listings)`);
 }
-writeFileSync(new URL("../.seed-keys.json", import.meta.url), JSON.stringify(keys, null, 2));
-console.log("Vendor keys written to .seed-keys.json");
+// SEED_KEYS_OUT lets the test harness keep its throwaway keys out of the repo.
+const out = process.env.SEED_KEYS_OUT || new URL("../.seed-keys.json", import.meta.url);
+writeFileSync(out, JSON.stringify(keys, null, 2));
+console.log(`Vendor keys written to ${process.env.SEED_KEYS_OUT || ".seed-keys.json"}`);

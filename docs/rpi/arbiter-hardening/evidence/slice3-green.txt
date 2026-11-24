@@ -1,0 +1,68 @@
+
+> open-arbiter@1.0.0 test
+> node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+
+✔ batch commits every statement together (6.046352ms)
+✔ batch rolls back everything when one statement fails (3.390505ms)
+✔ injected fault aborts a batch at the chosen statement (3.150762ms)
+✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (190.41197ms)
+✔ 5 concurrent identical terms: one succeeds, four get identical_terms (22.469958ms)
+✔ a refused mandate writes no row and no event (7.987951ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (5.174866ms)
+✔ concurrent writes of every kind keep one linear chain (218.230782ms)
+✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (11.79406ms)
+✔ chain-head conflicts are retried with a fresh head (24.653603ms)
+✔ when retries run out: 503 busy, and the business write is not committed (422.102719ms)
+✔ createVendor: a failed event insert rolls back the business write (4.293701ms)
+✔ upsertListing: a failed event insert rolls back the business write (3.319772ms)
+✔ createMandate: a failed event insert rolls back the business write (3.407056ms)
+✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (5.268963ms)
+✔ the detector finds DEV however it is written, and ignores comments (2.402799ms)
+✔ arbiter/wrangler.toml never defines DEV (2.079338ms)
+✔ midpoint of the zone of agreement (2.683669ms)
+✔ budget above list price is capped at list price (0.418441ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (1.903175ms)
+✔ offers ranked by price, then delivery, then vendor id (0.788409ms)
+✔ vendor filter is respected (0.490437ms)
+✔ listing validation (0.727174ms)
+✔ terms key ignores budget and vendor order (0.433509ms)
+✔ canonical json sorts keys at every level (0.507298ms)
+✔ catalog never exposes floors (32.039687ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (21.673283ms)
+✔ cannot accept twice, with a wrong token, or after expiry (11.70396ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (8.704113ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (9.587111ms)
+✔ tampering with the audit log is detected (5.477758ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (84.77541ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (11.183487ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (10.376372ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (7.5912ms)
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (17.053947ms)
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+✔ a configured signing key works without DEV and is never stored (9.584596ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (2.365729ms)
+✔ negotiate, accept and verify through the page; budget and tokens never in state (112.678923ms)
+✔ page checks refuse bad input before anything is sent (7.600368ms)
+✔ repeat terms are refused with the arbiter's reason (9.895093ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (3.508768ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 832.165355

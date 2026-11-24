@@ -1,0 +1,37 @@
+✔ the stripped schemas really lack the constraint (1.535117ms)
+Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.
+✔ outdated database (no CHECK stock_nonneg): writes refused with 500 misconfigured, nothing written (16.786713ms)
+Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.
+✔ outdated database (no UNIQUE events.prev_hash): writes refused with 500 misconfigured, nothing written (2.849023ms)
+✔ current schema: writes work (3.382567ms)
+✖ schema check: one sqlite_master query per Worker instance, not one per write (49.596349ms)
+Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.
+Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.
+✔ schema check cache is per database: an outdated binding is still refused (9.582727ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.548438
+
+✖ failing tests:
+
+test at arbiter/test/schema-guard.test.mjs:40:1
+✖ schema check: one sqlite_master query per Worker instance, not one per write (49.596349ms)
+  AssertionError [ERR_ASSERTION]: sqlite_master queried 4 times for 4 writes
+  
+  4 !== 1
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/schema-guard.test.mjs:45:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 4,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

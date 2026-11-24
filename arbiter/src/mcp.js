@@ -64,11 +64,12 @@ export function presentOutcome(o) {
     state: o.state,
     agreement: o.agreement,
     message: o.message,
-    mechanism: o.mechanism.name,
+    mechanism: `${o.mechanism.name} ${o.mechanism.version}`,
     offers: o.offers.map((x) => ({
       offer_id: x.offer_id, vendor_id: x.vendor_id, vendor_name: x.vendor_name, vendor_origin: x.vendor_origin,
       item: x.title, unit: x.unit, quantity: x.quantity, currency: x.currency,
       total: toMajor(x.total_cents), list_total: toMajor(x.list_total_cents), saving: toMajor(x.saving_cents),
+      price_step: toMajor(x.grid_step_cents),
       delivery_hours: x.delivery_hours, expires_at: new Date(x.expires_at * 1000).toISOString(), state: x.state,
     })),
     receipt_id: o.receipt_id,
@@ -119,7 +120,7 @@ export async function handleRpc(arb, msg, ctx) {
         protocolVersion: PROTOCOL_VERSION,
         capabilities: { tools: { listChanged: false } },
         serverInfo: { name: "open-arbiter", version: "1.0.0" },
-        instructions: "Deterministic negotiation: sealed buyer maximums and seller minimums, Nash-midpoint prices, signed receipts. Get human approval before accept_offer.",
+        instructions: "Deterministic negotiation: sealed buyer maximums and seller minimums, Nash-midpoint prices on a price step of 100 × 2^k per unit, the largest at most 2.5% of list, signed receipts. Get human approval before accept_offer.",
       });
     case "ping":
       return reply({});

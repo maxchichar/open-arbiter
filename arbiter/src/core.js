@@ -1,6 +1,6 @@
 // Open Arbiter service logic over a D1-compatible database.
 // `db` needs prepare(sql).bind(...).first() / .all() / .run(), as Cloudflare D1 provides.
-import { MECHANISM, LIMITS, checkListing, checkMandate, termsKey, resolve, canonicalJson } from "./mechanism.js";
+import { MECHANISM, LIMITS, checkListing, checkMandate, termsKey, resolve, canonicalJson, unitStep } from "./mechanism.js";
 import { newId, newToken, sha256Hex, generateSigningKey, publicFromPrivate, keyId, signPayload, verifyPayload } from "./crypto.js";
 
 export class ArbiterError extends Error {
@@ -12,17 +12,55 @@ export class ArbiterError extends Error {
 }
 
 const DAY = 86_400;
+// Chain-head contention: 12 attempts; the jittered wait before retry k is up to 4 ms × 2^k, capped at
+// 128 ms, so at most ~0.9 s in total before 503 "busy". 8 attempts uncapped (~0.5 s) let one of 36
+// concurrent writers run out under CPU load (Phase 0 gate review, R4: 6 of 15 full test runs).
+const CHAIN_ATTEMPTS = 12;
+const CHAIN_BACKOFF_MS = 4;
+const CHAIN_BACKOFF_CAP_MS = 128;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const EVENT_COLUMNS = "mandate_id, kind, payload, prev_hash, hash, created_at";
+
+/** D1 wraps SQLite's message ("D1_ERROR: UNIQUE constraint failed: …"); node:sqlite does not. Match both. */
+const sqliteMessage = (e) => `${e?.message ?? ""} ${e?.cause?.message ?? ""}`;
+const isPrevHashConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: events.prev_hash");
+const isTermsConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.buyer_key, mandates.terms_key");
+const isStockCheck = (e) => sqliteMessage(e).includes("CHECK constraint failed: stock_nonneg");
+const isTokenConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.token_hash");
+
+/** The schema objects the write guarantees depend on (checked by ensureSchema). */
+const REQUIRED_SCHEMA = [
+  ["listings CHECK stock_nonneg (accept cannot oversell)", (rows) => /CONSTRAINT stock_nonneg CHECK/.test(rows.find((r) => r.name === "listings")?.sql ?? "")],
+  ["UNIQUE events.prev_hash (linear audit chain)", (rows) => rows.some((r) => r.name === "events_prev_unique")],
+  ["UNIQUE mandates.token_hash (idempotent mandate create)", (rows) => rows.some((r) => r.name === "mandates_token_unique")],
+];
+const SCHEMA_ROWS = "SELECT name, sql FROM sqlite_master WHERE (type = 'table' AND name = 'listings') OR (type = 'index' AND name IN ('events_prev_unique', 'mandates_token_unique'))";
+const HEX64 = /^[0-9a-f]{64}$/;
+/** The price step an offer was made on, from the list total it stored (ask × quantity). */
+const steps = (o) => {
+  const unit = unitStep(o.list_total_cents / o.quantity);
+  return { unit_step_cents: unit, grid_step_cents: unit * o.quantity };
+};
 
 export class Arbiter {
   /**
    * @param db D1Database (or the Node adapter in test/sqlite-d1.mjs)
    * @param opts.clock () => seconds since epoch
-   * @param opts.signingJwk private ECDSA P-256 JWK; when absent one is generated and kept in the db
+   * @param opts.signingJwk private ECDSA P-256 JWK
+   * @param opts.allowGeneratedKey local development only: with no signingJwk, generate a key and
+   *   keep it in the db. Otherwise a missing key fails closed ("misconfigured").
+   * @param opts.random () => [0, 1), jitter for audit-chain retries; tests pass a seeded PRNG
+   * @param opts.schemaVerified a WeakSet shared for the life of the Worker instance: databases whose
+   *   schema was already checked. The Worker passes one module-level set, so the check runs once per
+   *   database binding per instance instead of once per write. Defaults to a per-Arbiter set.
    */
-  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk } = {}) {
+  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false, random = Math.random, schemaVerified = new WeakSet() } = {}) {
     this.db = db;
+    this.schemaVerified = schemaVerified;
     this.clock = clock;
+    this.random = random;
     this._signingJwk = signingJwk || null;
+    this._allowGeneratedKey = allowGeneratedKey === true;
     this._key = null;
   }
 
@@ -34,6 +72,10 @@ export class Arbiter {
   async key() {
     if (this._key) return this._key;
     let priv = this._signingJwk;
+    if (!priv && !this._allowGeneratedKey) {
+      console.error("Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not \"1\"; refusing to sign.");
+      throw new ArbiterError("misconfigured", "Signing key not configured.", 500);
+    }
     if (!priv) {
       const row = await this.q("SELECT private_jwk FROM signing_keys ORDER BY created_at LIMIT 1").first();
       if (row) priv = JSON.parse(row.private_jwk);
@@ -57,15 +99,74 @@ export class Arbiter {
     return { keys: [publicJwk] };
   }
 
-  async event(mandateId, kind, payload) {
-    const last = await this.q("SELECT hash FROM events ORDER BY seq DESC LIMIT 1").first();
-    const prev = last ? last.hash : "genesis";
-    const at = this.clock();
-    const body = canonicalJson({ at, kind, mandate_id: mandateId, payload, prev });
-    const hash = await sha256Hex(body);
-    await this.q("INSERT INTO events (mandate_id, kind, payload, prev_hash, hash, created_at) VALUES (?,?,?,?,?,?)",
-      mandateId, kind, canonicalJson(payload), prev, hash, at).run();
-    return hash;
+  /**
+   * Commit business statements and their audit events in one D1 batch, which is one transaction.
+   *
+   * The events are chained from the current head of the log. `UNIQUE (prev_hash)` lets only one
+   * writer extend a given head; a writer that lost the race retries with a fresh head after a
+   * jittered exponential backoff (so concurrent losers do not collide again in lockstep), and after
+   * CHAIN_ATTEMPTS it fails with 503 "busy". Either everything commits or nothing does.
+   *
+   * Precondition for retrying: every statement of the write must be inside this batch. A retry is
+   * only safe because a failed batch rolls back completely; a write made outside the batch (before
+   * or after commit()) would survive the failed attempt and then be repeated or orphaned.
+   *
+   * @param events [{ mandateId, kind, payload }], written in order after the business statements
+   * @param statements (hashes) => D1 statements (may be async, e.g. to sign a receipt that
+   *   names an event hash). Called again on every attempt.
+   * @param guard optional { sql, args }: a boolean SQL expression; the events are written only if
+   *   it holds when they are inserted. It is evaluated once per event, so it must not depend on the
+   *   events this commit writes (then it holds for all of them or none).
+   * @returns { results: the business statements' results, hashes, written: whether events were written }
+   */
+  async commit({ events, statements = () => [], guard = null }) {
+    await this.ensureSchema();
+    for (let attempt = 0; attempt < CHAIN_ATTEMPTS; attempt++) {
+      const last = await this.q("SELECT hash FROM events ORDER BY seq DESC LIMIT 1").first();
+      let prev = last ? last.hash : "genesis";
+      const at = this.clock();
+      const rows = [];
+      for (const e of events) {
+        const hash = await sha256Hex(canonicalJson({ at, kind: e.kind, mandate_id: e.mandateId, payload: e.payload, prev }));
+        rows.push({ ...e, prev, hash });
+        prev = hash;
+      }
+      const hashes = rows.map((r) => r.hash);
+      const business = await statements(hashes);
+      const inserts = rows.map((r) => {
+        const values = [r.mandateId, r.kind, canonicalJson(r.payload), r.prev, r.hash, at];
+        return guard
+          ? this.q(`INSERT INTO events (${EVENT_COLUMNS}) SELECT ?,?,?,?,?,? WHERE ${guard.sql}`, ...values, ...guard.args)
+          : this.q(`INSERT INTO events (${EVENT_COLUMNS}) VALUES (?,?,?,?,?,?)`, ...values);
+      });
+      try {
+        const results = await this.db.batch([...business, ...inserts]);
+        const eventResults = results.slice(business.length);
+        return { results: results.slice(0, business.length), hashes, written: eventResults.every((r) => r.meta.changes === 1) };
+      } catch (e) {
+        if (!isPrevHashConflict(e)) throw e;
+        // Jitter is not pricing: mechanism.js stays free of randomness and clocks.
+        if (attempt < CHAIN_ATTEMPTS - 1) await sleep(this.random() * Math.min(CHAIN_BACKOFF_MS * 2 ** attempt, CHAIN_BACKOFF_CAP_MS));
+      }
+    }
+    throw new ArbiterError("busy", "The arbiter's audit log is busy. Try again in a moment.", 503);
+  }
+
+  /**
+   * The chain, accept and idempotent-create guarantees are enforced by schema constraints, so a
+   * database created before them would silently fork the chain, oversell or duplicate mandates.
+   * Refuse to write until it is migrated or reset. Checked once per database per Worker instance
+   * (see opts.schemaVerified): a migration is a deploy, which starts new instances.
+   */
+  async ensureSchema() {
+    if (this.schemaVerified.has(this.db)) return;
+    const rows = (await this.q(SCHEMA_ROWS).all()).results;
+    const missing = REQUIRED_SCHEMA.filter(([, ok]) => !ok(rows)).map(([name]) => name);
+    if (missing.length) {
+      console.error(`Open Arbiter: database schema is out of date (missing: ${missing.join("; ")}); refusing to write.`);
+      throw new ArbiterError("misconfigured", "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes.", 500);
+    }
+    this.schemaVerified.add(this.db);
   }
 
   async mandateFor(mandateId, token) {
@@ -87,8 +188,11 @@ export class Arbiter {
     }
     const id = newId("ven");
     const apiKey = newToken("vk");
-    await this.q("INSERT INTO vendors VALUES (?,?,?,?,?)", id, name.trim(), origin || null, await sha256Hex(apiKey), this.clock()).run();
-    await this.event(null, "VENDOR_REGISTERED", { vendor_id: id, name: name.trim(), origin: origin || null });
+    const keyHash = await sha256Hex(apiKey);
+    await this.commit({
+      events: [{ mandateId: null, kind: "VENDOR_REGISTERED", payload: { vendor_id: id, name: name.trim(), origin: origin || null } }],
+      statements: () => [this.q("INSERT INTO vendors VALUES (?,?,?,?,?)", id, name.trim(), origin || null, keyHash, this.clock())],
+    });
     return { vendor_id: id, api_key: apiKey };
   }
 
@@ -114,13 +218,15 @@ export class Arbiter {
     const problems = checkListing(l);
     if (!l.title) problems.push("title is required");
     if (problems.length) throw new ArbiterError("invalid", problems.join("; "));
-    await this.q(
-      `INSERT INTO listings VALUES (?,?,?,?,?,?,?,?,?,?)
-       ON CONFLICT (vendor_id, sku) DO UPDATE SET title=excluded.title, unit=excluded.unit, currency=excluded.currency,
-         ask_cents=excluded.ask_cents, floor_cents=excluded.floor_cents, delivery_hours=excluded.delivery_hours,
-         stock=excluded.stock, updated_at=excluded.updated_at`,
-      vendor.id, l.sku, l.title, l.unit, l.currency, l.ask_cents, l.floor_cents, l.delivery_hours, l.stock, this.clock()).run();
-    await this.event(null, "LISTING_SEALED", { vendor_id: vendor.id, sku: l.sku });
+    await this.commit({
+      events: [{ mandateId: null, kind: "LISTING_SEALED", payload: { vendor_id: vendor.id, sku: l.sku } }],
+      statements: () => [this.q(
+        `INSERT INTO listings VALUES (?,?,?,?,?,?,?,?,?,?)
+         ON CONFLICT (vendor_id, sku) DO UPDATE SET title=excluded.title, unit=excluded.unit, currency=excluded.currency,
+           ask_cents=excluded.ask_cents, floor_cents=excluded.floor_cents, delivery_hours=excluded.delivery_hours,
+           stock=excluded.stock, updated_at=excluded.updated_at`,
+        vendor.id, l.sku, l.title, l.unit, l.currency, l.ask_cents, l.floor_cents, l.delivery_hours, l.stock, this.clock())],
+    });
     const { floor_cents, ...pub } = l;
     return { vendor_id: vendor.id, ...pub };
   }
@@ -145,6 +251,12 @@ export class Arbiter {
   /**
    * Create a mandate. `buyerKey` identifies the caller for anti-probing (the Worker
    * derives it from the client IP); `callerOrigin` records which agentic site asked.
+   *
+   * The buyer secret: either the caller makes it and sends only its SHA-256 (`buyer_token_hash`,
+   * 64 lowercase hex), or the arbiter makes one and returns it once (`buyer_token`). With a
+   * caller-made secret the create is idempotent: the same hash with the same terms and budget
+   * returns the existing mandate (`replayed: true`, nothing written), so a client whose answer was
+   * lost can safely send the same request again. The same hash with anything else is refused.
    */
   async createMandate(input, { buyerKey, callerOrigin = null }) {
     const m = {
@@ -155,30 +267,72 @@ export class Arbiter {
       ...(input.vendor_ids ? { vendor_ids: input.vendor_ids } : {}),
     };
     const problems = checkMandate(m);
+    const clientHash = input.buyer_token_hash;
+    if (clientHash !== undefined && (typeof clientHash !== "string" || !HEX64.test(clientHash))) {
+      problems.push("buyer_token_hash must be the SHA-256 of your buyer secret, as 64 lowercase hex characters");
+    }
     if (problems.length) throw new ArbiterError("invalid", problems.join("; "));
     if (typeof buyerKey !== "string" || !buyerKey) throw new ArbiterError("invalid", "buyerKey required.", 500);
+    const tk = termsKey(m);
 
+    // A retry of a create whose answer was lost: same secret, same terms and budget.
+    const replay = async () => {
+      if (clientHash === undefined) return null;
+      const row = await this.q("SELECT id, state, terms_key, max_total_cents FROM mandates WHERE token_hash = ?", clientHash).first();
+      if (!row) return null;
+      if (row.terms_key !== tk || row.max_total_cents !== m.max_total_cents) {
+        throw new ArbiterError("token_reused", "This buyer secret already belongs to a negotiation with other terms. Use a new secret for new terms.", 409);
+      }
+      return { mandate_id: row.id, state: row.state, replayed: true };
+    };
+    const earlier = await replay();
+    if (earlier) return earlier;
+
+    // Both anti-probing limits are enforced by the database in one statement, so concurrent requests
+    // cannot slip past a check made earlier: the daily cap by the INSERT's WHERE (0 rows = capped),
+    // identical terms by UNIQUE (buyer_key, terms_key). The cap is checked first, as before.
     const now = this.clock();
-    const recent = await this.q("SELECT COUNT(*) AS n FROM mandates WHERE buyer_key = ? AND sku = ? AND created_at > ?",
-      buyerKey, m.sku, now - DAY).first();
-    if (recent.n >= LIMITS.mandatesPerBuyerPerSkuPerDay) {
+    const id = newId("man");
+    const token = clientHash === undefined ? newToken("bt") : null;
+    const tokenHash = clientHash ?? (await sha256Hex(token));
+    let created;
+    try {
+      created = await this.commit({
+        events: [{ mandateId: id, kind: "MANDATE_CREATED", payload: { sku: m.sku, quantity: m.quantity, deliver_within_hours: m.deliver_within_hours, caller_origin: callerOrigin } }],
+        statements: () => [this.q(
+          `INSERT INTO mandates (id, token_hash, buyer_key, terms_key, sku, quantity, max_total_cents, deliver_within_hours, vendor_ids, caller_origin, state, created_at)
+           SELECT ?,?,?,?,?,?,?,?,?,?,'OPEN',?
+           WHERE (SELECT COUNT(*) FROM mandates WHERE buyer_key = ? AND sku = ? AND created_at > ?) < ?`,
+          id, tokenHash, buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
+          m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, now,
+          buyerKey, m.sku, now - DAY, LIMITS.mandatesPerBuyerPerSkuPerDay)],
+        guard: { sql: "EXISTS (SELECT 1 FROM mandates WHERE id = ?)", args: [id] },
+      });
+    } catch (e) {
+      if (isTokenConflict(e) || isTermsConflict(e)) {
+        const concurrent = await replay(); // a concurrent retry with this secret won the race
+        if (concurrent) return concurrent;
+      }
+      if (isTermsConflict(e)) {
+        throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.", 409);
+      }
+      if (isTokenConflict(e)) throw new ArbiterError("token_reused", "This buyer secret is already in use. Use a new secret.", 409);
+      throw e;
+    }
+    if (created.results[0].meta.changes !== 1) {
+      const concurrent = await replay();
+      if (concurrent) return concurrent;
       throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`, 429);
     }
-    const tk = termsKey(m);
-    const dup = await this.q("SELECT id FROM mandates WHERE buyer_key = ? AND terms_key = ?", buyerKey, tk).first();
-    if (dup) {
-      throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.", 409);
-    }
-    const id = newId("man");
-    const token = newToken("bt");
-    await this.q("INSERT INTO mandates VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-      id, await sha256Hex(token), buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
-      m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, "OPEN", now).run();
-    await this.event(id, "MANDATE_CREATED", { sku: m.sku, quantity: m.quantity, deliver_within_hours: m.deliver_within_hours, caller_origin: callerOrigin });
-    return { mandate_id: id, buyer_token: token, state: "OPEN" };
+    return { mandate_id: id, ...(token ? { buyer_token: token } : {}), state: "OPEN", replayed: false };
   }
 
-  /** Resolve once; later calls return the stored outcome so nothing can be re-run. */
+  /**
+   * Resolve once; later calls return the stored outcome so nothing can be re-run.
+   * Offers, the state change and the event commit in one batch. Every statement is guarded on
+   * the mandate still being OPEN, so of several concurrent resolves exactly one writes anything;
+   * the others return the stored outcome.
+   */
   async resolveMandate(mandateId, token) {
     const m = await this.mandateFor(mandateId, token);
     if (m.state === "OPEN") {
@@ -190,16 +344,23 @@ export class Arbiter {
       };
       const out = resolve(mandate, listings);
       const expires = this.clock() + LIMITS.offerTtlSeconds;
-      let rank = 0;
-      for (const o of out.offers) {
-        await this.q("INSERT INTO offers VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-          newId("off"), m.id, rank++, o.vendor_id, o.sku, o.quantity, o.total_cents, o.list_total_cents, o.delivery_hours, expires, "OPEN").run();
-      }
       const next = out.agreement ? "RESOLVED" : "NO_AGREEMENT";
-      const changed = await this.q("UPDATE mandates SET state = ? WHERE id = ? AND state = 'OPEN'", next, m.id).run();
-      if (!changed.meta.changes) throw new ArbiterError("conflict", "Mandate was resolved concurrently; fetch it again.", 409);
-      await this.event(m.id, next === "RESOLVED" ? "BARGAINING_RESOLVED" : "NO_AGREEMENT", {
-        mechanism: MECHANISM, considered: out.considered, agreements: out.offers.map((o) => o.vendor_id),
+      const kind = next === "RESOLVED" ? "BARGAINING_RESOLVED" : "NO_AGREEMENT";
+      const stillOpen = "EXISTS (SELECT 1 FROM mandates WHERE id = ? AND state = 'OPEN')";
+      await this.commit({
+        events: [{ mandateId: m.id, kind, payload: { mechanism: MECHANISM, considered: out.considered, agreements: out.offers.map((o) => o.vendor_id) } }],
+        statements: () => [
+          ...out.offers.map((o, rank) => this.q(
+            `INSERT INTO offers (id, mandate_id, rank, vendor_id, sku, quantity, total_cents, list_total_cents, delivery_hours, expires_at, state)
+             SELECT ?,?,?,?,?,?,?,?,?,?,'OPEN' WHERE ${stillOpen}`,
+            newId("off"), m.id, rank, o.vendor_id, o.sku, o.quantity, o.total_cents, o.list_total_cents, o.delivery_hours, expires, m.id)),
+          this.q("UPDATE mandates SET state = ? WHERE id = ? AND state = 'OPEN'", next, m.id),
+        ],
+        // Written only by the resolve that moved the mandate out of OPEN in this batch.
+        guard: {
+          sql: "NOT EXISTS (SELECT 1 FROM events WHERE mandate_id = ? AND kind IN ('BARGAINING_RESOLVED', 'NO_AGREEMENT'))",
+          args: [m.id],
+        },
       });
     }
     return this.outcome(m.id);
@@ -225,40 +386,45 @@ export class Arbiter {
       message: m.state === "NO_AGREEMENT"
         ? "No seller could meet these terms. Neither side's limits are revealed."
         : undefined,
-      offers: offers.map((o) => ({ ...o, state: o.state === "OPEN" && o.expires_at <= now ? "EXPIRED" : o.state })),
+      offers: offers.map((o) => ({ ...o, ...steps(o), state: o.state === "OPEN" && o.expires_at <= now ? "EXPIRED" : o.state })),
       receipt_id: receipt ? receipt.id : null,
     };
   }
 
-  /** The buyer accepts one offer. Stock is reserved atomically and a signed receipt is issued. */
+  /**
+   * The buyer accepts one offer: all or nothing.
+   *
+   * The receipt is signed first (it names the OFFER_ACCEPTED event's hash, so per commit attempt),
+   * then one batch makes every change. A batch does not stop at a statement that changes 0 rows, so
+   * each statement carries its own guard and the receipt insert decides:
+   *   1. mandate RESOLVED -> SETTLED, only if this offer is OPEN, unexpired and belongs to it
+   *   2. stock decrement, 3. offer states: only if the mandate is SETTLED and has no receipt yet
+   *      (so a concurrent accept that already committed makes them no-ops)
+   *   4. receipt INSERT ... SELECT ... WHERE the mandate is SETTLED, has no receipt, and this offer
+   *      is the ACCEPTED one; UNIQUE (receipts.mandate_id) is the backstop
+   *   5. both events, only if this receipt row exists
+   * Statements 1-4 share their conditions, so they all change or none do. 0 rows from (4) is an
+   * error. CHECK stock_nonneg (overselling) rolls the batch back and is reported as out_of_stock.
+   */
   async acceptOffer(offerId, token) {
+    await this.key(); // fail closed on a missing signing key before anything is written
     const o = await this.q("SELECT * FROM offers WHERE id = ?", offerId).first();
     if (!o) throw new ArbiterError("not_found", "Unknown offer.", 404);
     const m = await this.mandateFor(o.mandate_id, token);
+    // Early, friendly answers. The batch below re-checks all of these itself.
     if (m.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
     if (o.state !== "OPEN") throw new ArbiterError("offer_closed", "This offer is no longer open.", 409);
     const now = this.clock();
     if (o.expires_at <= now) throw new ArbiterError("offer_expired", "This offer expired; offers last 15 minutes.", 410);
 
-    const settled = await this.q("UPDATE mandates SET state = 'SETTLED' WHERE id = ? AND state = 'RESOLVED'", m.id).run();
-    if (!settled.meta.changes) throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
-    const reserved = await this.q("UPDATE listings SET stock = stock - ? WHERE vendor_id = ? AND sku = ? AND stock >= ?",
-      o.quantity, o.vendor_id, o.sku, o.quantity).run();
-    if (!reserved.meta.changes) {
-      await this.q("UPDATE mandates SET state = 'RESOLVED' WHERE id = ?", m.id).run();
-      await this.q("UPDATE offers SET state = 'VOID' WHERE id = ?", o.id).run();
-      throw new ArbiterError("out_of_stock", "The seller no longer has enough stock; choose another offer.", 409);
-    }
-    await this.q("UPDATE offers SET state = CASE WHEN id = ? THEN 'ACCEPTED' ELSE 'VOID' END WHERE mandate_id = ?", o.id, m.id).run();
-
     const vendor = await this.q("SELECT id, name, origin FROM vendors WHERE id = ?", o.vendor_id).first();
     const listing = await this.q("SELECT title, unit, currency FROM listings WHERE vendor_id = ? AND sku = ?", o.vendor_id, o.sku).first();
-    const eventHash = await this.event(m.id, "OFFER_ACCEPTED", { offer_id: o.id, vendor_id: o.vendor_id, total_cents: o.total_cents });
     const { privateJwk, kid } = await this.key();
-    const payload = {
+    const receiptId = newId("rct");
+    const receipt = (auditHash) => ({
       type: "open-arbiter/receipt",
       version: 1,
-      receipt_id: newId("rct"),
+      receipt_id: receiptId,
       mandate_id: m.id,
       offer_id: o.id,
       issued_at: now,
@@ -268,14 +434,53 @@ export class Arbiter {
       currency: listing?.currency ?? "NGN",
       total_cents: o.total_cents,
       list_total_cents: o.list_total_cents,
+      ...steps(o),
       delivery_hours: o.delivery_hours,
       caller_origin: m.caller_origin,
-      audit_hash: eventHash,
+      audit_hash: auditHash,
       settlement: "simulated",
-    };
-    const signature = await signPayload(privateJwk, payload);
-    await this.q("INSERT INTO receipts VALUES (?,?,?,?,?,?)", payload.receipt_id, m.id, canonicalJson(payload), signature, kid, now).run();
-    await this.event(m.id, "RECEIPT_ISSUED", { receipt_id: payload.receipt_id });
+    });
+    const settledByUs = "EXISTS (SELECT 1 FROM mandates WHERE id = ? AND state = 'SETTLED') AND NOT EXISTS (SELECT 1 FROM receipts WHERE mandate_id = ?)";
+
+    let payload, signature, done;
+    try {
+      done = await this.commit({
+        events: [
+          { mandateId: m.id, kind: "OFFER_ACCEPTED", payload: { offer_id: o.id, vendor_id: o.vendor_id, total_cents: o.total_cents } },
+          { mandateId: m.id, kind: "RECEIPT_ISSUED", payload: { receipt_id: receiptId } },
+        ],
+        statements: async ([acceptedHash]) => {
+          payload = receipt(acceptedHash);
+          signature = await signPayload(privateJwk, payload); // signed before anything is written
+          return [
+            this.q(`UPDATE mandates SET state = 'SETTLED' WHERE id = ? AND state = 'RESOLVED'
+                    AND EXISTS (SELECT 1 FROM offers WHERE id = ? AND mandate_id = ? AND state = 'OPEN' AND expires_at > ?)`,
+              m.id, o.id, m.id, now),
+            this.q(`UPDATE listings SET stock = stock - ? WHERE vendor_id = ? AND sku = ? AND ${settledByUs}`,
+              o.quantity, o.vendor_id, o.sku, m.id, m.id),
+            this.q(`UPDATE offers SET state = CASE WHEN id = ? THEN 'ACCEPTED' ELSE 'VOID' END WHERE mandate_id = ? AND ${settledByUs}`,
+              o.id, m.id, m.id, m.id),
+            this.q(`INSERT INTO receipts (id, mandate_id, payload, signature, key_id, created_at)
+                    SELECT ?,?,?,?,?,? WHERE ${settledByUs} AND EXISTS (SELECT 1 FROM offers WHERE id = ? AND state = 'ACCEPTED')`,
+              receiptId, m.id, canonicalJson(payload), signature, kid, now, m.id, m.id, o.id),
+          ];
+        },
+        guard: { sql: "EXISTS (SELECT 1 FROM receipts WHERE id = ?)", args: [receiptId] },
+      });
+    } catch (e) {
+      if (isStockCheck(e)) {
+        // Nothing of the accept was committed. Close only this offer; the mandate stays RESOLVED.
+        await this.q("UPDATE offers SET state = 'VOID' WHERE id = ? AND state = 'OPEN'", o.id).run();
+        throw new ArbiterError("out_of_stock", "The seller no longer has enough stock; choose another offer.", 409);
+      }
+      throw e;
+    }
+    if (done.results[3].meta.changes !== 1) {
+      // Nothing was written. Say why, from the state that won.
+      const cur = await this.q("SELECT state FROM mandates WHERE id = ?", m.id).first();
+      if (cur.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
+      throw new ArbiterError("offer_closed", "This offer can no longer be accepted; nothing changed.", 409);
+    }
     return { receipt: payload, signature, key_id: kid };
   }
 

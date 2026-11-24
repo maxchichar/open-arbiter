@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oja: fair-price market, settled by an open arbiter</title>
-  <meta name="description" content="Buy foodstuff from Lagos market sellers at a fair price. You and the seller each seal a limit; a deterministic open arbiter finds the deal or says no, without revealing either.">
+  <meta name="description" content="Buy foodstuff from Lagos market sellers at a fair price. You and the seller each seal a limit; a deterministic open arbiter finds a fair price on a fixed price step, or says no deal.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assistant.css">
@@ -27,11 +27,11 @@
   <main>
     <section class="hero wrap">
       <h1>Haggle without the stress. <span>Get the fair price.</span></h1>
-      <p class="lead">You seal the most you will pay. Each seller has sealed the least they will take. An open arbiter, plain code rather than an AI, offers the midpoint of where you overlap, or says no deal, without revealing either side's number.</p>
+      <p class="lead">You seal the most you will pay. Each seller has sealed the least they will take. An open arbiter, plain code rather than an AI, offers the midpoint of where you overlap, on a price step of 1.25–2.5% of the list price, or says no deal. Neither number is ever shown; an agreed price only tells each side which step the other's limit is in.</p>
       <ol class="steps">
         <li><strong>Seal your maximum</strong><span>Pick an item, a quantity and how fast you need it.</span></li>
         <li><strong>The arbiter matches</strong><span>Every seller is checked at once. You see ranked offers and your saving.</span></li>
-        <li><strong>Accept and keep a signed receipt</strong><span>Your browser checks the arbiter's signature itself.</span></li>
+        <li><strong>Accept and keep a signed receipt</strong><span>Your browser checks it against the arbiter key pinned in this site.</span></li>
       </ol>
     </section>
 
@@ -67,7 +67,7 @@
     <section id="assistant" class="assistant wrap" aria-labelledby="assistant-heading">
       <h2 id="assistant-heading">Ask Oja</h2>
       <p>Tell Oja what you need, such as "two bags of rice by tomorrow, no more than ₦170,000". It reads the market, seals your bid with the arbiter after you approve, and accepts an offer only when you confirm.</p>
-      <p class="assistant-note">Your messages and this page's data go to the AI provider you choose in the settings below, on your own key. Your maximum goes only to the arbiter. You confirm every bid and every purchase.</p>
+      <p class="assistant-note">Your messages and this page's data go to the AI provider you choose in the settings below, on your own key, so the AI provider sees any maximum you type in the chat. Sellers never see it. You confirm every bid and every purchase.</p>
       <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
       <div id="agent-app">
         <div data-ns-slot="header"></div>
@@ -84,10 +84,10 @@
         <h2 id="trust-h">Why you can trust the price</h2>
         <ul class="ticks">
           <li>The arbiter at <code id="arbiter-host">…</code> is open-source deterministic code. Same inputs, same price, every time.</li>
-          <li>Price = midpoint between the seller's sealed floor and the lower of your maximum and the list price.</li>
-          <li>Neither limit is ever returned, logged in public, or shown to the AI.</li>
+          <li>Price = midpoint between the seller's sealed floor and the lower of your maximum and the list price, on a price step of ₦100, ₦200, ₦400 … per unit: the largest that is at most 2.5% of the list price.</li>
+          <li>Neither limit is ever returned or logged in public. An agreed price narrows each limit to one price step, however many deals are made; "no deal" says only that there was no overlap. Your AI provider sees what you tell the assistant.</li>
           <li>Rebidding the same terms with a new maximum is refused, so no one can map a seller's floor.</li>
-          <li>Every step is written to a hash-chained audit log, and receipts are signed with ECDSA P-256 (<a id="jwks-link" href="#">public key</a>).</li>
+          <li>Every step is written to a hash-chained audit log, and receipts are signed with ECDSA P-256 and checked against the key pinned in this site (<a id="jwks-link" href="#">arbiter's published key</a>).</li>
           <li>Other agents can use it too, over MCP at <code id="mcp-url">…</code>, or by calling this site's network.</li>
         </ul>
       </div>

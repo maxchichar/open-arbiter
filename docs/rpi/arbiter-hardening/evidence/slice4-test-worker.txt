@@ -1,0 +1,39 @@
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"79259745175f9e747f8dc6ef04b83f920b88d8d8defe5caaaef575ebcbc1c1f2"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"539f73ab42b30e4cc9e71cbc09082f129a395cf2d5e09a2607c8bca7c8f708b5"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"0fb4050985bedeff4cb7462464cf44c5136aa818d3d9475cd35c236be47581fb"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"75c625871711383ace0ae6ff113bb5ada8269a5a47f415b121e8bfbd5b6f0fe1"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"c26fdecc63f14e4c79bb7471cbe949872e051417873d08f5f7ddce6489831627"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"a6253f84b50bca92aeba0827d702b7dd4bb2f6f3204ef77879dc5b5987ce899a"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"7ec6afa7b0033db0b95762975440369e2427c19061a94ff04680fbbc1e5e820b"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"d90e892866b4163521597c293fddd2e08ffb4ba3397d9c6b2788aed460b53f16"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"dff5f8237f4b761e69844f4f1101f214b737da6a7a6666ceb82ebf791038a521"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
