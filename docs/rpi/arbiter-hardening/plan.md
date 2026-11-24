@@ -39,6 +39,7 @@ The owner's production plan numbers Phase 0 tasks P0.0 to P0.10 (mapping confirm
 | P0.9 | Update the CLAUDE.md invariants (3: cap, identical terms, retry with the same secret; new: schema guard, client-made buyer secret, pinned key set with kid, strict CSP) and this plan | Phase 0 gate | done (2026-11-24) |
 | P0.10 | Negotiate survives a lost answer: the client makes the buyer secret and sends only its hash; a retry with the same secret and terms returns the existing mandate; the daily cap holds. **Added by the owner 2026-11-23.** | 5 | done |
 | (extra) | Schema check (`ensureSchema`, slice 4) cached per database per Worker instance | 5 | done |
+| Gate | Phase 0 gate: three ADRs (`docs/decisions/`); independent review triaged (`evidence/gate-review.md`): R3 fixed (binding 5xx is unknown), R1+R2 fixed (mechanism 3.0.0, nested grid, owner decision), R4 flake fixed (retry budget); the rest recorded. Final runs: `npm test` 3 × 126/126, `test:worker` 3 × 12 PASS / 0 FAIL, `browser_check.py` 3 × OK with 0 CSP violations (`evidence/gate-final-*.txt`) | 2026-11-24 | done, tagged `v0.0` |
 
 ## 1. Objective and boundaries
 

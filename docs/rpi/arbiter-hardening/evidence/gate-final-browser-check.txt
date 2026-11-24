@@ -1,0 +1,51 @@
+=== browser_check run 1 (175b4d1)
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self' 'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+catalogue: 4 items; assistant: Assistant connected to this page.
+manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 12:39:54 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 12:39:54 PM Accept
+manual receipt: rct_ywCuiuHhdyvlSwOU | badge: Signature verified (dev key, not pinned)
+agent offers: SELLER	TOTAL	SAVING Iya Basira Foodstuff	₦166,400	₦17,600 Chika Provisions	₦169,600	₦8,400  Which one would you like?
+agent: Done. Receipt rct_Cc3Vow-CZTzUKqae; the arbiter's signature was checked in your browser.
+<style> elements: 1; all allowed by hash: True
+CSP violations on index (after the full flow): 0
+CSP violations on index (phone): 0
+CSP violations on vendor: 0
+blocked provider, before sending: ⚠ This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+blocked provider, violations (expected): ['connect-src blocked https://llm.blocked.example/agent-manifest.json at http://127.0.0.1:8080/runtime/engine.js:44', 'connect-src blocked https://llm.blocked.example/v1/models at http://127.0.0.1:8080/runtime/ui.js:1241', 'connect-src blocked https://llm.blocked.example/v1/chat/completions at http://127.0.0.1:8080/runtime/llm.js:123']
+blocked provider, after sending: This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+CSP violations in total: 0
+BROWSER CHECK OK
+browser_check exit 0
+=== browser_check run 2 (175b4d1)
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self' 'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+catalogue: 4 items; assistant: Assistant connected to this page.
+manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 12:40:04 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 12:40:04 PM Accept
+manual receipt: rct_li6PIAaW0Dexm3_U | badge: Signature verified (dev key, not pinned)
+agent offers: SELLER	TOTAL	SAVING Iya Basira Foodstuff	₦166,400	₦17,600 Chika Provisions	₦169,600	₦8,400  Which one would you like?
+agent: Done. Receipt rct_6qmh6m_Xms7HyPgW; the arbiter's signature was checked in your browser.
+<style> elements: 1; all allowed by hash: True
+CSP violations on index (after the full flow): 0
+CSP violations on index (phone): 0
+CSP violations on vendor: 0
+blocked provider, before sending: ⚠ This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+blocked provider, violations (expected): ['connect-src blocked https://llm.blocked.example/agent-manifest.json at http://127.0.0.1:8080/runtime/engine.js:44', 'connect-src blocked https://llm.blocked.example/v1/models at http://127.0.0.1:8080/runtime/ui.js:1241', 'connect-src blocked https://llm.blocked.example/v1/chat/completions at http://127.0.0.1:8080/runtime/llm.js:123']
+blocked provider, after sending: This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+CSP violations in total: 0
+BROWSER CHECK OK
+browser_check exit 0
+=== browser_check run 3 (175b4d1)
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self' 'sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+catalogue: 4 items; assistant: Assistant connected to this page.
+manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 12:40:15 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 12:40:15 PM Accept
+manual receipt: rct_5C__DUMqLmo1JZy- | badge: Signature verified (dev key, not pinned)
+agent offers: SELLER	TOTAL	SAVING Iya Basira Foodstuff	₦166,400	₦17,600 Chika Provisions	₦169,600	₦8,400  Which one would you like?
+agent: Done. Receipt rct_tcUQacCmGB4KQ6N4; the arbiter's signature was checked in your browser.
+<style> elements: 1; all allowed by hash: True
+CSP violations on index (after the full flow): 0
+CSP violations on index (phone): 0
+CSP violations on vendor: 0
+blocked provider, before sending: ⚠ This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+blocked provider, violations (expected): ['connect-src blocked https://llm.blocked.example/agent-manifest.json at http://127.0.0.1:8080/runtime/engine.js:44', 'connect-src blocked https://llm.blocked.example/v1/models at http://127.0.0.1:8080/runtime/ui.js:1241', 'connect-src blocked https://llm.blocked.example/v1/chat/completions at http://127.0.0.1:8080/runtime/llm.js:123']
+blocked provider, after sending: This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+CSP violations in total: 0
+BROWSER CHECK OK
+browser_check exit 0
