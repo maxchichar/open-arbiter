@@ -37,6 +37,10 @@ function callerOrigin(req) {
   try { return new URL(o).origin; } catch { return null; }
 }
 
+// Databases whose schema this Worker instance has checked (Arbiter.ensureSchema), so the check
+// costs one query per database binding per instance, not one per write.
+const schemaVerified = new WeakSet();
+
 export default {
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
@@ -45,6 +49,7 @@ export default {
     const arb = new Arbiter(env.DB, {
       signingJwk: env.ARBITER_SIGNING_JWK ? JSON.parse(env.ARBITER_SIGNING_JWK) : undefined,
       allowGeneratedKey: env.DEV === "1", // only local development may generate a key
+      schemaVerified,
     });
     try {
       // ---- discovery ----
@@ -101,7 +106,8 @@ export default {
       // ---- buyers (Bearer bt_...) ----
       if (req.method === "POST" && path === "/v1/mandates") {
         const b = await body(req);
-        return json(await arb.createMandate(b, { buyerKey: await buyerKey(req, env), callerOrigin: callerOrigin(req) }), 201);
+        const made = await arb.createMandate(b, { buyerKey: await buyerKey(req, env), callerOrigin: callerOrigin(req) });
+        return json(made, made.replayed ? 200 : 201);
       }
       if ((m = path.match(/^\/v1\/mandates\/(man_[\w-]+)(\/resolve|\/audit)?$/))) {
         const token = bearer(req);

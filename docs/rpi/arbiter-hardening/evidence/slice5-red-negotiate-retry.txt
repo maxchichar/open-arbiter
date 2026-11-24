@@ -1,0 +1,101 @@
+✖ one lost answer (network-error): the client retries with the same secret and gets the same mandate (91.842975ms)
+✖ one lost answer (hang): the client retries with the same secret and gets the same mandate (159.946727ms)
+✖ only the hash of the secret is sent; the secret is not in the page state (13.924635ms)
+✖ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (7.101482ms)
+✖ a new budget for the same terms is a new secret, and is refused as identical terms (8.68414ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 395.77847
+
+✖ failing tests:
+
+test at sites/oja/tests/negotiate-retry.test.mjs:36:3
+✖ one lost answer (network-error): the client retries with the same secret and gets the same mandate (91.842975ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"reason":"The arbiter at arb.test could not be reached."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/negotiate-retry.test.mjs:39:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/negotiate-retry.test.mjs:36:3
+✖ one lost answer (hang): the client retries with the same secret and gets the same mandate (159.946727ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"reason":"The arbiter at arb.test could not be reached."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/negotiate-retry.test.mjs:39:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/negotiate-retry.test.mjs:47:1
+✖ only the hash of the secret is sent; the secret is not in the page state (13.924635ms)
+  AssertionError [ERR_ASSERTION]: The "string" argument must be of type string. Received type undefined (undefined)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/negotiate-retry.test.mjs:51:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /^[0-9a-f]{64}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/negotiate-retry.test.mjs:56:1
+✖ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (7.101482ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"reason":"The arbiter at arb.test could not be reached."}
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/negotiate-retry.test.mjs:60:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/negotiate-retry.test.mjs:69:1
+✖ a new budget for the same terms is a new secret, and is refused as identical terms (8.68414ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'identical_terms'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/negotiate-retry.test.mjs:74:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'identical_terms',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

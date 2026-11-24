@@ -1,0 +1,183 @@
+✖ AC-F5-1: ?arbiter= is ignored on a non-loopback page (1.629961ms)
+✖ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (0.325525ms)
+✖ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (58.317389ms)
+✖ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (7.460863ms)
+✖ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (8.467226ms)
+✖ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (7.074032ms)
+✖ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (6.616708ms)
+✖ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (0.35402ms)
+✖ the tripwire itself: a public URL with no keys is refused (0.264931ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 0
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 155.914699
+
+✖ failing tests:
+
+test at sites/oja/tests/pinned-key.test.mjs:22:1
+✖ AC-F5-1: ?arbiter= is ignored on a non-loopback page (1.629961ms)
+  AssertionError [ERR_ASSERTION]: https://oja.example/?arbiter=https://evil.example
+  + actual - expected
+  
+  + 'https://evil.example'
+  - 'http://localhost:8787'
+         ^
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:25:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'https://evil.example',
+    expected: 'http://localhost:8787',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:30:1
+✖ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (0.325525ms)
+  AssertionError [ERR_ASSERTION]: http://localhost:8080/?arbiter=http://127.0.0.1:8787
+  + actual - expected
+  
+  + 'http://localhost:8787'
+  - 'http://127.0.0.1:8787'
+            ^
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:34:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'http://localhost:8787',
+    expected: 'http://127.0.0.1:8787',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:63:1
+✖ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (58.317389ms)
+  AssertionError [ERR_ASSERTION]: a receipt signed by an unpinned key must not verify
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:69:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:73:1
+✖ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (7.460863ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'pinned key'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:79:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'pinned key',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:83:1
+✖ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (8.467226ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:88:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:91:1
+✖ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (7.074032ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:94:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:98:1
+✖ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (6.616708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'dev JWKS (unpinned)'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:102:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'dev JWKS (unpinned)',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:106:1
+✖ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (0.35402ms)
+  AssertionError [ERR_ASSERTION]: config.js exports ARBITER_KEYS
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:108:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/pinned-key.test.mjs:116:1
+✖ the tripwire itself: a public URL with no keys is refused (0.264931ms)
+  TypeError: config.isLoopback is not a function
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/pinned-key.test.mjs:117:23)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

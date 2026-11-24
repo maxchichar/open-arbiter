@@ -6,14 +6,23 @@ import { Market } from "../js/market.js";
 import { ArbiterClient } from "../js/arbiter-client.js";
 import worker from "../../../arbiter/src/index.js";
 import { memoryD1 } from "../../../arbiter/test/sqlite-d1.mjs";
+import { generateSigningKey, keyId } from "../../../arbiter/src/crypto.js";
+
+async function signingKey() {
+  const { privateJwk, publicJwk } = await generateSigningKey();
+  return { privateJwk, pub: { kid: await keyId(publicJwk), kty: publicJwk.kty, crv: publicJwk.crv, x: publicJwk.x, y: publicJwk.y } };
+}
 import { registerActions } from "../site-actions.js";
 
 async function setup() {
-  const env = { DB: memoryD1(), ADMIN_TOKEN: "admin", DEV: "1" };
+  // A deployed arbiter's receipts verify only against a key pinned in the page (F6), so this test
+  // arbiter has a fixed signing key and the client pins its public half.
+  const { privateJwk, pub } = await signingKey();
+  const env = { DB: memoryD1(), ADMIN_TOKEN: "admin", ARBITER_SIGNING_JWK: JSON.stringify(privateJwk) };
   const fetchImpl = (url, init = {}) => worker.fetch(new Request(url, init), env);
   const reg = await (await fetchImpl("https://arb.test/v1/vendors", { method: "POST", headers: { authorization: "Bearer admin", "content-type": "application/json" }, body: JSON.stringify({ name: "Iya Basira Foodstuff", origin: "https://iya.test" }) })).json();
   await fetchImpl("https://arb.test/v1/listings", { method: "PUT", headers: { authorization: `Bearer ${reg.api_key}`, "content-type": "application/json" }, body: JSON.stringify({ sku: "rice-50kg", title: "Rice, 50 kg bag", unit: "bag", ask_cents: 9_200_000, floor_cents: 8_100_000, delivery_hours: 24, stock: 3 }) });
-  const m = new Market(new ArbiterClient("https://arb.test", { fetchImpl }));
+  const m = new Market(new ArbiterClient("https://arb.test", { fetchImpl, pinnedKeys: [pub] }));
   await m.refreshCatalog();
   return m;
 }
@@ -22,7 +31,9 @@ test("negotiate, accept and verify through the page; budget and tokens never in 
   const m = await setup();
   const neg = await m.negotiate({ sku: "rice-50kg", quantity: 2, max_total: 171_717, deliver_within_hours: 48 });
   assert.equal(neg.ok, true);
-  assert.equal(neg.offers[0].total, 166_858.5); // midpoint of 162,000 floor and 171,717 max
+  // floor 162,000 and max 171,717 on a ₦4,600 step (2.5% of ₦92,000 × 2): 36 steps = ₦165,600
+  // (mechanism 1.0.0 gave the raw midpoint, ₦166,858.50)
+  assert.equal(neg.offers[0].total, 165_600);
   const acc = await m.acceptOffer({ offer_id: neg.offers[0].offer_id });
   assert.equal(acc.ok, true);
   assert.equal(acc.signature_verified_in_browser, true);

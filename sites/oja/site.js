@@ -24,7 +24,7 @@ export class AssistantMount {
   static DIALOGS = {
     "negotiate": {
       title: "Send this sealed bid to the arbiter?",
-      sentence: "Your maximum goes only to the arbiter; sellers never see it. These exact terms can be negotiated once.",
+      sentence: "Your maximum is sealed with the arbiter; sellers never see it. These exact terms can be negotiated once.",
       confirm: "Seal and negotiate",
       decline: "Don't send",
     },
@@ -66,6 +66,9 @@ export class AssistantMount {
       if (!needsKey) {
         AssistantMount.greet();
       }
+      // The page CSP blocks a custom Provider URL; say so in the settings panel.
+      const { guardProviderUrl } = await import("./js/provider-guard.js");
+      guardProviderUrl(document);
       return booted.engine;
     } catch (error) {
       // The page must keep working without the assistant.

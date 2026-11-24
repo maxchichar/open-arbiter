@@ -1,9 +1,10 @@
 // Oja market page: state and operations. The page's own buttons and the assistant's
 // website_* tools call the same methods, so both follow one set of rules.
 import { ArbiterClient } from "./arbiter-client.js";
-import { arbiterUrl } from "./config.js";
+import { arbiterUrl, ARBITER_KEYS } from "./config.js";
 
 export const naira = (n) => `₦${Number(n).toLocaleString("en-NG", { maximumFractionDigits: 2 })}`;
+const KEY_SOURCES = { pinned: "pinned key", "dev-jwks": "dev JWKS (unpinned)", none: "no pinned key" };
 const hours = (h) => (h < 24 ? `${h} h` : h % 24 === 0 ? `${h / 24} day${h === 24 ? "" : "s"}` : `${h} h`);
 
 export class Market {
@@ -64,7 +65,7 @@ export class Market {
         const r = await this.client.receipt(n.outcome.receipt_id);
         if (!r.ok) continue;
         const v = await this.client.verify(r);
-        this.receipts.unshift({ receipt: r.receipt, signature: r.signature, key_id: r.key_id, verified: v.ok && v.valid });
+        this.receipts.unshift({ receipt: r.receipt, signature: r.signature, key_id: r.key_id, verified: v.ok && v.valid, key_source: v.key_source });
       }
       for (const o of marked) this.unknownOffers.delete(o.offer_id);
     }
@@ -74,7 +75,7 @@ export class Market {
   getState() {
     return {
       arbiter: this.client.baseUrl,
-      how_prices_work: "Each seller has sealed a lowest price; the buyer seals a highest total. The arbiter (deterministic code, not an AI) offers the midpoint of the overlap, capped at list price, or reports no agreement without revealing either limit. Offers last 15 minutes. Each set of terms (item, quantity, deadline, sellers) can be negotiated once, and at most 3 times per item per day.",
+      how_prices_work: "Each seller has sealed a lowest price; the buyer seals a highest total. The arbiter (deterministic code, not an AI) offers the midpoint of the overlap, capped at list price and placed on a price step of 2.5% of the list price (at least ₦100 per unit), or reports no agreement. Neither limit is shown; an agreed price narrows each to one price step. Offers last 15 minutes. Each set of terms (item, quantity, deadline, sellers) can be negotiated once, and at most 3 times per item per day.",
       catalog_error: this.catalogError,
       catalog: this.catalog.map((r) => ({
         sku: r.sku, item: r.item, unit: r.unit, seller_id: r.vendor_id, seller: r.vendor_name, seller_page: r.vendor_origin,
@@ -106,7 +107,7 @@ export class Market {
     return {
       receipt_id: r.receipt.receipt_id, seller: r.receipt.vendor.name, item: r.receipt.item.title, quantity: r.receipt.item.quantity,
       total: r.receipt.total_cents / 100, list_total: r.receipt.list_total_cents / 100, delivery_hours: r.receipt.delivery_hours,
-      settlement: r.receipt.settlement, signature_verified_in_browser: r.verified,
+      settlement: r.receipt.settlement, signature_verified_in_browser: r.verified, verified_with: KEY_SOURCES[r.key_source] ?? "not checked",
     };
   }
 
@@ -196,7 +197,7 @@ export class Market {
       return r;
     }
     const v = await this.client.verify(r);
-    const entry = { receipt: r.receipt, signature: r.signature, key_id: r.key_id, verified: v.ok && v.valid };
+    const entry = { receipt: r.receipt, signature: r.signature, key_id: r.key_id, verified: v.ok && v.valid, key_source: v.key_source };
     this.receipts.unshift(entry);
     const fresh = await this.client.outcome(n.mandate_id);
     if (fresh.ok) n.outcome = fresh.outcome;
@@ -210,9 +211,9 @@ export class Market {
     if (!r.ok) return r;
     const v = await this.client.verify(r);
     if (!v.ok) return v;
-    return { ok: true, receipt_id, valid: v.valid, seller: r.receipt.vendor.name, total: r.receipt.total_cents / 100, item: r.receipt.item.title, quantity: r.receipt.item.quantity, issued_at: new Date(r.receipt.issued_at * 1000).toISOString() };
+    return { ok: true, receipt_id, valid: v.valid, verified_with: KEY_SOURCES[v.key_source], seller: r.receipt.vendor.name, total: r.receipt.total_cents / 100, item: r.receipt.item.title, quantity: r.receipt.item.quantity, issued_at: new Date(r.receipt.issued_at * 1000).toISOString() };
   }
 }
 
 /** The one market object the page, the actions and site.js share. */
-export const App = { page: new Market(new ArbiterClient(arbiterUrl())) };
+export const App = { page: new Market(new ArbiterClient(arbiterUrl(), { pinnedKeys: ARBITER_KEYS })) };

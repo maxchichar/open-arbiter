@@ -1,0 +1,244 @@
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+console error: Applying inline style violates the following Content Security Policy directive 'style-src-elem 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-pmEykRvndzAgYQ9mpF6i+LOu0sxdv0dzT9kgfR42Ph4='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+catalogue: 4 items; assistant: Assistant connected to this page.
+console error: Failed to load resource: the server responded with a status of 409 (Conflict)
+Traceback (most recent call last):
+  File "/home/maxchichar/open-arbiter/sites/oja/tests/browser_check.py", line 126, in <module>
+    expect(page.locator(".deal").first).to_be_visible(timeout=10000)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-1000/-home-maxchichar-open-arbiter/14b593fc-ce25-47b7-b4de-c1f9f89fe7dc/scratchpad/venv/lib/python3.14/site-packages/playwright/sync_api/_generated.py", line 14844, in to_be_visible
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.to_be_visible(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            timeout=to_milliseconds(timeout), visible=visible
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+        ^
+    )
+    ^
+  File "/tmp/claude-1000/-home-maxchichar-open-arbiter/14b593fc-ce25-47b7-b4de-c1f9f89fe7dc/scratchpad/venv/lib/python3.14/site-packages/playwright/_impl/_sync_base.py", line 124, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "/tmp/claude-1000/-home-maxchichar-open-arbiter/14b593fc-ce25-47b7-b4de-c1f9f89fe7dc/scratchpad/venv/lib/python3.14/site-packages/playwright/_impl/assertions.py", line 869, in to_be_visible
+    await self._expect_impl(
+    ...<5 lines>...
+    )
+  File "/tmp/claude-1000/-home-maxchichar-open-arbiter/14b593fc-ce25-47b7-b4de-c1f9f89fe7dc/scratchpad/venv/lib/python3.14/site-packages/playwright/_impl/assertions.py", line 122, in _expect_impl
+    _record_soft_or_raise(
+    ~~~~~~~~~~~~~~~~~~~~~^
+        AssertionError(
+        ^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        self._is_soft,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+  File "/tmp/claude-1000/-home-maxchichar-open-arbiter/14b593fc-ce25-47b7-b4de-c1f9f89fe7dc/scratchpad/venv/lib/python3.14/site-packages/playwright/_impl/_assertions.py", line 50, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be visible
+Actual value: None
+Error: element(s) not found 
+Call log:
+  - Expect "to_be_visible" locator(".deal").first with timeout 10000ms
+  - waiting for locator(".deal").first
+
+Aria snapshot:
+- banner:
+  - link "Oja":
+    - /url: ./
+  - navigation "Sections":
+    - link "Market":
+      - /url: "#catalog"
+    - link "Haggle":
+      - /url: "#haggle"
+    - link "Ask Oja":
+      - /url: "#assistant"
+    - link "Trust":
+      - /url: "#trust"
+- main:
+  - heading "Haggle without the stress. Get the fair price." [level=1]
+  - paragraph: You seal the most you will pay. Each seller has sealed the least they will take. An open arbiter, plain code rather than an AI, offers the midpoint of where you overlap, on a price step of 2.5% of the list price, or says no deal. Neither number is ever shown; an agreed price only tells each side which step the other's limit is in.
+  - list:
+    - listitem:
+      - strong: Seal your maximum
+      - text: Pick an item, a quantity and how fast you need it.
+    - listitem:
+      - strong: The arbiter matches
+      - text: Every seller is checked at once. You see ranked offers and your saving.
+    - listitem:
+      - strong: Accept and keep a signed receipt
+      - text: Your browser checks it against the arbiter key pinned in this site.
+  - region "Today in the market":
+    - heading "Today in the market" [level=2]
+    - paragraph: List prices are public. Sellers' lowest prices are sealed with the arbiter. Demo sellers and prices.
+    - article:
+      - heading "Oloyin beans" [level=3]
+      - code: beans-oloyin-50kg
+      - table:
+        - rowgroup:
+          - row "Seller List price Delivery":
+            - columnheader "Seller"
+            - columnheader "List price"
+            - columnheader "Delivery"
+        - rowgroup:
+          - row "Alhaji Musa Grains ₦112,000 / bag 3 d":
+            - cell "Alhaji Musa Grains":
+              - link "Alhaji Musa Grains":
+                - /url: http://127.0.0.1:8080
+            - cell "₦112,000 / bag"
+            - cell "3 d"
+          - row "Iya Basira Foodstuff ₦118,000 / bag 1 d":
+            - cell "Iya Basira Foodstuff":
+              - link "Iya Basira Foodstuff":
+                - /url: http://127.0.0.1:8080
+            - cell "₦118,000 / bag"
+            - cell "1 d"
+      - button "Haggle for this"
+    - article:
+      - heading "White garri" [level=3]
+      - code: garri-ijebu-50kg
+      - table:
+        - rowgroup:
+          - row "Seller List price Delivery":
+            - columnheader "Seller"
+            - columnheader "List price"
+            - columnheader "Delivery"
+        - rowgroup:
+          - row "Alhaji Musa Grains ₦50,000 / bag 2 d":
+            - cell "Alhaji Musa Grains":
+              - link "Alhaji Musa Grains":
+                - /url: http://127.0.0.1:8080
+            - cell "₦50,000 / bag"
+            - cell "2 d"
+          - row "Iya Basira Foodstuff ₦54,000 / bag 1 d":
+            - cell "Iya Basira Foodstuff":
+              - link "Iya Basira Foodstuff":
+                - /url: http://127.0.0.1:8080
+            - cell "₦54,000 / bag"
+            - cell "1 d"
+      - button "Haggle for this"
+    - article:
+      - heading "Red palm oil" [level=3]
+      - code: palm-oil-25l
+      - table:
+        - rowgroup:
+          - row "Seller List price Delivery":
+            - columnheader "Seller"
+            - columnheader "List price"
+            - columnheader "Delivery"
+        - rowgroup:
+          - row "Chika Provisions ₦61,000 / keg 6 h":
+            - cell "Chika Provisions":
+              - link "Chika Provisions":
+                - /url: http://127.0.0.1:8080
+            - cell "₦61,000 / keg"
+            - cell "6 h"
+      - button "Haggle for this"
+    - article:
+      - heading "Ofada rice" [level=3]
+      - code: rice-50kg
+      - table:
+        - rowgroup:
+          - row "Seller List price Delivery":
+            - columnheader "Seller"
+            - columnheader "List price"
+            - columnheader "Delivery"
+        - rowgroup:
+          - row "Chika Provisions ₦89,000 / bag 6 h":
+            - cell "Chika Provisions":
+              - link "Chika Provisions":
+                - /url: http://127.0.0.1:8080
+            - cell "₦89,000 / bag"
+            - cell "6 h"
+          - row "Iya Basira Foodstuff ₦92,000 / bag 1 d":
+            - cell "Iya Basira Foodstuff":
+              - link "Iya Basira Foodstuff":
+                - /url: http://127.0.0.1:8080
+            - cell "₦92,000 / bag"
+            - cell "1 d"
+          - row "Alhaji Musa Grains ₦95,000 / bag 3 d":
+            - cell "Alhaji Musa Grains":
+              - link "Alhaji Musa Grains":
+                - /url: http://127.0.0.1:8080
+            - cell "₦95,000 / bag"
+            - cell "3 d"
+      - button "Haggle for this"
+  - region "Haggle by hand":
+    - heading "Haggle by hand" [level=2]
+    - text: Item
+    - combobox "Item":
+      - option "Oloyin beans (beans-oloyin-50kg)"
+      - option "White garri (garri-ijebu-50kg)" [selected]
+      - option "Red palm oil (palm-oil-25l)"
+      - option "Ofada rice (rice-50kg)"
+    - text: Quantity
+    - spinbutton "Quantity": "2"
+    - text: Deliver within (hours)
+    - spinbutton "Deliver within (hours)": "72"
+    - text: Most you will pay in total (₦)
+    - spinbutton "Most you will pay in total (₦)": "100000"
+    - paragraph: "Sealed: sellers never see it. These exact terms can be negotiated once."
+    - button "Seal and negotiate"
+    - status: These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.
+    - heading "Your negotiations" [level=2]
+    - paragraph: No negotiations yet. Sellers never see your sealed maximum.
+    - heading "Receipts" [level=2]
+  - region "Ask Oja":
+    - heading "Ask Oja" [level=2]
+    - paragraph: Tell Oja what you need, such as "two bags of rice by tomorrow, no more than ₦170,000". It reads the market, seals your bid with the arbiter after you approve, and accepts an offer only when you confirm.
+    - paragraph: Your messages and this page's data go to the AI provider you choose in the settings below, on your own key, so the AI provider sees any maximum you type in the chat. Sellers never see it. You confirm every bid and every purchase.
+    - status: Assistant connected to this page.
+    - text: Oja Market Assistant LLM configured — awaiting verification 127.0.0.1:8080
+    - button "⚙ Developer"
+    - group: 4 website actions connected
+    - text: Ẹ kú àbọ̀! Tell me what you need, how many, how soon and the most you will pay in total. I check today's market, seal your bid with the arbiter once you approve, and only buy when you confirm.
+    - textbox "Type a request…"
+    - button "Send"
+    - button "New chat"
+    - complementary:
+      - heading "Agents working for you" [level=3]
+      - text: 🧭 Oja Market Assistant your concierge
+    - complementary:
+      - heading "Agent graph & origins" [level=3]
+      - list:
+        - listitem: oja_steward
+      - heading "Execution log" [level=3]
+      - text: 0 events
+      - button "Export JSON"
+    - group: ⚙ AI model settings
+  - region "Why you can trust the price":
+    - heading "Why you can trust the price" [level=2]
+    - list:
+      - listitem:
+        - text: ✓ The arbiter at
+        - code: localhost:8787
+        - text: is open-source deterministic code. Same inputs, same price, every time.
+      - listitem: ✓ Price = midpoint between the seller's sealed floor and the lower of your maximum and the list price, on a price step of 2.5% of the list price (at least ₦100 per unit).
+      - listitem: ✓ Neither limit is ever returned or logged in public. An agreed price narrows each limit to one price step, however many deals are made; "no deal" says only that there was no overlap. Your AI provider sees what you tell the assistant.
+      - listitem: ✓ Rebidding the same terms with a new maximum is refused, so no one can map a seller's floor.
+      - listitem:
+        - text: ✓ Every step is written to a hash-chained audit log, and receipts are signed with ECDSA P-256 and checked against the key pinned in this site (
+        - link "arbiter's published key":
+          - /url: http://localhost:8787/.well-known/jwks.json
+        - text: ).
+      - listitem:
+        - text: ✓ Other agents can use it too, over MCP at
+        - code: http://localhost:8787/mcp
+        - text: ", or by calling this site's network."
+    - heading "Check a receipt" [level=2]
+    - text: Receipt id
+    - textbox "Receipt id":
+      - /placeholder: rct_…
+    - button "Verify signature"
+    - status
+- contentinfo:
+  - paragraph:
+    - text: Oja is a demo for the
+    - link "Open Agentic Web":
+      - /url: https://worldwideagenticweb.org
+    - text: "challenge. Sellers, stock and prices are illustrative; settlement is simulated and no money moves. Sellers:"
+    - link "seal your prices":
+      - /url: vendor.html
+    - text: .
+browser_check (CSP_DROP_STYLE_HASH=1) exit 1

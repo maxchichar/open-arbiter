@@ -107,5 +107,22 @@ check("chain intact before", before.data.ok === true, JSON.stringify(before.data
     `state ${after.data.state}, offer ${after.data.offers[0]?.state}, stock ${stock}, receipt ${after.data.receipt_id}`);
 }
 
+// P0.10: 6 concurrent creates with one client-made secret (a client retrying a lost answer) ->
+// one mandate; every answer names it; a later repeat is 200, not 201, 409 or 429.
+{
+  const sku = `probe-${tag}-idem`;
+  const secret = `bt_${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`;
+  const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(secret)))].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const body = { sku, quantity: 1, max_total_cents: 1_000_000, deliver_within_hours: 48, buyer_token_hash: hash };
+  const rs = await Promise.all(Array.from({ length: 6 }, () => call("POST", "/v1/mandates", { body })));
+  const ids = new Set(rs.map((r) => r.data?.mandate_id));
+  const t = tally(rs);
+  check("P0.10 concurrent creates with one secret make one mandate", ids.size === 1 && t[201] === 1 && t[200] === 5, `ids ${ids.size}, statuses ${JSON.stringify(t)}`);
+  const again = await call("POST", "/v1/mandates", { body });
+  const read = await call("GET", `/v1/mandates/${[...ids][0]}`, { token: secret });
+  check("P0.10 repeat is 200 with the same mandate; the secret works as the token", again.status === 200 && again.data.mandate_id === [...ids][0] && read.status === 200,
+    `repeat ${again.status}, read ${read.status}`);
+}
+
 console.log(failures.length ? `CONCURRENCY FAILED: ${failures.join("; ")}` : "CONCURRENCY OK");
 process.exit(failures.length ? 1 : 0);

@@ -52,7 +52,7 @@ function renderNegotiations(m) {
   list.replaceChildren();
   const state = m.getState();
   if (!state.negotiations.length) {
-    list.append(el("p", { class: "muted" }, "No negotiations yet. Your sealed maximum never leaves the arbiter."));
+    list.append(el("p", { class: "muted" }, "No negotiations yet. Sellers never see your sealed maximum."));
     return;
   }
   for (const n of state.negotiations) {
@@ -77,7 +77,8 @@ function renderReceipts(m) {
   box.replaceChildren();
   for (const r of m.getState().receipts) {
     box.append(el("article", { class: "receipt" },
-      el("header", {}, el("strong", {}, r.seller), el("span", { class: `badge ${r.signature_verified_in_browser ? "settled" : "no_agreement"}` }, r.signature_verified_in_browser ? "Signature verified" : "Signature NOT verified")),
+      el("header", {}, el("strong", {}, r.seller), el("span", { class: `badge ${r.signature_verified_in_browser ? "settled" : "no_agreement"}`, title: `Checked in this browser with: ${r.verified_with}` },
+        r.signature_verified_in_browser ? (r.verified_with === "pinned key" ? "Signature verified" : "Signature verified (dev key, not pinned)") : "Signature NOT verified")),
       el("p", {}, `${r.quantity} × ${r.item}: ${naira(r.total)} (list ${naira(r.list_total)})`),
       el("p", { class: "muted small" }, `Receipt ${r.receipt_id} · settlement ${r.settlement} · delivers within ${dur(r.delivery_hours)}`)));
   }

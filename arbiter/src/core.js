@@ -1,6 +1,6 @@
 // Open Arbiter service logic over a D1-compatible database.
 // `db` needs prepare(sql).bind(...).first() / .all() / .run(), as Cloudflare D1 provides.
-import { MECHANISM, LIMITS, checkListing, checkMandate, termsKey, resolve, canonicalJson } from "./mechanism.js";
+import { MECHANISM, LIMITS, checkListing, checkMandate, termsKey, resolve, canonicalJson, unitStep } from "./mechanism.js";
 import { newId, newToken, sha256Hex, generateSigningKey, publicFromPrivate, keyId, signPayload, verifyPayload } from "./crypto.js";
 
 export class ArbiterError extends Error {
@@ -22,6 +22,21 @@ const sqliteMessage = (e) => `${e?.message ?? ""} ${e?.cause?.message ?? ""}`;
 const isPrevHashConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: events.prev_hash");
 const isTermsConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.buyer_key, mandates.terms_key");
 const isStockCheck = (e) => sqliteMessage(e).includes("CHECK constraint failed: stock_nonneg");
+const isTokenConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.token_hash");
+
+/** The schema objects the write guarantees depend on (checked by ensureSchema). */
+const REQUIRED_SCHEMA = [
+  ["listings CHECK stock_nonneg (accept cannot oversell)", (rows) => /CONSTRAINT stock_nonneg CHECK/.test(rows.find((r) => r.name === "listings")?.sql ?? "")],
+  ["UNIQUE events.prev_hash (linear audit chain)", (rows) => rows.some((r) => r.name === "events_prev_unique")],
+  ["UNIQUE mandates.token_hash (idempotent mandate create)", (rows) => rows.some((r) => r.name === "mandates_token_unique")],
+];
+const SCHEMA_ROWS = "SELECT name, sql FROM sqlite_master WHERE (type = 'table' AND name = 'listings') OR (type = 'index' AND name IN ('events_prev_unique', 'mandates_token_unique'))";
+const HEX64 = /^[0-9a-f]{64}$/;
+/** The price step an offer was made on, from the list total it stored (ask × quantity). */
+const steps = (o) => {
+  const unit = unitStep(o.list_total_cents / o.quantity);
+  return { unit_step_cents: unit, grid_step_cents: unit * o.quantity };
+};
 
 export class Arbiter {
   /**
@@ -31,9 +46,13 @@ export class Arbiter {
    * @param opts.allowGeneratedKey local development only: with no signingJwk, generate a key and
    *   keep it in the db. Otherwise a missing key fails closed ("misconfigured").
    * @param opts.random () => [0, 1), jitter for audit-chain retries; tests pass a seeded PRNG
+   * @param opts.schemaVerified a WeakSet shared for the life of the Worker instance: databases whose
+   *   schema was already checked. The Worker passes one module-level set, so the check runs once per
+   *   database binding per instance instead of once per write. Defaults to a per-Arbiter set.
    */
-  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false, random = Math.random } = {}) {
+  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false, random = Math.random, schemaVerified = new WeakSet() } = {}) {
     this.db = db;
+    this.schemaVerified = schemaVerified;
     this.clock = clock;
     this.random = random;
     this._signingJwk = signingJwk || null;
@@ -130,22 +149,20 @@ export class Arbiter {
   }
 
   /**
-   * The chain (F3) and accept (F4) guarantees are enforced by schema constraints, so a database
-   * created before them would silently fork the chain or oversell. Refuse to write until it is
-   * migrated or reset. Checked once per Arbiter instance (one request in the Worker).
+   * The chain, accept and idempotent-create guarantees are enforced by schema constraints, so a
+   * database created before them would silently fork the chain, oversell or duplicate mandates.
+   * Refuse to write until it is migrated or reset. Checked once per database per Worker instance
+   * (see opts.schemaVerified): a migration is a deploy, which starts new instances.
    */
   async ensureSchema() {
-    if (this._schemaOk) return;
-    const rows = (await this.q(
-      "SELECT name, sql FROM sqlite_master WHERE (type = 'table' AND name = 'listings') OR (type = 'index' AND name = 'events_prev_unique')",
-    ).all()).results;
-    const listings = rows.find((r) => r.name === "listings");
-    const ok = Boolean(listings && /CONSTRAINT stock_nonneg CHECK/.test(listings.sql) && rows.some((r) => r.name === "events_prev_unique"));
-    if (!ok) {
-      console.error("Open Arbiter: database schema is out of date (needs CHECK stock_nonneg and UNIQUE events.prev_hash); refusing to write.");
+    if (this.schemaVerified.has(this.db)) return;
+    const rows = (await this.q(SCHEMA_ROWS).all()).results;
+    const missing = REQUIRED_SCHEMA.filter(([, ok]) => !ok(rows)).map(([name]) => name);
+    if (missing.length) {
+      console.error(`Open Arbiter: database schema is out of date (missing: ${missing.join("; ")}); refusing to write.`);
       throw new ArbiterError("misconfigured", "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes.", 500);
     }
-    this._schemaOk = true;
+    this.schemaVerified.add(this.db);
   }
 
   async mandateFor(mandateId, token) {
@@ -230,6 +247,12 @@ export class Arbiter {
   /**
    * Create a mandate. `buyerKey` identifies the caller for anti-probing (the Worker
    * derives it from the client IP); `callerOrigin` records which agentic site asked.
+   *
+   * The buyer secret: either the caller makes it and sends only its SHA-256 (`buyer_token_hash`,
+   * 64 lowercase hex), or the arbiter makes one and returns it once (`buyer_token`). With a
+   * caller-made secret the create is idempotent: the same hash with the same terms and budget
+   * returns the existing mandate (`replayed: true`, nothing written), so a client whose answer was
+   * lost can safely send the same request again. The same hash with anything else is refused.
    */
   async createMandate(input, { buyerKey, callerOrigin = null }) {
     const m = {
@@ -240,17 +263,34 @@ export class Arbiter {
       ...(input.vendor_ids ? { vendor_ids: input.vendor_ids } : {}),
     };
     const problems = checkMandate(m);
+    const clientHash = input.buyer_token_hash;
+    if (clientHash !== undefined && (typeof clientHash !== "string" || !HEX64.test(clientHash))) {
+      problems.push("buyer_token_hash must be the SHA-256 of your buyer secret, as 64 lowercase hex characters");
+    }
     if (problems.length) throw new ArbiterError("invalid", problems.join("; "));
     if (typeof buyerKey !== "string" || !buyerKey) throw new ArbiterError("invalid", "buyerKey required.", 500);
+    const tk = termsKey(m);
+
+    // A retry of a create whose answer was lost: same secret, same terms and budget.
+    const replay = async () => {
+      if (clientHash === undefined) return null;
+      const row = await this.q("SELECT id, state, terms_key, max_total_cents FROM mandates WHERE token_hash = ?", clientHash).first();
+      if (!row) return null;
+      if (row.terms_key !== tk || row.max_total_cents !== m.max_total_cents) {
+        throw new ArbiterError("token_reused", "This buyer secret already belongs to a negotiation with other terms. Use a new secret for new terms.", 409);
+      }
+      return { mandate_id: row.id, state: row.state, replayed: true };
+    };
+    const earlier = await replay();
+    if (earlier) return earlier;
 
     // Both anti-probing limits are enforced by the database in one statement, so concurrent requests
     // cannot slip past a check made earlier: the daily cap by the INSERT's WHERE (0 rows = capped),
     // identical terms by UNIQUE (buyer_key, terms_key). The cap is checked first, as before.
     const now = this.clock();
-    const tk = termsKey(m);
     const id = newId("man");
-    const token = newToken("bt");
-    const tokenHash = await sha256Hex(token);
+    const token = clientHash === undefined ? newToken("bt") : null;
+    const tokenHash = clientHash ?? (await sha256Hex(token));
     let created;
     try {
       created = await this.commit({
@@ -265,15 +305,22 @@ export class Arbiter {
         guard: { sql: "EXISTS (SELECT 1 FROM mandates WHERE id = ?)", args: [id] },
       });
     } catch (e) {
+      if (isTokenConflict(e) || isTermsConflict(e)) {
+        const concurrent = await replay(); // a concurrent retry with this secret won the race
+        if (concurrent) return concurrent;
+      }
       if (isTermsConflict(e)) {
         throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.", 409);
       }
+      if (isTokenConflict(e)) throw new ArbiterError("token_reused", "This buyer secret is already in use. Use a new secret.", 409);
       throw e;
     }
     if (created.results[0].meta.changes !== 1) {
+      const concurrent = await replay();
+      if (concurrent) return concurrent;
       throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`, 429);
     }
-    return { mandate_id: id, buyer_token: token, state: "OPEN" };
+    return { mandate_id: id, ...(token ? { buyer_token: token } : {}), state: "OPEN", replayed: false };
   }
 
   /**
@@ -335,7 +382,7 @@ export class Arbiter {
       message: m.state === "NO_AGREEMENT"
         ? "No seller could meet these terms. Neither side's limits are revealed."
         : undefined,
-      offers: offers.map((o) => ({ ...o, state: o.state === "OPEN" && o.expires_at <= now ? "EXPIRED" : o.state })),
+      offers: offers.map((o) => ({ ...o, ...steps(o), state: o.state === "OPEN" && o.expires_at <= now ? "EXPIRED" : o.state })),
       receipt_id: receipt ? receipt.id : null,
     };
   }
@@ -383,6 +430,7 @@ export class Arbiter {
       currency: listing?.currency ?? "NGN",
       total_cents: o.total_cents,
       list_total_cents: o.list_total_cents,
+      ...steps(o),
       delivery_hours: o.delivery_hours,
       caller_origin: m.caller_origin,
       audit_hash: auditHash,

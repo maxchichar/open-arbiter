@@ -1,0 +1,97 @@
+✖ no shipped copy makes a banned claim (4.162098ms)
+✖ every mention of the midpoint also mentions the price step (1.013847ms)
+✖ README and the page state the bounded leak and the AI-provider caveat (0.370895ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.474006
+
+✖ failing tests:
+
+test at sites/oja/tests/copy.test.mjs:35:1
+✖ no shipped copy makes a banned claim (4.162098ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'README.md: "not to the seller, the page state or the AI" (says a limit never reaches the AI)',
+  +   'README.md: "reveals neither" (says neither limit is revealed)',
+  +   'README.md: "goes only to the arbiter" (says the maximum goes only to the arbiter)',
+  +   'README.md: "rather than trusting the server" (says browser verification is independent of the arbiter)',
+  +   'sites/oja/index.html: "shown to the AI" (says limits are never shown to the AI)',
+  +   'sites/oja/index.html: "without revealing either" (says neither limit is revealed)',
+  +   'sites/oja/index.html: "goes only to the arbiter" (says the maximum goes only to the arbiter)',
+  +   'sites/oja/js/app.js: "maximum never leaves" (says the maximum never leaves the arbiter)',
+  +   'sites/oja/js/arbiter-client.js: "does not trust the arbiter" (says browser verification is independent of the arbiter)',
+  +   'sites/oja/js/market.js: "without revealing either" (says neither limit is revealed)',
+  +   'sites/oja/oja_market.hocon: "without revealing either" (says neither limit is revealed)',
+  +   'sites/oja/oja_market.network.json: "without revealing either" (says neither limit is revealed)',
+  +   'sites/oja/site.js: "goes only to the arbiter" (says the maximum goes only to the arbiter)',
+  +   'sites/oja/vendor.html: "never shown to anyone, not even to the AI" (says a limit never reaches the AI)'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/copy.test.mjs:44:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'README.md: "not to the seller, the page state or the AI" (says a limit never reaches the AI)', 'README.md: "reveals neither" (says neither limit is revealed)', 'README.md: "goes only to the arbiter" (says the maximum goes only to the arbiter)', 'README.md: "rather than trusting the server" (says browser verification is independent of the arbiter)', 'sites/oja/index.html: "shown to the AI" (says limits are never shown to the AI)', 'sites/oja/index.html: "without revealing either" (says neither limit is revealed)', 'sites/oja/index.html: "goes only to the arbiter" (says the maximum goes only to the arbiter)', 'sites/oja/js/app.js: "maximum never leaves" (says the maximum never leaves the arbiter)', 'sites/oja/js/arbiter-client.js: "does not trust the arbiter" (says browser verification is independent of the arbiter)', 'sites/oja/js/market.js: "without revealing either" (says neither limit is revealed)', 'sites/oja/oja_market.hocon: "without revealing either" (says neither limit is revealed)', 'sites/oja/oja_market.network.json: "without revealing either" (says neither limit is revealed)', 'sites/oja/site.js: "goes only to the arbiter" (says the maximum goes only to the arbiter)', 'sites/oja/vendor.html: "never shown to anyone, not even to the AI" (says a limit never reaches the AI)' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/copy.test.mjs:47:1
+✖ every mention of the midpoint also mentions the price step (1.013847ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'README.md @1100: "t, no model) offers the Nash bargaining midpoint of the overlap, capped at list price, filtered by d"',
+  +   'arbiter/src/mcp.js @5623: "uyer maximums and seller minimums, Nash-midpoint prices, signed receipts. Get human approval before "',
+  +   'sites/oja/index.html @1320: "lain code rather than an AI, offers the midpoint of where you overlap, or says no deal, without reve"',
+  +   'sites/oja/js/market.js @3207: "terministic code, not an AI) offers the midpoint of the overlap, capped at list price, or reports no"',
+  +   `sites/oja/oja_market.hocon @2776: "ministic code, not an AI. It offers the midpoint between the seller's floor and the lower of the vis"`,
+  +   `sites/oja/oja_market.network.json @2502: "ministic code, not an AI. It offers the midpoint between the seller's floor and the lower of the vis"`
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/copy.test.mjs:56:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'README.md @1100: "t, no model) offers the Nash bargaining midpoint of the overlap, capped at list price, filtered by d"', 'arbiter/src/mcp.js @5623: "uyer maximums and seller minimums, Nash-midpoint prices, signed receipts. Get human approval before "', 'sites/oja/index.html @1320: "lain code rather than an AI, offers the midpoint of where you overlap, or says no deal, without reve"', 'sites/oja/js/market.js @3207: "terministic code, not an AI) offers the midpoint of the overlap, capped at list price, or reports no"', `sites/oja/oja_market.hocon @2776: "ministic code, not an AI. It offers the midpoint between the seller's floor and the lower of the vis"`, `sites/oja/oja_market.network.json @2502: "ministic code, not an AI. It offers the midpoint between the seller's floor and the lower of the vis"` ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/copy.test.mjs:59:1
+✖ README and the page state the bounded leak and the AI-provider caveat (0.370895ms)
+  AssertionError [ERR_ASSERTION]: README.md states that a price narrows a limit to one step
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/copy.test.mjs:63:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '# Open Arbiter + Oja\n\n**Open Arbiter** is shared infrastructure for the [Open Agentic Web](https://worldwideagenticweb.org): a deterministic, sealed-bid negotiation service that any agentic website can use to strike a fair deal for its visitor and hand back a signed, verifiable receipt.\n\n**Oja** ("market" in Yoruba) is its first agentic website: buyers tell an assistant what foodstuff they need from Lagos market sellers, and the arbiter settles the price.\n\nIt implements the pattern in Cognizant AI Lab\'s [How AI Agents Can Negotiate and Transact on the Open Agentic Web](https://www.cognizant.com/us/en/ai-lab/blog/ai-agent-negotiation-open-agentic-web): agents discover and coordinate, deterministic code decides.\n\n## Why\n\nLetting two LLMs haggle leaks private limits, accepts bad prices and exceeds authority. Here:\n\n- The **seller** seals a lowest price per unit. It lives only in the arbiter\'s database.\n- The **buyer** seals a highest total. It goes only to the arbiter, not to the seller, the page state or the AI.\n- The **arbiter** (plain JavaScript, no model) offers the Nash bargaining midpoint of the overlap, capped at list price, filtered by delivery deadline and stock, ranked by price then delivery. With no overlap it says "no agreement" and reveals neither limit.\n- **Anti-probing:** the same terms (item, quantity, deadline, sellers) can be negotiated once per buyer, and each item at most 3 times a day, so nobody can map a seller\'s floor by re-bidding.\n- **Accountability:** every step goes into a hash-chained audit log; receipts are signed with ECDSA P-256 and can be verified by anyone with the public JWKS. Oja verifies them in the browser rather than trusting the server.\n- **Humans stay in charge:** sealing a bid and accepting an offer are `irreversible` site actions, so the runtime asks the visitor before either happens.\n\n## Layout\n\n```\narbiter/                Cloudflare Worker + D1\n  src/mechanism.js      pure pricing rules (no I/O)\n  src/core.js           mandates, sealed listings, offers, receipts, audit chain\n  src/mcp.js            MCP server (tools: list_catalog, negotiate, accept_offer, get_receipt, verify_receipt)\n  src/index.js          REST API + /mcp + /.well-known/jwks.json, CORS\n  schema.sql            D1 schema\n  scripts/              seed.mjs (demo sellers), e2e.mjs, keygen.mjs\n  test/                 unit tests on node:sqlite\nsites/oja/              the agentic website (static)\n  agent-manifest.json, oja_market.hocon -> oja_market.network.json, links.json\n  site-actions.js       website_get_market_state / negotiate / accept_offer / verify_receipt\n  bridge/               shares catalogue + receipt checks with any other agentic site\n  js/arbiter-client.js  reusable browser SDK: copy it into any site to use the arbiter\n  vendor.html           seller console to seal prices\n  runtime/              browser runtime from the agentic-web repo\'s agentify skill (Apache 2.0)\n  tests/                Node tests, scripted LLM, headless browser check\n```\n\n## Run locally\n\nNeeds Node 22+.\n\n```shell\nnpm install\ncd arbiter\nprintf \'ADMIN_TOKEN=dev-admin-token\\nBUYER_SALT=dev\\nDEV=1\\n\' > .dev.vars   # DEV=1: local only, lets the arbiter generate its signing key\nnpx wrangler d1 execute open-arbiter --local --file schema.sql\nnpx wrangler dev --local --port 8787 &\nnode scripts/seed.mjs http://127.0.0.1:8787 dev-admin-token http://127.0.0.1:8080\nnode scripts/e2e.mjs http://127.0.0.1:8787\ncd ..\nnode <agentic-web>/skills/agentify-website/scripts/serve_site.mjs sites/oja --port 8080\n```\n\nOpen `http://127.0.0.1:8080/?arbiter=http://127.0.0.1:8787`, add an Otari or OpenRouter key under **AI model settings**, and try "I need 2 bags of rice within 48 hours and won\'t pay more than 170,000 naira in total." Sellers sign in at `/vendor.html` with a key from `arbiter/.seed-keys.json`.\n\nTests: `npm test` (18 unit and page tests). The browser check (`sites/oja/tests/browser_check.py`) drives the real page with a scripted LLM (`tests/fake-llm.mjs`), so it needs no key.\n\n## Deploy on Cloudflare\n\n```shell\ncd arbiter\nnpx wrangler d1 create open-arbiter          # paste the database_id into wrangler.toml\nnpx wrangler d1 execute open-arbiter --remote --file schema.sql\nnpx wrangler secret put ADMIN_TOKEN\nnpx wrangler secret put BUYER_SALT\nnode scripts/keygen.mjs | npx wrangler secret put ARBITER_SIGNING_JWK\nnpx wrangler deploy                          # note the workers.dev URL\nnode scripts/seed.mjs https://open-arbiter.<you>.workers.dev <ADMIN_TOKEN> https://<your-pages-site>\n```\n\nThen set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL, rebuild the network if you changed the HOCON (`node <agentic-web>/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json` from `sites/oja`), and publish `sites/oja` with `npx wrangler pages deploy sites/oja --project-name oja`. `_headers` sets the CORS and worker CSP headers the spec asks for.\n\n## Use the arbiter from your own site\n\n- **Browser:** copy `sites/oja/js/arbiter-client.js`; register `negotiate` and `accept_offer` as `irreversible` site actions so the runtime confirms them. The client keeps buyer tokens out of page state and agent context.\n- **MCP:** list `{"url": "https://<arbiter>/mcp", "tools": ["list_catalog", "negotiate"]}` in an agent\'s `tools`. Note that over MCP the `buyer_token` is returned to the caller.\n- **Peer network:** call `https://<oja-site>/oja_market` from your network; Oja\'s bridge shares `get_market_state` and `verify_receipt` with every origin.\n\n## Limits (honest list)\n\n- Settlement is simulated; no money moves. Payments, delivery and disputes are out of scope.\n- Anti-probing keys on a salted hash of the caller\'s IP: a determined prober with many IPs gets more attempts.\n- The arbiter is a trusted third party. Its code is open and deterministic, and its receipts are verifiable, but its operator can see sealed limits.\n- Seller identity is a key issued by the arbiter\'s admin; there is no KYC or NANDA Index verification yet.\n- Demo sellers and prices are illustrative, not market data.\n- One global, hash-chained audit log orders every write, so writes are serialized: concurrent writers that collide retry with backoff, and under sustained load they see `503 busy`. Per-mandate chains (anchored to a global chain of heads) or a Durable Object that owns the log are the scaling path; neither is built.\n\nApache 2.0.\n',
+    expected: /one price step/i,
+    operator: 'match',
+    diff: 'simple'
+  }

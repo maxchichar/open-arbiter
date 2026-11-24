@@ -6,6 +6,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../../../arbiter/src/index.js";
 import { memoryD1 } from "../../../arbiter/test/sqlite-d1.mjs";
+import { generateSigningKey, keyId } from "../../../arbiter/src/crypto.js";
+
+async function signingKey() {
+  const { privateJwk, publicJwk } = await generateSigningKey();
+  return { privateJwk, pub: { kid: await keyId(publicJwk), kty: publicJwk.kty, crv: publicJwk.crv, x: publicJwk.x, y: publicJwk.y } };
+}
 import { ArbiterClient } from "../js/arbiter-client.js";
 import { Market, App } from "../js/market.js";
 import { registerActions } from "../site-actions.js";
@@ -14,8 +20,11 @@ import { ActionRegistry } from "../runtime/actions.js";
 const LIMIT = { timeout: 4000 }; // the old client waits forever on a lost response
 
 /** A fetch that lets the arbiter process every request, then loses accept responses. */
-function lossyArbiter(mode) {
-  const env = { DB: memoryD1(), ADMIN_TOKEN: "admin", DEV: "1" };
+async function lossyArbiter(mode) {
+  // A deployed arbiter's receipts verify only against a key pinned in the page (F6), so this test
+  // arbiter has a fixed signing key and the client pins its public half.
+  const { privateJwk, pub } = await signingKey();
+  const env = { DB: memoryD1(), ADMIN_TOKEN: "admin", ARBITER_SIGNING_JWK: JSON.stringify(privateJwk) };
   const calls = { accept: 0 };
   const fetchImpl = async (url, init = {}) => {
     const res = await worker.fetch(new Request(url, init), env);
@@ -27,15 +36,15 @@ function lossyArbiter(mode) {
       init.signal?.addEventListener("abort", () => reject(new DOMException("The operation was aborted.", "AbortError")));
     });
   };
-  return { env, calls, fetchImpl };
+  return { env, calls, fetchImpl, pub };
 }
 
 async function setup(mode) {
-  const a = lossyArbiter(mode);
+  const a = await lossyArbiter(mode);
   const f = (path, init) => a.fetchImpl(`https://arb.test${path}`, init);
   const reg = await (await f("/v1/vendors", { method: "POST", headers: { authorization: "Bearer admin", "content-type": "application/json" }, body: JSON.stringify({ name: "Iya Basira" }) })).json();
   await f("/v1/listings", { method: "PUT", headers: { authorization: `Bearer ${reg.api_key}`, "content-type": "application/json" }, body: JSON.stringify({ sku: "rice-50kg", title: "Rice, 50 kg bag", unit: "bag", ask_cents: 9_200_000, floor_cents: 8_100_000, delivery_hours: 24, stock: 3 }) });
-  const client = new ArbiterClient("https://arb.test", { fetchImpl: a.fetchImpl, timeoutMs: 150 });
+  const client = new ArbiterClient("https://arb.test", { fetchImpl: a.fetchImpl, timeoutMs: 150, pinnedKeys: [a.pub] });
   const market = new Market(client);
   await market.refreshCatalog();
   const neg = await market.negotiate({ sku: "rice-50kg", quantity: 1, max_total: 90_000, deliver_within_hours: 48 });

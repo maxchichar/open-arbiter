@@ -22,6 +22,24 @@
 
 Note on the domain edge under A1: the top cell `((k−1)u, ku]` can be cut short by `floor ≤ ask`. A floor in that partial cell can never reach agreement, because `ceil(f/u)·u > ask ≥ U′/q` means `L′ > U′`. So no observed price ever reveals it, and the property holds over agreements.
 
+## 0b. Task IDs (owner, 2026-11-23)
+
+The owner's production plan numbers Phase 0 tasks P0.0 to P0.10 (mapping confirmed by the owner 2026-11-24). Commits and evidence use these IDs from slice 4 on.
+
+| ID | Task | Slice | State |
+| --- | --- | --- | --- |
+| P0.0 | F7: fail closed without a signing key (done before this plan's IDs existed) | 1 | done, committed `d6b516a` |
+| P0.1 | F3: linear audit chain under concurrency, retry with seeded jitter | 2 | done, committed `f762139` |
+| P0.2 | F2: anti-probing limits hold under concurrency | 3 | done, committed `e63c362` |
+| P0.3, P0.4 | F4: atomic accept; accept with a lost answer is unknown, never retried | 4 | done, committed `cdc4990` |
+| P0.5 | F1: B2 per-unit grid (A1, A2) | 5 | done |
+| P0.6 | F5 (`?arbiter=` on loopback pages only) and F6 (pinned key set with kid) | 5 | done |
+| P0.7 | F8: copy, with a copy-lint test | 5 | done |
+| P0.8 | Strict page CSP, verified with `browser_check.py` (zero violations). **Added by the owner 2026-11-23; it was out of scope in §1.** | 5 | done |
+| P0.9 | Update the CLAUDE.md invariants (3: cap, identical terms, retry with the same secret; new: schema guard, client-made buyer secret, pinned key set with kid, strict CSP) and this plan | Phase 0 gate | open |
+| P0.10 | Negotiate survives a lost answer: the client makes the buyer secret and sends only its hash; a retry with the same secret and terms returns the existing mandate; the daily cap holds. **Added by the owner 2026-11-23.** | 5 | done |
+| (extra) | Schema check (`ensureSchema`, slice 4) cached per database per Worker instance | 5 | done |
+
 ## 1. Objective and boundaries
 
 **Outcome:** The arbiter's advertised guarantees become true, and are stated honestly:
@@ -40,7 +58,7 @@ Note on the domain edge under A1: the top cell `((k−1)u, ku]` can be cut short
 - `sites/oja/js/{config,arbiter-client,market,app}.js`, `sites/oja/site.js` (copy only), `sites/oja/bridge/bridge-actions.js`, `sites/oja/agent-manifest.json`, `sites/oja/oja_market.hocon` and its rebuilt `.network.json`, `sites/oja/index.html` (copy only), `sites/oja/tests/*`
 - `README.md` and `CLAUDE.md` (invariant 1, commands, test count)
 
-**Out of scope (owner decision):** second site, second agent, keyless default model, CSP. Also out of scope: deployment, commits to `main`, and any change to `sites/oja/runtime/`.
+**Out of scope (owner decision):** second site, second agent, keyless default model. (CSP was out of scope here; the owner added it as P0.8 on 2026-11-23.) Also out of scope: deployment, commits to `main`, and any change to `sites/oja/runtime/`.
 
 **Assumptions:**
 - Nothing is deployed, so there is no production data to migrate. The schema change needs the local D1 state reset.

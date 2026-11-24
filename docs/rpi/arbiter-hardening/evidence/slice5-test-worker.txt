@@ -1,0 +1,45 @@
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"69c11b4a1f0f2bc2fb513ffb9ac0844d16c0f2ed6cac6a0375622fc547733ff2"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"b7e00c01215e46a8c31c0c410afd0140b485944fb979452399d5300bd5be4e53"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"6af9f2d307735ca950face3f03ea76554bf9e0bb7f722477560e683a04304115"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+PASS P0.10 concurrent creates with one secret make one mandate: ids 1, statuses {"200":5,"201":1}
+PASS P0.10 repeat is 200 with the same mandate; the secret works as the token: repeat 200, read 200
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"e1482aa4224dad88ce9c0e69831669c88f34132c82888a25e8e1149098f72369"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"03c834115fb9a6af8628bc6a75fffaa4b9b5201d462eed76f2dc58edf3024e85"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"b83525303ea11f7037492e89f267a4cacba0b4a157b90a3210480d24f8b5ef45"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+PASS P0.10 concurrent creates with one secret make one mandate: ids 1, statuses {"200":5,"201":1}
+PASS P0.10 repeat is 200 with the same mandate; the secret works as the token: repeat 200, read 200
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---
+E2E OK
+PASS chain intact before: {"ok":true,"events":19,"head":"f9b345f3369d1f013eee55ece91ab720659078bd8cf6f98106b67c3936c88e15"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"09ced583babc08b8a83c45f5ef4ac60b99aad078091b8f00044ff3d7d8568952"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"4daa84ca8c1d94c8e6160f7c9cccbe54c465c6e3baa2865ffe57b91605de7497"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+PASS P0.10 concurrent creates with one secret make one mandate: ids 1, statuses {"200":5,"201":1}
+PASS P0.10 repeat is 200 with the same mandate; the secret works as the token: repeat 200, read 200
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+---

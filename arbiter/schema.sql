@@ -42,6 +42,9 @@ CREATE TABLE IF NOT EXISTS mandates (
   UNIQUE (buyer_key, terms_key)
 );
 CREATE INDEX IF NOT EXISTS mandates_by_buyer ON mandates (buyer_key, sku, created_at);
+-- A buyer's page may make its own secret and send only its hash. A retry with the same hash (the
+-- answer to the first create was lost) must find the existing mandate, never make a second one.
+CREATE UNIQUE INDEX IF NOT EXISTS mandates_token_unique ON mandates (token_hash);
 
 CREATE TABLE IF NOT EXISTS offers (
   id TEXT PRIMARY KEY,

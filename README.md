@@ -11,10 +11,11 @@ It implements the pattern in Cognizant AI Lab's [How AI Agents Can Negotiate and
 Letting two LLMs haggle leaks private limits, accepts bad prices and exceeds authority. Here:
 
 - The **seller** seals a lowest price per unit. It lives only in the arbiter's database.
-- The **buyer** seals a highest total. It goes only to the arbiter, not to the seller, the page state or the AI.
-- The **arbiter** (plain JavaScript, no model) offers the Nash bargaining midpoint of the overlap, capped at list price, filtered by delivery deadline and stock, ranked by price then delivery. With no overlap it says "no agreement" and reveals neither limit.
+- The **buyer** seals a highest total. The page sends it to the arbiter and keeps it out of page state and tool results; sellers never see it. If you type it in the chat, the AI provider you chose (on your own key) sees it.
+- The **arbiter** (plain JavaScript, no model) offers the Nash bargaining midpoint of the overlap, capped at list price and placed on a **price step of 2.5% of the unit list price (at least ₦100 per unit)**, filtered by delivery deadline and stock, ranked by price then delivery. With no overlap on the step grid it says "no agreement".
+- **Bounded leak:** neither limit is ever returned. An agreed price depends on a seller's floor only through which price step it falls in, at every quantity, so any number of deals narrows a floor to no less than one price step (and the buyer's maximum to one step of the total). Property tests in `arbiter/test/mechanism.test.mjs` check this.
 - **Anti-probing:** the same terms (item, quantity, deadline, sellers) can be negotiated once per buyer, and each item at most 3 times a day, so nobody can map a seller's floor by re-bidding.
-- **Accountability:** every step goes into a hash-chained audit log; receipts are signed with ECDSA P-256 and can be verified by anyone with the public JWKS. Oja verifies them in the browser rather than trusting the server.
+- **Accountability:** every step goes into a hash-chained audit log; receipts are signed with ECDSA P-256 and can be verified by anyone with the public JWKS. Oja verifies them in the browser against the arbiter key pinned in the site (`js/config.js`), not against a key the arbiter serves at the time.
 - **Humans stay in charge:** sealing a bid and accepting an offer are `irreversible` site actions, so the runtime asks the visitor before either happens.
 
 ## Layout
@@ -54,9 +55,9 @@ cd ..
 node <agentic-web>/skills/agentify-website/scripts/serve_site.mjs sites/oja --port 8080
 ```
 
-Open `http://127.0.0.1:8080/?arbiter=http://127.0.0.1:8787`, add an Otari or OpenRouter key under **AI model settings**, and try "I need 2 bags of rice within 48 hours and won't pay more than 170,000 naira in total." Sellers sign in at `/vendor.html` with a key from `arbiter/.seed-keys.json`.
+Open `http://127.0.0.1:8080/?arbiter=http://127.0.0.1:8787` (the `?arbiter=` override works only on a page served from this machine), add an Otari or OpenRouter key under **AI model settings**, and try "I need 2 bags of rice within 48 hours and won't pay more than 170,000 naira in total." Sellers sign in at `/vendor.html` with a key from `arbiter/.seed-keys.json`.
 
-Tests: `npm test` (18 unit and page tests). The browser check (`sites/oja/tests/browser_check.py`) drives the real page with a scripted LLM (`tests/fake-llm.mjs`), so it needs no key.
+Tests: `npm test` (unit, property and page tests; no network). `npm run test:worker` runs seed, e2e and concurrency checks against an isolated `wrangler dev`. The browser check (`sites/oja/tests/browser_check.py`) drives the real page with a scripted LLM (`tests/fake-llm.mjs`), so it needs no key. It applies the page CSP from `_headers` and fails on any CSP violation.
 
 ## Deploy on Cloudflare
 
@@ -71,7 +72,7 @@ npx wrangler deploy                          # note the workers.dev URL
 node scripts/seed.mjs https://open-arbiter.<you>.workers.dev <ADMIN_TOKEN> https://<your-pages-site>
 ```
 
-Then set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL, rebuild the network if you changed the HOCON (`node <agentic-web>/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json` from `sites/oja`), and publish `sites/oja` with `npx wrangler pages deploy sites/oja --project-name oja`. `_headers` sets the CORS and worker CSP headers the spec asks for.
+Then set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL and pin its key: put the output of `node arbiter/scripts/pubkey.mjs < private.jwk` in `ARBITER_KEYS` (keep retired keys there after a rotation). Copy both into `"open_arbiter"` in `sites/oja/agent-manifest.json`; `npm test` fails until they match, and fails if a public arbiter has no pinned key. Add the Worker's origin to `connect-src` in `sites/oja/_headers` (a test checks this too). Then rebuild the network if you changed the HOCON (`node <agentic-web>/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json` from `sites/oja`), and publish `sites/oja` with `npx wrangler pages deploy sites/oja --project-name oja`. `_headers` sets the CORS headers, the coded-tool worker's CSP and a strict page CSP: scripts only from the site, no inline script or eval, no framing, and network access only to the site, the arbiter and the AI providers listed in the assistant's settings. A custom "Provider URL" outside that list is blocked by the CSP.
 
 ## Use the arbiter from your own site
 
@@ -82,6 +83,9 @@ Then set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL, re
 ## Limits (honest list)
 
 - Settlement is simulated; no money moves. Payments, delivery and disputes are out of scope.
+- An agreed price narrows each side's limit to one price step (2.5% of the unit list price, at least ₦100 per unit). That is the designed, bounded leak; "no agreement" reveals only that the step-aligned zones did not overlap.
+- Whatever the visitor types in the chat, including a maximum, goes to the AI provider they chose.
+- The page's Content-Security-Policy lets the assistant reach only the AI providers listed in its settings (Otari, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic). A custom Provider URL, including a local model server, is blocked by the browser; the settings panel says so and names the allowed providers. Supporting another provider means adding its origin to `connect-src` in `sites/oja/_headers`.
 - Anti-probing keys on a salted hash of the caller's IP: a determined prober with many IPs gets more attempts.
 - The arbiter is a trusted third party. Its code is open and deterministic, and its receipts are verifiable, but its operator can see sealed limits.
 - Seller identity is a key issued by the arbiter's admin; there is no KYC or NANDA Index verification yet.

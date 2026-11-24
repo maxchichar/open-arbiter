@@ -1,0 +1,90 @@
+✖ every HTML page gets the same page CSP from _headers (1.383869ms)
+✖ the page CSP is strict for scripts and locked down elsewhere (0.330268ms)
+✖ connect-src allows exactly Oja, the arbiter and the runtime's LLM providers (0.221711ms)
+✖ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.210921ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.295371ms)
+✖ Oja's own HTML has no inline script, event handler or style attribute (0.546568ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.595325
+
+✖ failing tests:
+
+test at sites/oja/tests/csp.test.mjs:48:1
+✖ every HTML page gets the same page CSP from _headers (1.383869ms)
+  AssertionError [ERR_ASSERTION]: no Content-Security-Policy for / in _headers
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:51:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/csp.test.mjs:55:1
+✖ the page CSP is strict for scripts and locked down elsewhere (0.330268ms)
+  TypeError: Cannot read properties of undefined (reading 'content-security-policy')
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:56:36)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at sites/oja/tests/csp.test.mjs:74:1
+✖ connect-src allows exactly Oja, the arbiter and the runtime's LLM providers (0.221711ms)
+  TypeError: Cannot read properties of undefined (reading 'content-security-policy')
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:75:36)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at sites/oja/tests/csp.test.mjs:83:1
+✖ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.210921ms)
+  AssertionError [ERR_ASSERTION]: no CSP for /bridge/*
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:85:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/csp.test.mjs:95:1
+✖ Oja's own HTML has no inline script, event handler or style attribute (0.546568ms)
+  AssertionError [ERR_ASSERTION]: vendor.html: inline <script>
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:98:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>Oja for sellers: seal your prices</title>\n  <link rel="icon" href="favicon.svg" type="image/svg+xml">\n  <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n  <header class="top"><div class="wrap bar"><a class="brand" href="./"><span class="mark" aria-hidden="true">◆</span> Oja</a><nav><a href="./">Market</a></nav></div></header>\n  <main class="wrap">\n    <section class="hero" style="padding-bottom:0">\n      <h1 style="font-size:2.2rem">Seal your prices. <span>Sell while you sleep.</span></h1>\n      <p class="lead">Set a public list price and a private lowest price for each item. Buyers\' agents negotiate through the arbiter; your lowest price is never shown to anyone, not even to the AI.</p>\n    </section>\n    <section class="two">\n      <form id="login" class="card">\n        <h2>Your seller key</h2>\n        <label>Seller key <input id="key" type="password" autocomplete="off" required placeholder="vk_…"></label>\n        <p class="muted small">Kept in this tab only, and sent only to the arbiter at <code id="host"></code>.</p>\n        <button type="submit">Open my listings</button>\n        <p id="who" class="flash" role="status"></p>\n      </form>\n      <form id="listing" class="card" hidden>\n        <h2>Add or update an item</h2>\n        <div class="row">\n          <label>Item id <input id="sku" required pattern="[a-z0-9][a-z0-9_\\-]{0,63}" placeholder="rice-50kg"></label>\n          <label>Unit <input id="unit" value="bag" required></label>\n        </div>\n        <label>Name <input id="title" required placeholder="Local parboiled rice, 50 kg bag"></label>\n        <div class="row">\n          <label>List price per unit (₦) <input id="ask" type="number" min="1" required></label>\n          <label>Lowest price per unit (₦, sealed) <input id="floor" type="number" min="1" required></label>\n        </div>\n        <div class="row">\n          <label>Delivery time (hours) <input id="hours" type="number" min="0" max="2160" value="24" required></label>\n          <label>In stock <input id="stock" type="number" min="0" value="10" required></label>\n        </div>\n        <button type="submit">Seal this listing</button>\n        <p id="saved" class="flash" role="status"></p>\n      </form>\n    </section>\n    <section id="mine" hidden>\n      <h2>Your sealed listings</h2>\n      <table><thead><tr><th>Item</th><th class="num">List</th><th class="num">Lowest (only you see this)</th><th class="num">Delivery</th><th class="num">Stock</th></tr></thead><tbody id="rows"></tbody></table>\n    </section>\n  </main>\n  <script type="module">\n    import { arbiterUrl } from "./js/config.js";\n    const base = arbiterUrl().replace(/\\/+$/, "");\n    const $ = (s) => document.querySelector(s);\n    const ngn = (k) => `₦${(k / 100).toLocaleString("en-NG")}`;\n    $("#host").textContent = new URL(base).host;\n    let key = sessionStorage.getItem("oja-vendor-key") || "";\n    const api = (method, body) => fetch(`${base}/v1/listings`, { method, headers: { "content-type": "application/json", authorization: `Bearer ${key}` }, body: body && JSON.stringify(body) }).then(async (r) => ({ ok: r.ok, data: await r.json() }));\n    async function load() {\n      const r = await api("GET");\n      if (!r.ok) { $("#who").textContent = r.data.message; $("#who").className = "flash error"; return; }\n      sessionStorage.setItem("oja-vendor-key", key);\n      $("#who").textContent = `Signed in as ${r.data.vendor.name}.`;\n      $("#who").className = "flash";\n      $("#listing").hidden = false; $("#mine").hidden = false;\n      $("#rows").replaceChildren(...r.data.listings.map((l) => {\n        const tr = document.createElement("tr");\n        for (const [v, cls] of [[`${l.title} (${l.sku})`, ""], [ngn(l.ask_cents), "num"], [ngn(l.floor_cents), "num"], [`${l.delivery_hours} h`, "num"], [l.stock, "num"]]) {\n          const td = document.createElement("td"); td.textContent = v; td.className = cls; tr.append(td);\n        }\n        tr.addEventListener("click", () => {\n          $("#sku").value = l.sku; $("#unit").value = l.unit; $("#title").value = l.title;\n          $("#ask").value = l.ask_cents / 100; $("#floor").value = l.floor_cents / 100; $("#hours").value = l.delivery_hours; $("#stock").value = l.stock;\n        });\n        return tr;\n      }));\n    }\n    $("#login").addEventListener("submit", (e) => { e.preventDefault(); key = $("#key").value.trim(); load(); });\n    $("#listing").addEventListener("submit", async (e) => {\n      e.preventDefault();\n      const r = await api("PUT", {\n        sku: $("#sku").value.trim(), unit: $("#unit").value.trim(), title: $("#title").value.trim(), currency: "NGN",\n        ask_cents: Math.round(Number($("#ask").value) * 100), floor_cents: Math.round(Number($("#floor").value) * 100),\n        delivery_hours: Number($("#hours").value), stock: Number($("#stock").value),\n      });\n      $("#saved").textContent = r.ok ? `Sealed ${r.data.sku}.` : r.data.message;\n      $("#saved").className = r.ok ? "flash" : "flash error";\n      if (r.ok) load();\n    });\n    if (key) { $("#key").value = key; load(); }\n  </script>\n</body>\n</html>\n',
+    expected: /<script(?![^>]*\bsrc=)[^>]*>/i,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }

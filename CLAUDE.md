@@ -20,7 +20,7 @@ Keep RPI records in `docs/rpi/<task>/`. Never mark a check `pass` without eviden
 
 ```shell
 npm install
-npm test                                   # 18 unit + page tests (node:sqlite, no network)
+npm test                                   # unit, property and page tests (node:sqlite, no network)
 cd arbiter && npx wrangler d1 execute open-arbiter --local --file schema.sql
 cd arbiter && npx wrangler dev --local --port 8787 --ip 127.0.0.1
 node arbiter/scripts/seed.mjs http://127.0.0.1:8787 dev-admin-token http://127.0.0.1:8080
@@ -30,14 +30,16 @@ node <agentic-web>/skills/agentify-website/scripts/serve_site.mjs sites/oja --po
 # Rebuild + validate the network after editing oja_market.hocon or agent-manifest.json:
 (cd sites/oja && node <agentic-web>/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json)
 # Browser check with a scripted LLM (no key): start tests/fake-llm.mjs on 8799, then
-python3 sites/oja/tests/browser_check.py /tmp/shots
+python3 sites/oja/tests/browser_check.py /tmp/shots   # needs Playwright; applies the _headers CSP and fails on any violation
 ```
+
+Publishing Oja needs `DEFAULT_ARBITER_URL` and `ARBITER_KEYS` in `sites/oja/js/config.js`, the same pair as `"open_arbiter"` in `agent-manifest.json`, and the arbiter's origin in the `_headers` CSP `connect-src`; tests fail until all three agree. `?arbiter=` works only on loopback pages. The page CSP allows the runtime's one `<style>` by hash; replacing `runtime/` changes it and `tests/csp.test.mjs` says so.
 
 `.dev.vars` (gitignored) needs `ADMIN_TOKEN`, `BUYER_SALT` and `DEV=1` for local runs. Without `ARBITER_SIGNING_JWK`, the arbiter refuses to sign (500 `misconfigured`) unless `DEV` is exactly `1`; never set `DEV` in a deployment. `npm run test:worker` runs seed, e2e and the concurrency checks against an isolated wrangler dev, so it never touches your local state. Local anti-probing limits apply per IP: reset with `rm -rf arbiter/.wrangler/state` and re-run the schema and seed steps.
 
 ## Invariants: never break these
 
-1. **Sealed limits never leave the arbiter.** No API response, event payload, page state, tool result or log contains `floor_cents` or a buyer's `max_total_cents` (a vendor may read its own floors via `GET /v1/listings`). Tests check this; extend them when you add an output.
+1. **Sealed limits never leave the arbiter as values, and leak only within the price grid.** No API response, event payload, page state, tool result or log contains `floor_cents` or a buyer's `max_total_cents` (a vendor may read its own floors via `GET /v1/listings`). An agreed price depends on a seller's floor only through which per-unit price step it falls in (step = 2.5% of the unit list price, min ₦100), at every quantity, so any number of deals narrows a floor to no less than one step (the buyer's maximum likewise); the property tests in `arbiter/test/mechanism.test.mjs` must keep passing. Tests check all of this; extend them when you add an output.
 2. **Pricing is deterministic and lives only in `arbiter/src/mechanism.js`** (pure functions, no I/O, no clock, no randomness).
 3. **Resolve is idempotent; the same terms can't be renegotiated** (`UNIQUE (buyer_key, terms_key)`), and each item allows at most 3 mandates per buyer per day.
 4. **Buyer tokens stay inside `ArbiterClient`.** Never put them in page state, tool results or agent context.
@@ -64,4 +66,4 @@ Not yet:
 
 ## Known limits (keep them honest in docs)
 
-Settlement is simulated. Anti-probing keys on a salted IP hash. The arbiter operator can see sealed limits. Seller identity is an admin-issued key. Demo prices are illustrative.
+Settlement is simulated. An agreed price narrows each limit to one price step (the designed, bounded leak). Anti-probing keys on a salted IP hash. The arbiter operator can see sealed limits. Seller identity is an admin-issued key. Demo prices are illustrative.
