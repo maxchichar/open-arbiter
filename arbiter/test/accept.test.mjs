@@ -143,3 +143,36 @@ test("the receipt names the committed OFFER_ACCEPTED event, even after a chain r
   const stored = await arb.getReceipt(r.receipt.receipt_id);
   assert.deepEqual(stored.receipt, r.receipt);
 }));
+
+// R6 (P1.2 AC-2.5): a mandate SETTLED with no receipt, as the pre-Phase-0 non-atomic accept could
+// leave one, must never be settled by a later accept. The batch's later statements require that
+// this attempt settled the mandate (mandates.settle_attempt = this receipt id), not only that the
+// mandate is SETTLED without a receipt. The legacy row is written in the instant between the
+// accept's reads and its batch, so the early "already settled" check cannot catch it.
+test("R6: a legacy SETTLED-without-receipt mandate is not settled by a later accept (batch-level)", replayable(async () => {
+  const { db, arb, m, offers } = await market();
+  let injected = false;
+  db.setFault((sql) => {
+    if (!injected && /UPDATE mandates SET state = 'SETTLED'/.test(sql)) {
+      injected = true;
+      db.raw.exec(`UPDATE mandates SET state = 'SETTLED' WHERE id = '${m.mandate_id}'`); // legacy: no receipt, no marker
+    }
+    return false;
+  });
+  const before = await snapshot(db, m.mandate_id);
+  await assert.rejects(arb.acceptOffer(offers[0].offer_id, m.buyer_token), (e) => e.status === 409 && e.code === "already_settled");
+  db.setFault(null);
+  const after = await snapshot(db, m.mandate_id);
+  assert.ok(injected);
+  assert.deepEqual(after.stock, before.stock, "no stock taken");
+  assert.equal(after.receipts, 0, "no receipt for a mandate this accept did not settle");
+  assert.deepEqual(after.offers, before.offers, "offers unchanged");
+  assert.equal(after.events, before.events, "no audit event");
+}));
+
+test("R6: the accept records which attempt settled the mandate", replayable(async () => {
+  const { db, arb, m, offers } = await market();
+  const r = await arb.acceptOffer(offers[0].offer_id, m.buyer_token);
+  const row = await db.prepare("SELECT state, settle_attempt FROM mandates WHERE id = ?").bind(m.mandate_id).first();
+  assert.deepEqual({ ...row }, { state: "SETTLED", settle_attempt: r.receipt.receipt_id });
+}));

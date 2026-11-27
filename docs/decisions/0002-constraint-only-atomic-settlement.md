@@ -2,7 +2,7 @@
 
 - **Status:** accepted, 2026-11-23 (owner amendment A5, after the slice 0 checkpoint; see `docs/rpi/arbiter-hardening/plan.md` §0)
 - **Tasks:** P0.3 (atomic accept) and P0.4 (lost accept answer), slice 4, commit `cdc4990`
-- **Code:** `arbiter/src/core.js` `acceptOffer`, `commit`, `REQUIRED_SCHEMA`; `arbiter/schema.sql`; `sites/oja/js/arbiter-client.js`, `market.js`
+- **Code:** `arbiter/src/core.js` `acceptOffer`, `commit`, `REQUIRED_MIGRATIONS` (was `REQUIRED_SCHEMA`); `arbiter/migrations/` (was `arbiter/schema.sql`); `sites/oja/js/arbiter-client.js`, `market.js`
 - **Tests:** `arbiter/test/accept.test.mjs`, `arbiter/test/schema-guard.test.mjs`, `sites/oja/tests/accept-unknown.test.mjs`, `arbiter/scripts/concurrency.mjs` (F4)
 
 ## Context
@@ -23,7 +23,7 @@ Use **no triggers**. Atomicity comes from schema constraints and from guards ins
    4. `INSERT INTO receipts … SELECT … WHERE settledByUs AND the offer is ACCEPTED`
    5. both events, each `INSERT … SELECT … WHERE EXISTS (receipt with this id)`
 
-   Here `settledByUs` = the mandate is `SETTLED` **and no receipt exists for it yet**. Inside one transaction that is true only when statement 1 just settled it. If statement 1 changes 0 rows, every later statement changes 0 rows, and nothing is written.
+   Here `settledByUs` = the mandate is `SETTLED` **and no receipt exists for it yet**. Inside one transaction that is true only when statement 1 just settled it. **Amended 2026-11-27 (P1.2, R6):** not for a mandate already left SETTLED without a receipt by the pre-Phase-0 accept, so statement 1 now writes its receipt id to `mandates.settle_attempt`, and `settledByUs` also requires `settle_attempt` = this receipt id (ADR 0005 point 9). If statement 1 changes 0 rows, every later statement changes 0 rows, and nothing is written.
 3. **Constraints do the aborting:**
    - `listings` `CONSTRAINT stock_nonneg CHECK (stock >= 0)`: overselling throws, the batch rolls back, and the code maps it to 409 `out_of_stock` and then voids that one offer in a separate write.
    - `UNIQUE (receipts.mandate_id)`: a second receipt for a mandate throws.

@@ -1,5 +1,11 @@
--- Open Arbiter schema (Cloudflare D1 / SQLite).
+-- 0000_baseline: the Open Arbiter schema as released in v0.0 (formerly arbiter/schema.sql).
 -- Floors and budgets are stored here and nowhere else; no API returns them.
+--
+-- Every statement is IF NOT EXISTS, so this migration also baselines a database made from v0.0's
+-- schema.sql: it records the level without changing the database. The check at the end makes it
+-- fail (and roll back) on a database made before CHECK stock_nonneg; the two UNIQUE indexes are
+-- built if missing, which fails on a forked chain or duplicated token hashes. Never edit this file
+-- (migrations/lock.json); change the schema with a new numbered migration (ADR 0005).
 
 CREATE TABLE IF NOT EXISTS vendors (
   id TEXT PRIMARY KEY,
@@ -92,3 +98,10 @@ CREATE TABLE IF NOT EXISTS signing_keys (
   public_jwk TEXT NOT NULL,
   created_at INTEGER NOT NULL
 );
+
+-- Baseline check: CREATE TABLE IF NOT EXISTS leaves an older listings table as it is, so refuse one
+-- without the stock constraint. Inserting 0 into this table fails its CHECK and rolls back the migration.
+CREATE TABLE _baseline_check (ok INTEGER NOT NULL CHECK (ok = 1));
+INSERT INTO _baseline_check (ok)
+  SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'listings' AND sql LIKE '%CONSTRAINT stock_nonneg CHECK (stock >= 0)%';
+DROP TABLE _baseline_check;

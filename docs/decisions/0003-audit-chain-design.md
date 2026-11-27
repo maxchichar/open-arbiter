@@ -2,7 +2,7 @@
 
 - **Status:** accepted, 2026-11-23 (slice 2; the scaling limit is recorded as an owner open item in `docs/rpi/arbiter-hardening/plan.md` §10)
 - **Task:** P0.1 (F3), commit `f762139`
-- **Code:** `arbiter/src/core.js` `commit()`, `verifyChain()`; `arbiter/schema.sql` `events_prev_unique`
+- **Code:** `arbiter/src/core.js` `commit()`, `verifyChain()`; `arbiter/migrations/0000_baseline.sql` `events_prev_unique` (was `arbiter/schema.sql`)
 - **Tests:** `arbiter/test/chain.test.mjs` (node:sqlite), `arbiter/scripts/concurrency.mjs` (wrangler dev)
 
 ## Context

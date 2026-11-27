@@ -28,13 +28,14 @@ const isTermsConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint fail
 const isStockCheck = (e) => sqliteMessage(e).includes("CHECK constraint failed: stock_nonneg");
 const isTokenConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint failed: mandates.token_hash");
 
-/** The schema objects the write guarantees depend on (checked by ensureSchema). */
-const REQUIRED_SCHEMA = [
-  ["listings CHECK stock_nonneg (accept cannot oversell)", (rows) => /CONSTRAINT stock_nonneg CHECK/.test(rows.find((r) => r.name === "listings")?.sql ?? "")],
-  ["UNIQUE events.prev_hash (linear audit chain)", (rows) => rows.some((r) => r.name === "events_prev_unique")],
-  ["UNIQUE mandates.token_hash (idempotent mandate create)", (rows) => rows.some((r) => r.name === "mandates_token_unique")],
-];
-const SCHEMA_ROWS = "SELECT name, sql FROM sqlite_master WHERE (type = 'table' AND name = 'listings') OR (type = 'index' AND name IN ('events_prev_unique', 'mandates_token_unique'))";
+/**
+ * The migrations (arbiter/migrations/) this Worker needs recorded in d1_migrations before it writes.
+ * The write guarantees rest on what they create: 0000_baseline CHECK stock_nonneg (accept cannot
+ * oversell), UNIQUE events.prev_hash (linear chain), UNIQUE mandates.token_hash (idempotent create);
+ * 0001_settle_attempt the R6 settle marker. Always every migration in this tree (a test checks it).
+ */
+export const REQUIRED_MIGRATIONS = ["0000_baseline.sql", "0001_settle_attempt.sql"];
+const isNoMigrationsTable = (e) => /no such table: d1_migrations/.test(sqliteMessage(e));
 const HEX64 = /^[0-9a-f]{64}$/;
 /** The price step an offer was made on, from the list total it stored (ask × quantity). */
 const steps = (o) => {
@@ -153,17 +154,25 @@ export class Arbiter {
   }
 
   /**
-   * The chain, accept and idempotent-create guarantees are enforced by schema constraints, so a
-   * database created before them would silently fork the chain, oversell or duplicate mandates.
-   * Refuse to write until it is migrated or reset. Checked once per database per Worker instance
-   * (see opts.schemaVerified): a migration is a deploy, which starts new instances.
+   * The chain, accept and idempotent-create guarantees are enforced by schema constraints that the
+   * migrations create, so a database below this Worker's migration level would silently fork the
+   * chain, oversell or duplicate mandates. Refuse to write until every REQUIRED_MIGRATIONS name is
+   * recorded in d1_migrations (newer ones are fine: they are applied before the Worker that needs
+   * them, ADR 0005). Checked once per database per Worker instance (see opts.schemaVerified); an
+   * outdated database is checked again on every write until it is migrated.
    */
   async ensureSchema() {
     if (this.schemaVerified.has(this.db)) return;
-    const rows = (await this.q(SCHEMA_ROWS).all()).results;
-    const missing = REQUIRED_SCHEMA.filter(([, ok]) => !ok(rows)).map(([name]) => name);
+    let applied;
+    try {
+      applied = new Set((await this.q("SELECT name FROM d1_migrations").all()).results.map((r) => r.name));
+    } catch (e) {
+      if (!isNoMigrationsTable(e)) throw e;
+      applied = new Set();
+    }
+    const missing = REQUIRED_MIGRATIONS.filter((name) => !applied.has(name));
     if (missing.length) {
-      console.error(`Open Arbiter: database schema is out of date (missing: ${missing.join("; ")}); refusing to write.`);
+      console.error(`Open Arbiter: database migrations not applied (missing: ${missing.join(", ")}); refusing to write.`);
       throw new ArbiterError("misconfigured", "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes.", 500);
     }
     this.schemaVerified.add(this.db);
@@ -191,7 +200,7 @@ export class Arbiter {
     const keyHash = await sha256Hex(apiKey);
     await this.commit({
       events: [{ mandateId: null, kind: "VENDOR_REGISTERED", payload: { vendor_id: id, name: name.trim(), origin: origin || null } }],
-      statements: () => [this.q("INSERT INTO vendors VALUES (?,?,?,?,?)", id, name.trim(), origin || null, keyHash, this.clock())],
+      statements: () => [this.q("INSERT INTO vendors (id, name, origin, key_hash, created_at) VALUES (?,?,?,?,?)", id, name.trim(), origin || null, keyHash, this.clock())],
     });
     return { vendor_id: id, api_key: apiKey };
   }
@@ -221,7 +230,7 @@ export class Arbiter {
     await this.commit({
       events: [{ mandateId: null, kind: "LISTING_SEALED", payload: { vendor_id: vendor.id, sku: l.sku } }],
       statements: () => [this.q(
-        `INSERT INTO listings VALUES (?,?,?,?,?,?,?,?,?,?)
+        `INSERT INTO listings (vendor_id, sku, title, unit, currency, ask_cents, floor_cents, delivery_hours, stock, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)
          ON CONFLICT (vendor_id, sku) DO UPDATE SET title=excluded.title, unit=excluded.unit, currency=excluded.currency,
            ask_cents=excluded.ask_cents, floor_cents=excluded.floor_cents, delivery_hours=excluded.delivery_hours,
            stock=excluded.stock, updated_at=excluded.updated_at`,
@@ -440,7 +449,9 @@ export class Arbiter {
       audit_hash: auditHash,
       settlement: "simulated",
     });
-    const settledByUs = "EXISTS (SELECT 1 FROM mandates WHERE id = ? AND state = 'SETTLED') AND NOT EXISTS (SELECT 1 FROM receipts WHERE mandate_id = ?)";
+    // R6: only the attempt that settled the mandate (statement 1 writes its receipt id) may go on, so
+    // a mandate left SETTLED without a receipt by an older accept can never take stock or a receipt.
+    const settledByUs = "EXISTS (SELECT 1 FROM mandates WHERE id = ? AND state = 'SETTLED' AND settle_attempt = ?) AND NOT EXISTS (SELECT 1 FROM receipts WHERE mandate_id = ?)";
 
     let payload, signature, done;
     try {
@@ -453,16 +464,16 @@ export class Arbiter {
           payload = receipt(acceptedHash);
           signature = await signPayload(privateJwk, payload); // signed before anything is written
           return [
-            this.q(`UPDATE mandates SET state = 'SETTLED' WHERE id = ? AND state = 'RESOLVED'
+            this.q(`UPDATE mandates SET state = 'SETTLED', settle_attempt = ? WHERE id = ? AND state = 'RESOLVED'
                     AND EXISTS (SELECT 1 FROM offers WHERE id = ? AND mandate_id = ? AND state = 'OPEN' AND expires_at > ?)`,
-              m.id, o.id, m.id, now),
+              receiptId, m.id, o.id, m.id, now),
             this.q(`UPDATE listings SET stock = stock - ? WHERE vendor_id = ? AND sku = ? AND ${settledByUs}`,
-              o.quantity, o.vendor_id, o.sku, m.id, m.id),
+              o.quantity, o.vendor_id, o.sku, m.id, receiptId, m.id),
             this.q(`UPDATE offers SET state = CASE WHEN id = ? THEN 'ACCEPTED' ELSE 'VOID' END WHERE mandate_id = ? AND ${settledByUs}`,
-              o.id, m.id, m.id, m.id),
+              o.id, m.id, m.id, receiptId, m.id),
             this.q(`INSERT INTO receipts (id, mandate_id, payload, signature, key_id, created_at)
                     SELECT ?,?,?,?,?,? WHERE ${settledByUs} AND EXISTS (SELECT 1 FROM offers WHERE id = ? AND state = 'ACCEPTED')`,
-              receiptId, m.id, canonicalJson(payload), signature, kid, now, m.id, m.id, o.id),
+              receiptId, m.id, canonicalJson(payload), signature, kid, now, m.id, receiptId, m.id, o.id),
           ];
         },
         guard: { sql: "EXISTS (SELECT 1 FROM receipts WHERE id = ?)", args: [receiptId] },

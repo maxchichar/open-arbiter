@@ -30,7 +30,8 @@ writeFileSync(envFile, `ADMIN_TOKEN=${ADMIN}\nBUYER_SALT=harness\nDEV=1\n`);
 const port = await freePort();
 const base = `http://127.0.0.1:${port}`;
 
-const schema = spawnSync(wrangler, ["d1", "execute", "open-arbiter", "--local", "--persist-to", state, "--file", "schema.sql"], { cwd: arbiterDir, encoding: "utf8" });
+// The same migrations a deployment gets (arbiter/migrations/); not interactive, so wrangler does not prompt.
+const schema = spawnSync(wrangler, ["d1", "migrations", "apply", "open-arbiter", "--local", "--persist-to", state], { cwd: arbiterDir, encoding: "utf8", env: { ...process.env, CI: "1" } });
 if (schema.status !== 0) { console.error(schema.stdout, schema.stderr); process.exit(2); }
 
 const server = spawn(wrangler, ["dev", "--local", "--port", String(port), "--ip", "127.0.0.1", "--persist-to", state,

@@ -5,14 +5,24 @@
 // n-th statement executed (0-based, counted across run/first/all/batch) when it returns true
 // (a generic error) or an Error (thrown as is, e.g. to imitate a constraint violation).
 import { DatabaseSync } from "node:sqlite";
-import { readFileSync } from "node:fs";
+import { applyMigrations, migrationNames } from "./migrate.mjs";
 
-export const SCHEMA_SQL = readFileSync(new URL("../schema.sql", import.meta.url), "utf8");
-
-/** @param opts.schemaSql use a different schema (for tests of outdated databases) */
-export function memoryD1({ fault, schemaSql = SCHEMA_SQL } = {}) {
+/**
+ * An in-memory database migrated as `wrangler d1 migrations apply` would (./migrate.mjs).
+ * @param opts.migrations the migration names to apply (default: all of them; [] for none)
+ */
+export function memoryD1({ fault, migrations } = {}) {
   const db = new DatabaseSync(":memory:");
-  db.exec(schemaSql);
+  const names = migrations ?? migrationNames();
+  if (names.length) applyMigrations(db, { upTo: names.at(-1) });
+  const d1 = d1Over(db, { fault });
+  // An explicit list may skip a name in the middle: drop the records of the ones not asked for.
+  if (migrations && names.length) for (const n of migrationNames()) if (!names.includes(n)) db.prepare('DELETE FROM "d1_migrations" WHERE name = ?').run(n);
+  return d1;
+}
+
+/** The D1 look-alike over an existing node:sqlite database. */
+export function d1Over(db, { fault } = {}) {
   let executed = 0;
   const check = (sql) => {
     const n = executed++;

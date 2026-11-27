@@ -26,7 +26,7 @@ arbiter/                Cloudflare Worker + D1
   src/core.js           mandates, sealed listings, offers, receipts, audit chain
   src/mcp.js            MCP server (tools: list_catalog, negotiate, accept_offer, get_receipt, verify_receipt)
   src/index.js          REST API + /mcp + /.well-known/jwks.json, CORS
-  schema.sql            D1 schema
+  migrations/           numbered D1 migrations (ADR 0005); lock.json pins their hashes
   scripts/              seed.mjs (demo sellers), e2e.mjs, keygen.mjs
   test/                 unit tests on node:sqlite
 sites/oja/              the agentic website (static)
@@ -47,7 +47,7 @@ Needs Node 22+.
 npm install
 cd arbiter
 printf 'ADMIN_TOKEN=dev-admin-token\nBUYER_SALT=dev\nDEV=1\n' > .dev.vars   # DEV=1: local only, lets the arbiter generate its signing key
-npx wrangler d1 execute open-arbiter --local --file schema.sql
+npx wrangler d1 migrations apply open-arbiter --local
 npx wrangler dev --local --port 8787 &
 node scripts/seed.mjs http://127.0.0.1:8787 dev-admin-token http://127.0.0.1:8080
 node scripts/e2e.mjs http://127.0.0.1:8787
@@ -67,7 +67,7 @@ There are two environments, `staging` and `production`, each its own Worker (`op
 cd arbiter
 npx wrangler d1 create open-arbiter-staging                      # paste the id into [[env.staging.d1_databases]]
 npx wrangler kv namespace create AUDIT_ANCHOR --env staging      # paste the id into [[env.staging.kv_namespaces]]
-npx wrangler d1 execute open-arbiter-staging --env staging --remote --file schema.sql
+npx wrangler d1 migrations apply open-arbiter-staging --env staging --remote   # after a Time Travel bookmark and premigrate-check (ADR 0005)
 npx wrangler secret put ADMIN_TOKEN --env staging
 npx wrangler secret put BUYER_SALT --env staging
 node scripts/keygen.mjs --out ~/keys/open-arbiter-staging.jwk    # outside the repo; one key per environment

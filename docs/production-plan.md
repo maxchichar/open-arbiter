@@ -120,7 +120,7 @@ Schema guard (from slice 4): `commit()` refuses writes when the CHECK or the `pr
 
 **Goal:** a staging and a production environment on Cloudflare over HTTPS, deployed only through CI, with tested rollback and restore. After this phase you always have a live, submittable version. **29 Nov to 3 Dec, 15 h. Tier: critical** (secrets, deploys).
 
-**Status:** P1.0 done 24 Nov as `ebed97f` (131 tests, browser check with a mocked Otari sign-in, 0 CSP violations). P1.1 local part done 27 Nov as `c2da062` (159 tests; per-environment config, deploy guard script, secret scan); its Cloudflare checks wait for approval A1.
+**Status:** P1.0 done 24 Nov as `ebed97f` (131 tests, browser check with a mocked Otari sign-in, 0 CSP violations). P1.1 local part done 27 Nov as `c2da062` (159 tests; per-environment config, deploy guard script, secret scan); its Cloudflare checks wait for approval A1. P1.2 done locally 27 Nov (191 tests; numbered migrations, migration-level guard, M2 check against v0.0, R6 marker and pre-migration check, ADR 0005); hosted-D1 checks go to P1.8.
 
 **Research**
 

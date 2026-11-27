@@ -1,0 +1,42 @@
+{
+  "ref": "v0.0",
+  "clock_start": 1795000000,
+  "clock_end": 1795000031,
+  "public_key": {
+    "kid": "2bff084973a71d48",
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "NQbnmER51lSOthFnIp5Q7NGKtKYxpwTfbrEj0JOL5a0",
+    "y": "xE83TJVa2T2GszpIIZi77UZXQqOdN75ql-JqbeZcvds"
+  },
+  "counts": {
+    "vendors": 2,
+    "listings": 4,
+    "mandates": 4,
+    "offers": 4,
+    "receipts": 1,
+    "events": 15,
+    "signing_keys": 0
+  },
+  "chain_head": "388485ccc7f390dab3311b9e5c5e51a12f82f92dbab263fe6f7e2dbca4547c3c",
+  "settled": {
+    "mandate_id": "man_wRZbTw2FEl8F6dzd",
+    "receipt_id": "rct_lZjoiGQYgK1sy2xX"
+  },
+  "open": {
+    "mandate_id": "man_pwe2K5bxoIzwCtVO",
+    "buyer_token": "bt_hZ8bI0Stzt7V5DYKa-FZ2dxx9637fNSlBI6FisMO0_s",
+    "offer_ids": [
+      "off_K4zJ_q8Ru6Ile7Tu",
+      "off_rz0pj_qKULGDIipQ"
+    ],
+    "expires_at": 1795000921
+  },
+  "no_agreement": {
+    "mandate_id": "man_8NWsgg81FQZqljLd"
+  },
+  "pending": {
+    "mandate_id": "man_k2stqxBcgCSYWN_p",
+    "buyer_secret": "fixture-client-secret"
+  }
+}

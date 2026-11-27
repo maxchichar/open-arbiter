@@ -11,7 +11,9 @@
     "e2e": "node arbiter/scripts/e2e.mjs",
     "test:worker": "node arbiter/scripts/worker-harness.mjs",
     "deploy:arbiter": "node arbiter/scripts/deploy.mjs",
-    "build:oja": "node scripts/build-oja.mjs"
+    "build:oja": "node scripts/build-oja.mjs",
+    "test:m2": "node --test arbiter/test/m2/*.test.mjs",
+    "test:migrations-d1": "node arbiter/scripts/migrations-d1-check.mjs"
   },
   "keywords": [],
   "author": "",

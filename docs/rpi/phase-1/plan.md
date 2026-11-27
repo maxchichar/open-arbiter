@@ -109,6 +109,8 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 
 ### P1.2: migrations (includes R6), ADR 0005
 
+**State (2026-11-27):** done locally ([`evidence/p1.2-summary.md`](evidence/p1.2-summary.md)). The hosted-D1 behaviour goes to P1.8; CI wiring (`fetch-depth: 0`, `test:m2`, `test:migrations-d1`) to P1.3.
+
 | ID | Given / When / Then | Verification |
 | --- | --- | --- |
 | AC-2.1 | `arbiter/migrations/0000_baseline.sql` gives exactly today's schema (same `sqlite_master` name, type and sql as `schema.sql`). `schema.sql` is generated from, or replaced by, the migrations. | node:sqlite plus `migrations apply --local` |

@@ -1,0 +1,14 @@
+✔ HEAD's migrations: v0.0's own tests pass against the migrated database (979.654587ms)
+✔ negative: a migration that drops a column v0.0 reads is caught (674.058497ms)
+✔ negative: an 'additive' column on a table v0.0 inserts positionally is caught (822.805361ms)
+✔ default: every release tag is checked (926.295877ms)
+✔ an unknown ref is a usage error, not a pass (51.288784ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3518.576783
+exit: 0
