@@ -48,7 +48,7 @@ export async function errorFingerprint(e) {
   return (await sha256Hex(`${e?.constructor?.name || typeof e}|${frames.join(">")}`)).slice(0, 12);
 }
 
-/** The request's log line. `extra` may hold only mcp, reason, error_class, error_fingerprint. */
+/** The request's log line. `extra` may hold only mcp, reason, error_class, error_fingerprint, rate_limit. */
 export function logLine({ requestId, env, method, route, status, code, started, extra = {} }) {
   return {
     ts: new Date().toISOString(),

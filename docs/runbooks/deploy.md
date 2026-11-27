@@ -47,6 +47,10 @@ Template and tests: `arbiter/test/fixtures/rebuild-mandates.sql`, `arbiter/test/
 2. Oja's seller console (`/vendor`) shows the same check in its status line: "Arbiter healthy · signing key <kid> · database at <migration>".
 3. Then the environment's smoke test (P1.4b).
 
+Also check `rate_limit` in the `/health` body. `"binding+instance"` means the Workers rate-limiting binding is live. `"instance"` means it isn't bound, and only the per-instance window limits each IP. The Cloudflare docs don't say whether the binding is on the Free plan (checked 2026-11-27). If `wrangler deploy` refuses the `[[ratelimits]]` binding, stop: don't remove it to get the deploy through. That decision is the owner's (P1.7). A log line with `"rate_limit": "binding_error"` means the binding threw, and the request went through on the instance window alone.
+
+Per-IP limit: 100 requests per 60 s in staging and production (`IP_LIMIT_PER_60S` and the `IP_RATE_LIMIT` binding, which must agree; `wrangler-env.test.mjs` checks this). Refusals are `429 rate_limited_ip` with `retry-after: 60`. In the log, `reason` is `ip_limit_instance` or `ip_limit_binding`. Chain verification (`GET /v1/audit/verify`) needs the admin token.
+
 `/health` makes at most 3 queries, reads no business table and is never cached by clients or the edge (`cache-control: no-store`). Each Worker instance reuses its checks for 10 s (`checked_at` says when they ran), so a burst costs at most 3 queries per instance per 10 s. A failure is held for those 10 s as well: after a fix, wait 10 s before rechecking.
 
 ## Logs

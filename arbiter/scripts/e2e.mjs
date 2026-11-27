@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 
 const base = process.argv[2] || "http://localhost:8787";
+const admin = process.argv[3] || process.env.ADMIN_TOKEN || "dev-admin-token"; // chain verify is admin-only (P1.7)
 const origin = "https://oja-demo.example";
 const call = async (method, path, { body, token } = {}) => {
   const r = await fetch(base + path, {
@@ -16,6 +17,10 @@ const call = async (method, path, { body, token } = {}) => {
 const rpc = async (method, params, id = 1) => (await call("POST", "/mcp", { body: { jsonrpc: "2.0", id, method, params } })).data;
 
 const run = Date.now() % 1000; // vary terms so reruns are not refused as identical
+const hl = await call("GET", "/health");
+assert.equal(hl.status, 200, JSON.stringify(hl.data));
+assert.equal(hl.data.rate_limit, "binding+instance", "the IP_RATE_LIMIT binding is live under workerd (P1.7)");
+assert.equal(hl.data.migrations.applied, "0002_read_indexes.sql");
 const cat = await call("GET", "/v1/catalog?sku=rice-50kg");
 assert.equal(cat.status, 200);
 assert.equal(cat.cors, "*");
@@ -53,7 +58,8 @@ console.log("MCP offers:", n.offers.map((o) => `${o.vendor_name} ₦${o.total.to
 const none = await rpc("tools/call", { name: "negotiate", arguments: { sku: "palm-oil-25l", quantity: 1, max_total: 40000, deliver_within_hours: 24 + (run % 40) } });
 assert.equal(none.result.structuredContent.agreement, false);
 console.log(`MCP low bid -> agreement=false: "${none.result.structuredContent.message}"`);
-const audit = await call("GET", "/v1/audit/verify");
+assert.equal((await call("GET", "/v1/audit/verify")).status, 401, "chain verify is admin-only (P1.7)");
+const audit = await call("GET", "/v1/audit/verify", { token: admin });
 assert.equal(audit.data.ok, true);
 console.log(`audit chain intact: ${audit.data.events} events`);
 console.log("E2E OK");

@@ -70,7 +70,7 @@ export async function health(db, env) {
 }
 
 async function runChecks(db, env, now) {
-  const out = { version: versionOf(env), db: "unknown", key: { loaded: false, kid: null, source: null }, migrations: { latest: REQUIRED_MIGRATIONS.at(-1), applied: null }, schema: "unknown", checked_at: new Date(now).toISOString() };
+  const out = { version: versionOf(env), db: "unknown", key: { loaded: false, kid: null, source: null }, migrations: { latest: REQUIRED_MIGRATIONS.at(-1), applied: null }, schema: "unknown", rate_limit: env?.IP_RATE_LIMIT?.limit ? "binding+instance" : "instance", checked_at: new Date(now).toISOString() };
   let failed = null;
   const fail = (code) => { failed ??= code; };
 

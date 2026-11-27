@@ -17,6 +17,7 @@ export const ERRORS = Object.freeze({
   offer_expired: { status: 410, meaning: "The offer's 15 minutes have passed." },
   too_large: { status: 413, meaning: "The request body is over 64 KB." },
   rate_limited: { status: 429, meaning: "The caller reached 3 negotiations for this item in 24 hours (anti-probing)." },
+  rate_limited_ip: { status: 429, meaning: "Too many requests from this address in the last minute (quota protection); retry after the retry-after header's seconds." },
   internal: { status: 500, meaning: "An unexpected error. Whether a write happened is unknown; the request_id identifies it in the logs." },
   misconfigured: { status: 500, meaning: "The deployment is missing its signing key or its database migrations; nothing was written." },
   busy: { status: 503, meaning: "The audit log is busy with concurrent writes; nothing was written. Retry shortly." },

@@ -23,9 +23,10 @@ const check = (name, ok, detail) => {
 };
 const tally = (rs) => rs.reduce((m, r) => ({ ...m, [r.status]: (m[r.status] || 0) + 1 }), {});
 
-const before = await call("GET", "/v1/audit/verify");
+const before = await call("GET", "/v1/audit/verify", { token: admin });
 check("chain intact before", before.data.ok === true, JSON.stringify(before.data));
 
+let ipLimited = false;
 // F2: rounds of 25 concurrent mandates, same buyer, a fresh sku per round, distinct terms.
 // Cap is 3 per item per day. The race window is narrow, so one burst is not a reliable
 // reproduction; every round must hold.
@@ -36,10 +37,12 @@ check("chain intact before", before.data.ok === true, JSON.stringify(before.data
     const rs = await Promise.all(Array.from({ length: 25 }, (_, i) => call("POST", "/v1/mandates", {
       body: { sku, quantity: i + 1, max_total_cents: 1_000_000, deliver_within_hours: 48 },
     })));
+    // A 429 here must be the anti-probing cap, not the per-IP request limit (P1.7).
+    if (rs.some((r) => r.status === 429 && r.data?.error !== "rate_limited")) ipLimited = true;
     rounds.push(tally(rs));
   }
   const worst = Math.max(...rounds.map((t) => t[201] || 0));
-  const clean = rounds.every((t) => (t[201] || 0) + (t[429] || 0) === 25);
+  const clean = !ipLimited && rounds.every((t) => (t[201] || 0) + (t[429] || 0) === 25);
   check("F2 daily cap holds under concurrency", worst <= 3 && clean, `most 201s in a round: ${worst} (cap 3); rounds ${JSON.stringify(rounds)}`);
 }
 
@@ -66,7 +69,7 @@ check("chain intact before", before.data.ok === true, JSON.stringify(before.data
   const rs = await Promise.all(jobs);
   const t = tally(rs);
   check("F3 concurrent writes succeed", rs.every((r) => r.status < 300), `statuses ${JSON.stringify(t)}`);
-  const after = await call("GET", "/v1/audit/verify");
+  const after = await call("GET", "/v1/audit/verify", { token: admin });
   check("F3 audit chain intact after concurrent writes", after.data.ok === true, JSON.stringify(after.data));
 }
 
@@ -84,7 +87,7 @@ check("chain intact before", before.data.ok === true, JSON.stringify(before.data
   const rs = await Promise.all(offers.map((o) => call("POST", `/v1/offers/${o.offer_id}/accept`, { token: m.data.buyer_token })));
   const t = tally(rs);
   check("F4 concurrent accepts settle once", offers.length === 2 && t[200] === 1 && t[409] === 1, `offers ${offers.length}, statuses ${JSON.stringify(t)}`);
-  const after = await call("GET", "/v1/audit/verify");
+  const after = await call("GET", "/v1/audit/verify", { token: admin });
   check("F4 audit chain intact after accepts", after.data.ok === true, JSON.stringify(after.data));
 }
 

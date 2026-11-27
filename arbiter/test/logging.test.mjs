@@ -7,7 +7,7 @@ import { memoryD1 } from "./sqlite-d1.mjs";
 import { captureLogs, renderCalls } from "./log-capture.mjs";
 
 const FIELDS = ["ts", "level", "request_id", "env", "version", "method", "route", "status", "code", "duration_ms"];
-const OPTIONAL = ["mcp", "reason", "error_class", "error_fingerprint"];
+const OPTIONAL = ["mcp", "reason", "error_class", "error_fingerprint", "rate_limit"];
 const env = (extra = {}) => ({ DB: memoryD1(), ADMIN_TOKEN: "admin", DEV: "1", ENVIRONMENT: "test", ...extra });
 
 async function call(e, path, { method = "GET", headers = {}, body } = {}) {

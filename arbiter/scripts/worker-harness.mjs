@@ -78,7 +78,7 @@ const results = {};
 if (want.length) {
   results.seed = run("seed", "seed.mjs", [ADMIN, "http://127.0.0.1:8080"], { SEED_KEYS_OUT: join(state, "seed-keys.json") });
 }
-if (want.includes("e2e")) results.e2e = results.seed && run("e2e", "e2e.mjs");
+if (want.includes("e2e")) results.e2e = results.seed && run("e2e", "e2e.mjs", [ADMIN]);
 if (want.includes("concurrency")) results.concurrency = results.seed && run("concurrency", "concurrency.mjs", [ADMIN]);
 if (want.includes("browser")) results.browser = results.seed && await browser();
 

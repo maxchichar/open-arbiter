@@ -107,6 +107,7 @@ Every error is JSON `{"error": "<code>", "message": "...", "request_id": "..."}`
 | `offer_expired` | 410 | The offer's 15 minutes have passed. |
 | `too_large` | 413 | The request body is over 64 KB. |
 | `rate_limited` | 429 | The caller reached 3 negotiations for this item in 24 hours (anti-probing). |
+| `rate_limited_ip` | 429 | Too many requests from this address in the last minute (quota protection); retry after the retry-after header's seconds. |
 | `internal` | 500 | An unexpected error. Whether a write happened is unknown; the request_id identifies it in the logs. |
 | `misconfigured` | 500 | The deployment is missing its signing key or its database migrations; nothing was written. |
 | `busy` | 503 | The audit log is busy with concurrent writes; nothing was written. Retry shortly. |
@@ -124,6 +125,7 @@ Every error is JSON `{"error": "<code>", "message": "...", "request_id": "..."}`
 - Whatever the visitor types in the chat, including a maximum, goes to the AI provider they chose.
 - The page's Content-Security-Policy lets the assistant reach only the AI providers listed in its settings (Otari, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic), plus otari.ai for the Connect with Otari sign-in. Connect with Otari saves the new key in this browser like a pasted key, so any script on the site could read it; the CSP allows only the site's own scripts. A custom Provider URL, including a local model server, is blocked by the browser; the settings panel says so and names the allowed providers. Supporting another provider means adding its origin to `connect-src` in `sites/oja/_headers`.
 - Anti-probing keys on a salted hash of the caller's IP: a determined prober with many IPs gets more attempts.
+- Quota protection (Cloudflare Free plan). Workers: 100,000 requests a day and 10 ms of CPU per request; past the daily limit Cloudflare answers with **Error 1027** until 00:00 UTC, before the arbiter runs. D1: 5 million rows read and 100,000 rows written a day; past either, every query fails until 00:00 UTC, so the arbiter answers `500 internal` (and `/health` `503 db_unavailable`) for the rest of the UTC day. To keep one client from spending that: each IP gets 100 requests a minute (`429 rate_limited_ip`, with `retry-after`), counted per Worker instance and, where the Workers rate-limiting binding is available, per Cloudflare location (`/health` says which in `rate_limit`). Both counts are approximate, and many addresses together (a botnet, or IPv6 rotation) can still spend the daily quotas; shared addresses (carrier-grade NAT) share one allowance. Public reads are bounded: the catalog returns at most 100 listings a page (`next` continues it), and full chain verification (`/v1/audit/verify`) needs the admin token.
 - The arbiter is a trusted third party. Its code is open and deterministic, and its receipts are verifiable, but its operator can see sealed limits.
 - Seller identity is a key issued by the arbiter's admin; there is no KYC or NANDA Index verification yet.
 - Demo sellers and prices are illustrative, not market data.

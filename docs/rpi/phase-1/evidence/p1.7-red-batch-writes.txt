@@ -1,0 +1,45 @@
+{
+  ts: '2026-11-27T22:30:28.748Z',
+  level: 'info',
+  request_id: '338619208f86a4f3571aba768b913c38',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/mcp',
+  status: 200,
+  code: null,
+  duration_ms: 23,
+  mcp: [
+    { code: null, method: 'tools/call', tool: 'negotiate' },
+    { code: null, method: 'tools/call', tool: 'negotiate' }
+  ]
+}
+✖ an MCP batch holds at most one write tool call, and a full batch stays under 50 statements (73.605581ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166.24212
+
+✖ failing tests:
+
+test at arbiter/test/quota.test.mjs:139:1
+✖ an MCP batch holds at most one write tool call, and a full batch stays under 50 statements (73.605581ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== 400
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/quota.test.mjs:150:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 400,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+exit: 1

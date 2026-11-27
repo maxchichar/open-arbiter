@@ -5,12 +5,15 @@ import { MECHANISM } from "./mechanism.js";
 import { sha256Hex } from "./crypto.js";
 import { requestIdFor, routeOf, errorFingerprint, logLine } from "./log.js";
 import { health, signingJwkOf } from "./health.js";
+import { enforceIpLimit, ipHash, MCP_BATCH_MAX } from "./quota.js";
+const WRITE_TOOLS = new Set(["negotiate", "accept_offer"]);
+import { CATALOG_PAGE_MAX } from "./core.js";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
   "Access-Control-Allow-Headers": "content-type, authorization, mcp-protocol-version, mcp-session-id",
-  "Access-Control-Expose-Headers": "mcp-session-id, x-request-id",
+  "Access-Control-Expose-Headers": "mcp-session-id, x-request-id, retry-after",
   "Access-Control-Max-Age": "86400",
 };
 
@@ -28,10 +31,8 @@ async function body(req) {
 }
 
 /** Caller identity for anti-probing limits: a salted hash of the client IP, never stored raw. */
-async function buyerKey(req, env) {
-  const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "local";
-  return sha256Hex(`${env.BUYER_SALT || "open-arbiter"}:${ip}`);
-}
+/** The anti-probing buyer key: the salted IP hash (quota.js; only cf-connecting-ip when deployed). */
+const buyerKey = (req, env) => ipHash(req, env);
 
 function callerOrigin(req) {
   const o = req.headers.get("origin");
@@ -71,6 +72,7 @@ export default {
     }
     res.headers.set("x-request-id", requestId);
     if (rec.mcp.length) extra.mcp = rec.mcp.slice(0, 20);
+    if (rec.rateLimit) extra.rate_limit = rec.rateLimit;
     console.log(logLine({ requestId, env, method: req.method, route: routeOf(req), status: res.status, code, started, extra }));
     return res;
   },
@@ -78,6 +80,8 @@ export default {
 
 async function route(req, env, rec) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+    // P1.7: before any body or database read. An MCP batch is counted per message below.
+    await enforceIpLimit(req, env, rec);
     const url = new URL(req.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
     // Before the Arbiter is built: /health reports a bad key secret instead of failing on it.
@@ -107,6 +111,12 @@ async function route(req, env, rec) {
         const msg = await body(req);
         const ctx = { buyerKey: await buyerKey(req, env), callerOrigin: callerOrigin(req), trace: (t) => rec.mcp.push(t) };
         if (Array.isArray(msg)) {
+          if (msg.length > MCP_BATCH_MAX) throw new ArbiterError("invalid", `A batch holds at most ${MCP_BATCH_MAX} messages.`);
+          // D1 Free: 50 queries per invocation; one negotiate costs up to 15 (P1.7).
+          if (msg.filter((m) => m?.method === "tools/call" && WRITE_TOOLS.has(m?.params?.name)).length > 1) {
+            throw new ArbiterError("invalid", "A batch holds at most one negotiate or accept_offer call.");
+          }
+          if (msg.length > 1) await enforceIpLimit(req, env, rec, msg.length - 1);
           const out = (await Promise.all(msg.map((m) => handleRpc(arb, m, ctx)))).filter(Boolean);
           return out.length ? json(out) : new Response(null, { status: 202, headers: CORS });
         }
@@ -116,13 +126,19 @@ async function route(req, env, rec) {
 
       // ---- public ----
       if (req.method === "GET" && path === "/v1/catalog") {
-        const rows = await arb.catalog({ sku: url.searchParams.get("sku") || undefined, vendor_id: url.searchParams.get("vendor_id") || undefined });
-        return json({ items: url.searchParams.get("units") === "minor" ? rows : presentCatalog(rows) });
+        const q = url.searchParams;
+        const limit = q.has("limit") ? (/^\d{1,4}$/.test(q.get("limit")) ? Number(q.get("limit")) : NaN) : CATALOG_PAGE_MAX;
+        const { items, next } = await arb.catalogPage({ sku: q.get("sku") || undefined, vendor_id: q.get("vendor_id") || undefined, limit, after: q.get("after") ?? undefined });
+        return json({ items: q.get("units") === "minor" ? items : presentCatalog(items), next });
       }
       let m;
       if (req.method === "GET" && (m = path.match(/^\/v1\/receipts\/(rct_[\w-]+)$/))) return json(await arb.getReceipt(m[1]));
       if (req.method === "POST" && path === "/v1/receipts/verify") return json(await arb.verifyReceipt(await body(req)));
-      if (req.method === "GET" && path === "/v1/audit/verify") return json(await arb.verifyChain());
+      // Reads the whole chain, so admin only (P1.7 AC-7.2); P1.12 adds signed checkpoints.
+      if (req.method === "GET" && path === "/v1/audit/verify") {
+        if (!env.ADMIN_TOKEN || bearer(req) !== env.ADMIN_TOKEN) throw new ArbiterError("unauthorized", "Admin token required.");
+        return json(await arb.verifyChain());
+      }
 
       // ---- admin ----
       if (req.method === "POST" && path === "/v1/vendors") {

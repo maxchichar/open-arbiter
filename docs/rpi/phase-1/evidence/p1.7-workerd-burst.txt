@@ -1,0 +1,22 @@
+## instance window refuses: --var IP_LIMIT_PER_60S:5, binding limit 1000; the readiness poll used another IP
+  request 1: HTTP 200  retry-after:   error: -
+  request 2: HTTP 200  retry-after:   error: -
+  request 3: HTTP 200  retry-after:   error: -
+  request 4: HTTP 200  retry-after:   error: -
+  request 5: HTTP 200  retry-after:   error: -
+  request 6: HTTP 429  retry-after: 60  error: rate_limited_ip
+  another IP: HTTP 200
+  log line of the 429:
+    { ts: '2026-11-27T22:26:26.200Z', level: 'info', request_id: '039b4778c5452d4e0967582e43752223', env: 'local', version: { worker: '287ac869-a1f1-4c77-91cd-0fd76fea65e2', mechanism: '3.0.0', git: 'unknown' }, method: 'GET', route: '/', status: 429, code: 'rate_limited_ip', duration_ms: 1, reason: 'ip_limit_instance' }
+## binding refuses: IP_LIMIT_PER_60S 1000, IP_RATE_LIMIT limit 5; the readiness poll used another IP
+  request 1: HTTP 200  retry-after:   error: -
+  request 2: HTTP 200  retry-after:   error: -
+  request 3: HTTP 200  retry-after:   error: -
+  request 4: HTTP 200  retry-after:   error: -
+  request 5: HTTP 200  retry-after:   error: -
+  request 6: HTTP 429  retry-after: 60  error: rate_limited_ip
+  another IP: HTTP 200
+  log line of the 429:
+    { ts: '2026-11-27T22:26:29.739Z', level: 'info', request_id: '1770d416bbbac23677daff869e0835bf', env: 'local', version: { worker: '18ef126d-1ee1-4d56-a6e9-0611a5cad7b1', mechanism: '3.0.0', git: 'unknown' }, method: 'GET', route: '/', status: 429, code: 'rate_limited_ip', duration_ms: 3, reason: 'ip_limit_binding' }
+# port 8792 listeners left: 0
+exit: 0

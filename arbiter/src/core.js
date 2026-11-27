@@ -30,7 +30,26 @@ const isTokenConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint fail
  * oversell), UNIQUE events.prev_hash (linear chain), UNIQUE mandates.token_hash (idempotent create);
  * 0001_settle_attempt the R6 settle marker. Always every migration in this tree (a test checks it).
  */
-export const REQUIRED_MIGRATIONS = ["0000_baseline.sql", "0001_settle_attempt.sql"];
+export const REQUIRED_MIGRATIONS = ["0000_baseline.sql", "0001_settle_attempt.sql", "0002_read_indexes.sql"];
+/** The most listings one catalog call returns (P1.7 AC-7.2). Pages continue with `after`. */
+export const CATALOG_PAGE_MAX = 100;
+const CURSOR_MAX = 512;
+
+/** The opaque catalog cursor: the last row's (sku, list price, vendor), base64url JSON. */
+function encodeCursor(r) {
+  return btoa(JSON.stringify([r.sku, r.ask_cents, r.vendor_id])).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function decodeCursor(c) {
+  let v;
+  try {
+    if (typeof c !== "string" || c.length > CURSOR_MAX || !/^[A-Za-z0-9_-]+$/.test(c)) throw 0;
+    v = JSON.parse(atob(c.replace(/-/g, "+").replace(/_/g, "/")));
+  } catch { v = null; }
+  if (!Array.isArray(v) || v.length !== 3 || typeof v[0] !== "string" || !Number.isSafeInteger(v[1]) || typeof v[2] !== "string") {
+    throw new ArbiterError("invalid", "after is not a cursor from a previous catalog page.");
+  }
+  return { sku: v[0], ask_cents: v[1], vendor_id: v[2] };
+}
 const isNoMigrationsTable = (e) => /no such table: d1_migrations/.test(sqliteMessage(e));
 const HEX64 = /^[0-9a-f]{64}$/;
 /** The price step an offer was made on, from the list total it stored (ask × quantity). */
@@ -240,14 +259,43 @@ export class Arbiter {
   }
 
   /** Public catalogue: list prices and delivery only. */
-  async catalog({ sku, vendor_id } = {}) {
+  /** The first catalog page as an array (tests and callers that need no paging). */
+  async catalog(opts = {}) {
+    return (await this.catalogPage(opts)).items;
+  }
+
+  /**
+   * One page of the public catalog, ordered by sku, list price, vendor, with `next` when more rows
+   * follow. Keyset paging on indexes (listings_by_sku, or the vendor_id-first primary key), so a call
+   * reads at most `limit` + 1 listings whatever the table's size.
+   */
+  async catalogPage({ sku, vendor_id, limit = CATALOG_PAGE_MAX, after } = {}) {
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > CATALOG_PAGE_MAX) throw new ArbiterError("invalid", `limit must be an integer between 1 and ${CATALOG_PAGE_MAX}.`);
+    const cur = after === undefined || after === null ? null : decodeCursor(after);
+    const where = [], args = [];
+    let order;
+    if (vendor_id !== undefined) {
+      // The primary key (vendor_id, sku): one vendor's listings in sku order (sku is unique per vendor).
+      where.push("l.vendor_id = ?"); args.push(vendor_id);
+      if (sku !== undefined) { where.push("l.sku = ?"); args.push(sku); }
+      if (cur) { where.push("l.sku > ?"); args.push(cur.sku); }
+      order = "l.sku";
+    } else if (sku !== undefined) {
+      where.push("l.sku = ?"); args.push(sku);
+      if (cur) { where.push("(l.ask_cents, l.vendor_id) > (?, ?)"); args.push(cur.ask_cents, cur.vendor_id); }
+      order = "l.ask_cents, l.vendor_id";
+    } else {
+      if (cur) { where.push("(l.sku, l.ask_cents, l.vendor_id) > (?, ?, ?)"); args.push(cur.sku, cur.ask_cents, cur.vendor_id); }
+      order = "l.sku, l.ask_cents, l.vendor_id";
+    }
     const rows = (await this.q(
       `SELECT l.vendor_id, v.name AS vendor_name, v.origin AS vendor_origin, l.sku, l.title, l.unit, l.currency,
               l.ask_cents, l.delivery_hours, l.stock > 0 AS in_stock
        FROM listings l JOIN vendors v ON v.id = l.vendor_id
-       WHERE (?1 IS NULL OR l.sku = ?1) AND (?2 IS NULL OR l.vendor_id = ?2)
-       ORDER BY l.sku, l.ask_cents, l.vendor_id`, sku ?? null, vendor_id ?? null).all()).results;
-    return rows.map((r) => ({ ...r, in_stock: Boolean(r.in_stock) }));
+       ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+       ORDER BY ${order} LIMIT ?`, ...args, limit + 1).all()).results;
+    const page = rows.slice(0, limit).map((r) => ({ ...r, in_stock: Boolean(r.in_stock) }));
+    return { items: page, next: rows.length > limit ? encodeCursor(page.at(-1)) : null };
   }
 
   // ---------- buyers ----------

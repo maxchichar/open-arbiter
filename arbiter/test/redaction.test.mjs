@@ -27,7 +27,8 @@ const amountVariants = (kobo) => {
 async function drive({ withKey = true, faults = false } = {}) {
   const { privateJwk } = await generateSigningKey();
   const db = memoryD1();
-  const env = { DB: db, ADMIN_TOKEN: ADMIN, BUYER_SALT: SALT, ENVIRONMENT: "test", ...(withKey ? { ARBITER_SIGNING_JWK: JSON.stringify(privateJwk) } : {}) };
+  // A high per-IP limit, so the drive reaches every route; the last step drops it to reach the 429.
+  const env = { DB: db, ADMIN_TOKEN: ADMIN, BUYER_SALT: SALT, ENVIRONMENT: "test", IP_LIMIT_PER_60S: "1000000", ...(withKey ? { ARBITER_SIGNING_JWK: JSON.stringify(privateJwk) } : {}) };
   const secrets = [ADMIN, SALT, IP, privateJwk.d, ...amountVariants(FLOOR), ...amountVariants(MAX)];
   const responses = [];
   const f = async (path, { method = "GET", token, body, raw } = {}) => {
@@ -95,6 +96,8 @@ async function drive({ withKey = true, faults = false } = {}) {
     await f("/v1/receipts/verify", { method: "POST", body: receipt });
     await f("/v1/receipts/verify", { method: "POST", body: { receipt: { receipt_id: "rct_x" }, signature: "AAAA" } });
     await f("/v1/audit/verify");
+    await f("/v1/audit/verify", { token: ADMIN });
+    await f("/v1/catalog?limit=1"); await f("/v1/catalog?after=bad"); await f("/v1/catalog?limit=0");
     // MCP
     await rpc("initialize", {}); await rpc("ping", {}); await rpc("tools/list", {});
     await rpc("tools/call", { name: "list_catalog", arguments: {} });
@@ -110,6 +113,7 @@ async function drive({ withKey = true, faults = false } = {}) {
     await f("/mcp", { method: "POST", body: [{ jsonrpc: "2.0", id: 1, method: "ping" }, { jsonrpc: "2.0", method: "notifications/initialized" }] });
     await f("/mcp", { method: "POST", raw: "{oops" });
     await f("/mcp");
+    await f("/mcp", { method: "POST", body: Array.from({ length: 21 }, (_, i) => ({ jsonrpc: "2.0", id: i, method: "ping" })) });
     await f("/mcp", { method: "DELETE" });
     await f("/nowhere"); await f("/v1/mandates", { method: "OPTIONS" });
     // unexpected errors whose messages hold sentinels
@@ -120,6 +124,10 @@ async function drive({ withKey = true, faults = false } = {}) {
       await f("/v1/listings", { method: "PUT", token: v.api_key, body: listing });
       db.setFault(null);
     }
+    // P1.7: over the per-IP limit (this IP has made many requests this window).
+    env.IP_LIMIT_PER_60S = "1";
+    await f("/v1/catalog");
+    env.IP_LIMIT_PER_60S = "1000000";
     if (typeof worker.scheduled === "function") {
       await worker.scheduled({ cron: "0 2 * * *", scheduledTime: Date.now() }, env, { waitUntil() {} });
     }
@@ -164,4 +172,6 @@ test("every error response uses its code's registry status and carries request_i
     if (r.data.request_id !== RAY) bad.push(`${r.method} ${r.path}: no request_id`);
   }
   assert.deepEqual(bad, []);
+  assert.ok(run.responses.some((r) => r.data?.error === "rate_limited_ip"), "the drive reached the per-IP limit");
+  assert.ok(run.responses.some((r) => r.path === "/v1/audit/verify" && r.status === 401), "chain verify without the admin token");
 });

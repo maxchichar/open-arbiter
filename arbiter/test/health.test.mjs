@@ -18,7 +18,9 @@ const LATEST = REQUIRED_MIGRATIONS.at(-1);
 async function deployed(extra = {}) {
   const { privateJwk } = await generateSigningKey();
   return {
-    env: { DB: memoryD1(), ADMIN_TOKEN: "adm_HEALTH_SENTINEL", BUYER_SALT: "salt_HEALTH_SENTINEL", ENVIRONMENT: "staging", ARBITER_SIGNING_JWK: JSON.stringify(privateJwk), CF_VERSION_METADATA: VM, GIT_SHA: GIT, ...extra },
+    env: { DB: memoryD1(), ADMIN_TOKEN: "adm_HEALTH_SENTINEL", BUYER_SALT: "salt_HEALTH_SENTINEL", ENVIRONMENT: "staging", ARBITER_SIGNING_JWK: JSON.stringify(privateJwk), CF_VERSION_METADATA: VM, GIT_SHA: GIT,
+      IP_LIMIT_PER_60S: "1000000", // these tests are about /health, not the per-IP limit (quota.test.mjs)
+      ...extra },
     privateJwk,
   };
 }

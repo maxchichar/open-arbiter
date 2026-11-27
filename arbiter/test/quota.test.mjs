@@ -51,7 +51,8 @@ test("a refused request does no real work: no statement, no body read", async ()
   await get(e, "/v1/catalog", ip); await get(e, "/v1/catalog", ip);
   e.sql.length = 0;
   let bodyRead = false;
-  const stream = new ReadableStream({ pull() { bodyRead = true; throw new Error("body must not be read"); } });
+  // highWaterMark 0: pull runs only when something reads the body (1 would pull at construction).
+  const stream = new ReadableStream({ pull() { bodyRead = true; throw new Error("body must not be read"); } }, { highWaterMark: 0 });
   const res = await get(e, "/v1/mandates", ip, { method: "POST", body: stream, duplex: "half", headers: { "content-type": "application/json" } });
   assert.equal(res.status, 429);
   assert.deepEqual(e.sql, []);
@@ -106,7 +107,9 @@ test("the binding is consulted with a salted, prefixed key (never the IP), and i
 test("a binding that throws does not take the arbiter down: the instance limit still applies", async () => {
   const IP_RATE_LIMIT = { async limit() { throw new Error("binding unavailable"); } };
   const e = await env({ IP_RATE_LIMIT, IP_LIMIT_PER_60S: "2" }); const ip = freshIp();
-  assert.equal((await get(e, "/", ip)).status, 200);
+  const { result: first, calls } = await captureLogs(() => get(e, "/", ip));
+  assert.equal(first.status, 200);
+  assert.equal(calls[0].args[0].rate_limit, "binding_error", "the log line says the binding failed");
   assert.equal((await get(e, "/", ip)).status, 200);
   assert.equal((await get(e, "/", ip)).status, 429);
 });
@@ -129,4 +132,29 @@ test("/health says which layers are active", async () => {
   assert.equal((await (await get(plain, "/health", freshIp())).json()).rate_limit, "instance");
   const bound = await env({ IP_RATE_LIMIT: { async limit() { return { success: true }; } } });
   assert.equal((await (await get(bound, "/health", freshIp())).json()).rate_limit, "binding+instance");
+});
+
+// D1 on the Free plan allows 50 queries per invocation, and one negotiate costs up to 15 statements.
+// A batch holds at most one write tool (negotiate, accept_offer), so a full batch stays under 50.
+test("an MCP batch holds at most one write tool call, and a full batch stays under 50 statements", async () => {
+  const { Arbiter } = await import("../src/core.js");
+  const e = await env({ IP_LIMIT_PER_60S: "1000" }); const ip = freshIp();
+  const arb = new Arbiter(e.DB, { signingJwk: JSON.parse(e.ARBITER_SIGNING_JWK) });
+  for (let i = 0; i < 3; i++) {
+    const v = await arb.createVendor({ name: `V${i}` });
+    await arb.upsertListing(await arb.vendorByKey(v.api_key), { sku: "rice-50kg", title: "Rice", unit: "bag", ask_cents: 9_000_000, floor_cents: 7_800_000, delivery_hours: 24, stock: 5 });
+  }
+  const call = (id, name, args) => ({ jsonrpc: "2.0", id, method: "tools/call", params: { name, arguments: args } });
+  const neg = (id, q) => call(id, "negotiate", { sku: "rice-50kg", quantity: q, max_total: 90_000 * q, deliver_within_hours: 48 });
+  const two = await rpc(e, ip, [neg(1, 1), neg(2, 2)]);
+  assert.equal(two.status, 400);
+  assert.equal((await two.json()).error, "invalid");
+  const twoWrites = await rpc(e, ip, [neg(1, 3), call(2, "accept_offer", { offer_id: "off_x", buyer_token: "bt_x" })]);
+  assert.equal(twoWrites.status, 400);
+  e.sql.length = 0;
+  const full = await rpc(e, ip, [neg(1, 4), ...Array.from({ length: MCP_BATCH_MAX - 1 }, (_, i) => call(i + 2, "list_catalog", {}))]);
+  assert.equal(full.status, 200);
+  const out = await full.json();
+  assert.ok(out.every((r) => !r.error), JSON.stringify(out.find((r) => r.error)));
+  assert.ok(e.sql.length <= 50, `${e.sql.length} statements`);
 });

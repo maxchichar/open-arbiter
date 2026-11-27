@@ -14,7 +14,7 @@ export const TOOLS = [
   {
     name: "list_catalog",
     description: "List items sellers offer through the arbiter, with public list prices and delivery times. Never shows sellers' private minimum prices.",
-    inputSchema: { type: "object", additionalProperties: false, properties: { sku: { type: "string", description: "Optional item id such as rice-50kg." } } },
+    inputSchema: { type: "object", additionalProperties: false, properties: { sku: { type: "string", description: "Optional item id such as rice-50kg." }, after: { type: "string", maxLength: 512, description: "Optional: the `next` value of the previous page, for the page after it." } } },
   },
   {
     name: "negotiate",
@@ -88,7 +88,8 @@ export async function callTool(arb, name, args, ctx) {
   args = args || {};
   switch (name) {
     case "list_catalog":
-      return { items: presentCatalog(await arb.catalog({ sku: args.sku })) };
+      const { items, next } = await arb.catalogPage({ sku: args.sku, after: args.after });
+      return { items: presentCatalog(items), next };
     case "negotiate": {
       const m = await arb.createMandate({
         sku: args.sku, quantity: args.quantity, max_total_cents: toMinor(args.max_total),

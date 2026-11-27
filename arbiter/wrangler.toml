@@ -49,6 +49,16 @@ invocation_logs = false
 # The environment name in every log line. vars are not inherited, so each environment sets its own.
 [vars]
 ENVIRONMENT = "local"
+# P1.7: requests per IP per 60 s (quota.js). Local dev is one loopback IP for every script, so it is
+# higher here; staging and production use the default, 100. IP_RATE_LIMIT below says the same.
+IP_LIMIT_PER_60S = "1000"
+
+# P1.7: the Workers rate-limiting binding, per Cloudflare location, keyed by the salted IP hash.
+# Each environment has its own namespace (counters are shared within a namespace across Workers).
+[[ratelimits]]
+name = "IP_RATE_LIMIT"
+namespace_id = "1001"
+simple = { limit = 1000, period = 60 }
 
 # The Worker version in /health and every log line (P1.6). Not inherited by [env.X] (checked with
 # wrangler 4.166.0's config reader), so each environment declares it.
@@ -64,6 +74,12 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
+IP_LIMIT_PER_60S = "100"
+
+[[env.staging.ratelimits]]
+name = "IP_RATE_LIMIT"
+namespace_id = "2001"
+simple = { limit = 100, period = 60 }
 
 [env.staging.version_metadata]
 binding = "CF_VERSION_METADATA"
@@ -98,6 +114,12 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 
 [env.production.vars]
 ENVIRONMENT = "production"
+IP_LIMIT_PER_60S = "100"
+
+[[env.production.ratelimits]]
+name = "IP_RATE_LIMIT"
+namespace_id = "3001"
+simple = { limit = 100, period = 60 }
 
 [env.production.version_metadata]
 binding = "CF_VERSION_METADATA"

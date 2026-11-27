@@ -94,3 +94,20 @@ for (const env of [undefined, ...ENVS]) {
     assert.equal(read(env).version_metadata?.binding, "CF_VERSION_METADATA");
   });
 }
+
+// P1.7: the per-IP limit. Each environment binds IP_RATE_LIMIT in its own namespace, with the same
+// limit as its IP_LIMIT_PER_60S var (the instance window), 100 per 60 s when deployed.
+const namespaces = new Set();
+for (const env of [undefined, ...ENVS]) {
+  test(`${env ? `[env.${env}]` : "the top level"} binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S`, () => {
+    const c = read(env);
+    const rl = (c.ratelimits || []).find((r) => r.name === "IP_RATE_LIMIT");
+    assert.ok(rl, "IP_RATE_LIMIT is bound");
+    assert.equal(rl.simple.period, 60);
+    assert.equal(String(rl.simple.limit), c.vars.IP_LIMIT_PER_60S);
+    if (env) assert.equal(rl.simple.limit, 100);
+    assert.match(rl.namespace_id, /^[1-9]\d*$/);
+    assert.ok(!namespaces.has(rl.namespace_id), "its own namespace");
+    namespaces.add(rl.namespace_id);
+  });
+}

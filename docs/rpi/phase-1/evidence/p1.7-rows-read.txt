@@ -1,0 +1,22 @@
+# A probe Worker runs each statement through its D1 binding and returns D1's meta.rows_read.
+# 10,000 listings, 10,000 events; D1 meta.rows_read from wrangler 4.166.0 local D1 (miniflare)
+## with 0002_read_indexes
+  catalog page 1                     rows returned   101  rows_read    202
+  catalog page after a cursor        rows returned   101  rows_read    203
+  catalog, one sku                   rows returned   100  rows_read    201
+  negotiate: listings for one sku    rows returned   100  rows_read    101
+  audit trail of one mandate         rows returned     5  rows_read      6
+  resolve guard                      rows returned     0  rows_read      6
+  chain head                         rows returned     1  rows_read      1
+  full chain verify (admin only)     rows returned 10000  rows_read  10000
+## without them (as before P1.7)
+  catalog page 1                     rows returned   101  rows_read  30000
+  catalog page after a cursor        rows returned   101  rows_read  19898
+  catalog, one sku                   rows returned   100  rows_read  10200
+  negotiate: listings for one sku    rows returned   100  rows_read  10000
+  audit trail of one mandate         rows returned     5  rows_read  10000
+  resolve guard                      rows returned     0  rows_read  10000
+  chain head                         rows returned     1  rows_read      1
+  full chain verify (admin only)     rows returned 10000  rows_read  10000
+# port 8791 listeners left: 0
+exit: 0
