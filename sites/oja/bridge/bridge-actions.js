@@ -1,13 +1,24 @@
 // The actions Oja shares with other agent sites, through its action bridge.
 // When another site's assistant calls the oja_market network, the bridge loads this
-// file in a hidden frame on Oja's origin. Only reads of public facts are shared:
+// file in a hidden frame on Oja's origin. Only reads are shared, the catalogue with every site:
 // negotiating and accepting need the visitor on Oja's own page (or the arbiter's MCP).
 import { ArbiterClient } from "../js/arbiter-client.js";
 import { DEFAULT_ARBITER_URL, ARBITER_KEYS } from "../js/config.js";
 
 class BridgeActions {
-  /** The catalogue is public (the page shows it), so any site may read it. */
-  static CALLERS = ["*"];
+  /**
+   * The sites allowed to call the reads that are not shared with every site, as exact origins
+   * with the port. Never "*" (agentic-web linking.md, "Share reads"). Empty until the seller
+   * storefronts, which add their own origins.
+   */
+  static CALLERS = [];
+
+  /**
+   * Every site on the web, only for a read the owner confirmed returns nothing beyond what the
+   * public page shows (owner, 2026-11-27: get_market_state). Writes never use it.
+   * tests/bridge.test.mjs pins the list.
+   */
+  static EVERY_SITE = ["*"];
 
   static registerActions(actions) {
     actions.register(BridgeActions.readStateAction());
@@ -20,7 +31,7 @@ class BridgeActions {
       description: "Read the live market from the arbiter: every item (sku), seller, public list price per unit in naira, delivery time and stock. Shared with other sites, so it has no negotiations, offers or receipts. Changes nothing.",
       effect: "read",
       availability: "bridge",
-      callerOrigins: BridgeActions.CALLERS,
+      callerOrigins: BridgeActions.EVERY_SITE,
       inputSchema: { type: "object", properties: {}, additionalProperties: false },
       execute: BridgeActions.readState,
     };

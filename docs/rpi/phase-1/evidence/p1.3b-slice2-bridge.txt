@@ -1,0 +1,13 @@
+✔ CALLERS lists exact origins only, never "*"; EVERY_SITE is ["*"] (2.628794ms)
+✔ only the owner-confirmed reads are shared with every site, through EVERY_SITE (0.467466ms)
+✔ every other shared action lists exact origins (verify_receipt included) (0.280001ms)
+✔ a shared write or irreversible action lists exact callers, never "*" (agentic-web e67e306) (0.196061ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.098536
+exit: 0
