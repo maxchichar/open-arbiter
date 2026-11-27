@@ -1,0 +1,23 @@
+Access-Control-Expose-Headers: mcp-session-id, x-request-id
+x-request-id: cf6062eb2ce2559eeeed7a986685e851
+--- workerd log lines:
+  request_id: 'fd3cec80c5ddcfa5d54d130d8293279a',
+  request_id: 'abcdef1234567890-LOS',
+  request_id: 'c18b743dd76d24f036996769970a973e',
+  request_id: 'cf6062eb2ce2559eeeed7a986685e851',
+--- the resolve request's full line:
+  request_id: 'c18b743dd76d24f036996769970a973e',
+  env: 'local',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 404,
+  code: 'not_found',
+  duration_ms: 3
+}
+[wrangler:info] POST /v1/mandates/man_SECRETID/resolve 404 Not Found (8ms)
+{
+  ts: '2026-11-27T21:17:09.555Z',
+  level: 'info',
+--- SECRET outside wrangler's own dev access lines: 0
+exit: 0

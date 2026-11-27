@@ -33,12 +33,39 @@ database_id = "00000000-0000-0000-0000-000000000000"
 binding = "AUDIT_ANCHOR"
 id = "00000000000000000000000000000000"
 
+# Workers Logs (P1.5): one JSON object per request (src/log.js). Repeated in each environment, as the
+# Workers Logs docs do (2026-11-18); arbiter/test/wrangler-env.test.mjs reads the resolved config.
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Cloudflare's own invocation logs record "the Request, Response, and related metadata"; the docs
+# (2026-11-18) do not say whether headers (Authorization tokens) or the caller IP are left out, so
+# they are off. Our line (src/log.js) has route, status, code and duration. P1.8 checks staging.
+
+[observability.logs]
+invocation_logs = false
+
+# The environment name in every log line. vars are not inherited, so each environment sets its own.
+[vars]
+ENVIRONMENT = "local"
+
 # ---------- staging ----------
 [env.staging]
 workers_dev = true
 
 [env.staging.secrets]
 required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+[env.staging.observability]
+enabled = true
+head_sampling_rate = 1
+
+[env.staging.observability.logs]
+invocation_logs = false
 
 [[env.staging.d1_databases]]
 binding = "DB"
@@ -60,6 +87,16 @@ workers_dev = true
 
 [env.production.secrets]
 required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+[env.production.observability]
+enabled = true
+head_sampling_rate = 1
+
+[env.production.observability.logs]
+invocation_logs = false
 
 [[env.production.d1_databases]]
 binding = "DB"

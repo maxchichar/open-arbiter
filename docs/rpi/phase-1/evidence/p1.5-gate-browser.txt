@@ -1,0 +1,42 @@
+harness: worker at http://127.0.0.1:8787, state in /tmp/open-arbiter-harness-XMrQ6K
+
+=== seed ===
+Iya Basira Foodstuff: ven_0PXZOreVY5APXHXt (3 sealed listings)
+Chika Provisions: ven_-XV-4Ud37bB0rH7n (2 sealed listings)
+Alhaji Musa Grains: ven_2W5HScG5FqJoR92V (3 sealed listings)
+Vendor keys written to /tmp/open-arbiter-harness-XMrQ6K/seed-keys.json
+
+=== browser ===
+fake LLM on http://127.0.0.1:8799
+Open http://127.0.0.1:8080/
+{"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_get_market_state"}
+{"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_negotiate"}
+{"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"text"}
+{"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_get_market_state"}
+{"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_accept_offer"}
+{"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"text"}
+page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self' 'sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://otari.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; require-trusted-types-for 'script'; trusted-types agentify-website
+catalogue: 4 items; assistant: Assistant connected to this page.
+manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 10:29:57 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 10:29:57 PM Accept
+manual receipt: rct_nFyPXKOA-XkjF7VK | badge: Signature verified (dev key, not pinned)
+agent offers: SELLER	TOTAL	SAVING Iya Basira Foodstuff	₦166,400	₦17,600 Chika Provisions	₦169,600	₦8,400  Which one would you like?
+agent: Done. Receipt rct_yMwM_1SpCHC1QXYw; the arbiter's signature was checked in your browser.
+<style> elements: 1; all allowed by hash: True
+CSP violations on index (after the full flow): 0
+CSP violations on index (phone): 0
+CSP violations on vendor: 0
+blocked provider, before sending: ⚠ This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+blocked provider, violations (expected): ['connect-src blocked https://llm.blocked.example/agent-manifest.json at http://127.0.0.1:8080/runtime/engine.js:44', 'connect-src blocked https://llm.blocked.example/v1/models at http://127.0.0.1:8080/runtime/ui.js:1269', 'connect-src blocked https://llm.blocked.example/v1/chat/completions at http://127.0.0.1:8080/runtime/llm.js:126']
+blocked provider, after sending: This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+otari: CSP violations so far: []
+otari: authorize https://otari.ai/api/v1/oauth/apps/authorize?client_id=http%3A%2F%2F127.0.0.1%3A8080&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2F&response_type=code&state=5AUf-cc6j6022MqPdUX_zQ&code_challenge=HT1Qg7sXJSpDuimF3GK1sxaYyBHsKCDWjWGKgPThIoE&code_challenge_method=S256&limit=5&expiration=30-days
+otari: token exchange {'grant_type': ['authorization_code'], 'client_id': ['http://127.0.0.1:8080'], 'redirect_uri': ['http://127.0.0.1:8080/'], 'code': ['test-code'], 'code_verifier': ['6ljNIe7PvXxJT95bd38ntD--KQEEYHshp-ZOsVHVof8']}
+otari: returned with CSP: http://127.0.0.1:8080/?code=test-code&state=5AUf-cc6j6022MqPdUX_zQ&iss=https%3A%2F%2Fotari.ai
+otari: in use: In use: Otari · alibaba/qwen3.8-flash · key ending …_key | refused: []
+CSP violations on index (Connect with Otari): 0
+CSP violations in total: 0
+BROWSER CHECK OK
+browser: screenshots in /tmp/claude-1000/-home-maxchichar-open-arbiter/6b144c50-6caa-4208-b815-67dccbaab064/scratchpad/shots-p15
+
+harness results: {"seed":true,"browser":true}
+exit: 0

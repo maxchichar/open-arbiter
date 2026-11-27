@@ -1,0 +1,2842 @@
+npm notice run open-arbiter@1.0.0 test
+npm notice run node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (105.13201ms)
+✔ fault at "decrement stock": nothing of the accept is committed, and a later accept works (30.644782ms)
+✔ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (25.384745ms)
+✔ fault at "insert receipt": nothing of the accept is committed, and a later accept works (40.995785ms)
+✔ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (63.041659ms)
+✔ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (30.775959ms)
+✔ concurrent accepts of the same offer: exactly one receipt (30.175396ms)
+✔ concurrent accepts of different offers on one mandate: exactly one receipt (33.029311ms)
+✔ the schema refuses negative stock (CHECK stock_nonneg) (19.812309ms)
+✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (50.936335ms)
+✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (24.51333ms)
+✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (39.350901ms)
+✔ R6: a legacy SETTLED-without-receipt mandate is not settled by a later accept (batch-level) (23.577184ms)
+✔ R6: the accept records which attempt settled the mandate (15.390314ms)
+✔ batch commits every statement together (7.691926ms)
+✔ batch rolls back everything when one statement fails (6.734329ms)
+✔ injected fault aborts a batch at the chosen statement (3.493062ms)
+✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (338.75307ms)
+✔ 5 concurrent identical terms: one succeeds, four get identical_terms (36.408278ms)
+✔ a refused mandate writes no row and no event (17.704391ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (13.93646ms)
+✔ concurrent writes of every kind keep one linear chain (589.499718ms)
+✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (30.647195ms)
+✔ chain-head conflicts are retried with a fresh head (34.614733ms)
+✔ when retries run out: 503 busy, and the business write is not committed (412.487738ms)
+✔ createVendor: a failed event insert rolls back the business write (11.008304ms)
+✔ upsertListing: a failed event insert rolls back the business write (9.588675ms)
+✔ createMandate: a failed event insert rolls back the business write (7.839986ms)
+✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (13.414686ms)
+✔ [tree] every workflow passes the guards, and ci.yml runs every required check (8.876241ms)
+✔ the minimal good workflow passes (0.727533ms)
+✔ AC-3.4: production, remote migrations, credentials and deploys are refused (1.968986ms)
+✔ AC-3.7: hardening rules (1.183494ms)
+✔ ci.yml requirements: each missing check is named (1.273894ms)
+✔ AC-3.5 M3: a mechanism version change may not ship as split traffic (7.371672ms)
+✔ AC-3.5 M3 CLI: base = HEAD compares with HEAD~1 and passes (157.366916ms)
+✔ test:m2 without tags (a shallow clone) fails loudly instead of checking nothing (741.477693ms)
+✔ secret scan --history finds a key that was committed and later removed, without printing it (491.606398ms)
+✔ reviewed blobs: only the exact reviewed .env.example blob passes; a different .env.example is refused (631.254315ms)
+✔ Discord bot tokens and NVIDIA API keys are detected; placeholders are not (0.731541ms)
+✔ the detector finds DEV however it is written, and ignores comments (3.171415ms)
+✔ arbiter/wrangler.toml never defines DEV (2.351568ms)
+✔ midpoint of the zone of agreement (3.579435ms)
+✔ budget above list price is capped at list price (0.556239ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (2.431339ms)
+✔ offers ranked by price, then delivery, then vendor id (4.257684ms)
+✔ vendor filter is respected (0.584303ms)
+✔ listing validation (0.957738ms)
+✔ terms key ignores budget and vendor order (0.467432ms)
+✔ canonical json sorts keys at every level (5.483548ms)
+✔ catalog never exposes floors (93.022278ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (74.897654ms)
+✔ cannot accept twice, with a wrong token, or after expiry (23.494618ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (23.864526ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (16.939407ms)
+✔ tampering with the audit log is detected (11.079017ms)
+✔ no environment, an unknown one or the empty top level is refused (1.984846ms)
+✔ staging deploys with --env staging (1.170359ms)
+✔ production needs --confirm-production (owner approval A3 is still required; this only stops slips) (0.328189ms)
+✔ unknown flags are refused rather than passed to wrangler (0.28062ms)
+✔ an environment whose ids are still placeholders is refused, except for a dry run (0.293765ms)
+✔ the CLI exits 2 without an environment, before starting wrangler (1077.12897ms)
+✔ the checked-in wrangler.toml still has placeholder ids (resources are created at approval A1/A3) (9.624493ms)
+✔ every code in the registry has one integer HTTP status and a meaning (2.831413ms)
+✔ every ArbiterError in src/ names a registry code as a literal, with no status of its own (6.000604ms)
+✔ ArbiterError takes its status from the registry and refuses an unknown code (1.827118ms)
+✔ the README lists every error code with its status (1.273794ms)
+✔ a client-made secret: only its hash is sent, and the secret then works as the buyer token (33.074948ms)
+✔ a retry with the same secret and terms returns the same mandate: no new row, no new event (14.59329ms)
+✔ the same secret with different terms or a different budget is refused, and writes nothing (10.679494ms)
+✔ the daily cap still holds, and a retry of an existing mandate is not counted against it (15.905636ms)
+✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (24.125198ms)
+✔ concurrent retries with one secret create exactly one mandate (15.641468ms)
+✔ a malformed hash is refused (7.1272ms)
+{
+  ts: '2026-11-27T21:17:38.713Z',
+  level: 'info',
+  request_id: '41028ced6a792f18df5537727ed8386a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 33
+}
+{
+  ts: '2026-11-27T21:17:38.722Z',
+  level: 'info',
+  request_id: '4e014234641bf2a94deffda2c5d5aa14',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+✔ over HTTP: 201 when created, 200 when replayed, never a token in the body (183.179909ms)
+✔ piped stdout gets a private P-256 JWK (140.285971ms)
+✔ --out outside the repo writes a new file, mode 0600, and refuses to overwrite (275.137497ms)
+✔ --out inside the repo is refused and nothing is written (414.777529ms)
+✔ stdout redirected to a file inside the repo is refused (Linux) (120.124633ms)
+✔ unknown arguments are refused (145.630788ms)
+✔ a request writes one JSON line: route template, never the raw path or query (92.271961ms)
+✔ route templates for every endpoint; anything else is 'unmatched' (59.59262ms)
+✔ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (5.959948ms)
+✔ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (7.013745ms)
+✔ a cf-ray header that is not a plain ray id is not trusted as the request id (5.090617ms)
+✔ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (19.282269ms)
+✔ the same failure gives the same fingerprint (11.601033ms)
+✔ a misconfiguration is logged with a fixed reason, and nothing else is written (5.941933ms)
+✔ MCP calls log the JSON-RPC method and the tool, and a tool's error code (12.447841ms)
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (10.927312ms)
+✔ AC-F1-6: mechanism identity, and each offer names its step (2.900163ms)
+✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.487831ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.389906ms)
+✔ tie between two grid points goes to the buyer (lower) (0.46094ms)
+✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (105.457905ms)
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (471.286601ms)
+✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (13.194671ms)
+✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (109.749405ms)
+✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (74.002785ms)
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (12.549793ms)
+✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (11.078066ms)
+✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (1.115525ms)
+✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (4.462892ms)
+✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (204.521053ms)
+✔ [tree] migration files are numbered 0000…, in order, with no gaps (3.283156ms)
+✔ [tree] the Worker requires exactly the migrations in its tree (1.907059ms)
+✔ [tree] migrations/lock.json pins every migration's SHA-256: an applied migration is never edited (2.163503ms)
+✔ empty database: every migration applies and is recorded (3.97396ms)
+✔ AC-2.1: 0000_baseline alone gives exactly v0.0's schema (sqlite_master name, type, sql) (4.315685ms)
+✔ v0.0-seeded database: migrations apply; no row lost; chain, receipt and accept still work (79.027176ms)
+✔ 0000_baseline refuses a database made before CHECK stock_nonneg; nothing is recorded (4.100729ms)
+✔ 0000_baseline refuses a database whose audit chain forked (the unique index cannot be built) (4.730157ms)
+✔ [tree] HEAD inserts name their columns, so an added column never breaks a running Worker (M2) (5.47878ms)
+✔ AC-2.6: a parent-table rebuild under PRAGMA defer_foreign_keys keeps every child row (49.500285ms)
+✔ a clean v0.0 database, before and after migrating: no findings (11.368143ms)
+✔ SETTLED mandate without a receipt is reported (4.113483ms)
+✔ ACCEPTED offer without a receipt is reported (3.318552ms)
+✔ receipt whose audit_hash names no event is reported (3.067859ms)
+✔ missing unique indexes are reported (3.739036ms)
+✔ a database without CHECK stock_nonneg is reported (3.786526ms)
+✔ CLI: exit 1 and the findings on a bad database, exit 0 on a clean one (357.06641ms)
+✔ pubkey.mjs prints only the public key, with the kid the arbiter signs under (197.950864ms)
+✔ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (319.871887ms)
+✔ the same, when unexpected errors carry sentinels in their messages (93.445777ms)
+✔ the same, with no signing key (misconfigured paths) (82.538904ms)
+✔ every error response uses its code's registry status and carries request_id (93.92424ms)
+✔ a failing command: non-zero exit, output saved with its exit code (255.914961ms)
+✔ a failing node --test run exits non-zero (539.458833ms)
+✔ a passing command exits 0 (359.106209ms)
+✔ a killed command is a failure (248.678004ms)
+✔ a missing command is a failure (131.31916ms)
+✔ secret-shaped output is redacted in the file, exit code unchanged (171.616236ms)
+✔ usage errors exit 2 (59.683452ms)
+✔ a Cloudflare account id in an API path is replaced (127.941456ms)
+✔ no d1_migrations table (a database made from the old schema.sql): writes refused (36.441972ms)
+✔ a required migration missing (database at an older level): writes refused, nothing written (9.645773ms)
+✔ a level recorded out of order still needs every required name (6.683002ms)
+✔ all required migrations applied: writes work; newer migrations than this Worker knows are fine (8.668168ms)
+✔ the guard reads the migration level, not sqlite_master (7.152548ms)
+✔ [tree] REQUIRED_MIGRATIONS is the tree's migrations (1.847105ms)
+{
+  ts: '2026-11-27T21:17:39.065Z',
+  level: 'info',
+  request_id: '02db0a701a3784b53afb4c9fc585fd5f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 17
+}
+{
+  ts: '2026-11-27T21:17:39.071Z',
+  level: 'info',
+  request_id: '2d91210934b9c2e8a4ba3e76bcf6598c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:39.076Z',
+  level: 'info',
+  request_id: '9cc0590d9656d3f313b3290c5460ac09',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.084Z',
+  level: 'info',
+  request_id: '9ec748e71adf047a919f90eb8b23e533',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+✔ schema check: one d1_migrations query per Worker instance, not one per write (112.19552ms)
+{
+  ts: '2026-11-27T21:17:39.097Z',
+  level: 'info',
+  request_id: '7563b8d00f2875b7b6c3aa150d22f769',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.100Z',
+  level: 'error',
+  request_id: 'b7dace9707e95ac56004254718712078',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 2,
+  reason: 'migrations_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.102Z',
+  level: 'info',
+  request_id: '4cc42d6d644c7e459d57d785ce973b3a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.105Z',
+  level: 'error',
+  request_id: '09f0ac9320379bf4e831f8ce0b3e7c1b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 2,
+  reason: 'migrations_missing'
+}
+✔ schema check cache is per database: an outdated binding is still refused (21.610933ms)
+✔ an unexpected database error in the check is not reported as an outdated schema (8.252163ms)
+secret scan: 3 file(s), no findings
+secret scan: 3 file(s), no findings
+✔ the detector finds secret shapes and ignores dev values (11.129944ms)
+✔ redact removes every value and keeps the rest (1.069127ms)
+✔ no tracked file is a secret file or holds a secret value (223.869096ms)
+✔ pre-commit hook: blocks a staged fake key, a forbidden file, and a staged secret fixed only in the work tree (877.271136ms)
+✔ pre-commit hook: a clean commit goes through (498.221731ms)
+✔ the hook is versioned, executable, and npm install enables it (1.057366ms)
+{
+  ts: '2026-11-27T21:17:39.352Z',
+  level: 'info',
+  request_id: 'fb47ab2b3abd716327269764f2958979',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 48
+}
+{
+  ts: '2026-11-27T21:17:39.364Z',
+  level: 'info',
+  request_id: '3b248254fbc5ec5154f9d28fb4ac70d1',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:39.374Z',
+  level: 'info',
+  request_id: 'e4df45139a03c4b407ecc612d319a220',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:39.381Z',
+  level: 'info',
+  request_id: '50b54d1e2f058079f0ca03ea80c64645',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:39.385Z',
+  level: 'error',
+  request_id: '961f51b50b7d84f279ad52bb8c0a103c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.389Z',
+  level: 'error',
+  request_id: 'a4b3b27ed56f0c77d860e665df8b925c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 2,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.394Z',
+  level: 'error',
+  request_id: 'd6de165ff05856e10845cd03a7b30f34',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 4,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (175.821352ms)
+{
+  ts: '2026-11-27T21:17:39.410Z',
+  level: 'info',
+  request_id: '6545249665eba554fd55d8fc4885837d',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.415Z',
+  level: 'info',
+  request_id: 'c58f0ba7a314d6de92433aa21fe6ea34',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:39.425Z',
+  level: 'info',
+  request_id: 'eca1a739d92e3ef7ac21bacaf6b0d4fd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T21:17:39.431Z',
+  level: 'info',
+  request_id: '9967d3cdda080e5ed789ef44b183e259',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:39.433Z',
+  level: 'error',
+  request_id: '707ea60b00d3f9bf8d0067c6240077e9',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.434Z',
+  level: 'error',
+  request_id: 'be55e92938a5c2c6d7f4f91cc38c2cfa',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 0,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.436Z',
+  level: 'error',
+  request_id: '8a6353132c6cb988042695de9207dadb',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (37.03462ms)
+{
+  ts: '2026-11-27T21:17:39.449Z',
+  level: 'info',
+  request_id: '376c7ee4d15347d58895c92e3231dce1',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:39.451Z',
+  level: 'info',
+  request_id: '0d76d3ddc275410b2aa5a7802c83d8c7',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.453Z',
+  level: 'info',
+  request_id: '00f5b48b707f4f6e327e49dc0b13c881',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:39.458Z',
+  level: 'info',
+  request_id: 'e2f7fa3138e555e7f683bdab893ca46b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.460Z',
+  level: 'error',
+  request_id: '4b10e079d26fca0871640964badf23b8',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.462Z',
+  level: 'error',
+  request_id: '306a2b1b9a4334b5b2745683034a068e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.463Z',
+  level: 'error',
+  request_id: 'd190da0104a35712496a958c7ca0168d',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (26.221594ms)
+{
+  ts: '2026-11-27T21:17:39.472Z',
+  level: 'info',
+  request_id: 'deba9eca787e341cb3fada575c8b5787',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.475Z',
+  level: 'info',
+  request_id: '49b3ff49e3ea54b2464e876219504b2d',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.479Z',
+  level: 'info',
+  request_id: '9e3c661b9054d7678baf875b64fff71e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.483Z',
+  level: 'info',
+  request_id: 'a84076b260ed641c648f4b6418b5ed90',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.485Z',
+  level: 'error',
+  request_id: '1c445cb78d2df5673adac425ea8cdd1b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.486Z',
+  level: 'error',
+  request_id: 'c2582b7f4feab10bd519fb66d86ad3f9',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 0,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T21:17:39.489Z',
+  level: 'error',
+  request_id: 'bfc64ec75a03cf0f51dc67a1e5e685e8',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (25.663421ms)
+{
+  ts: '2026-11-27T21:17:39.510Z',
+  level: 'info',
+  request_id: 'f10c4bccb5e7953fc68f404498cdd8e4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T21:17:39.513Z',
+  level: 'info',
+  request_id: 'b084b01e4645152f413152857b9fec3a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.515Z',
+  level: 'info',
+  request_id: '9c6952b26ebfe309327da97fa820e452',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.520Z',
+  level: 'info',
+  request_id: '41cf4a437e65866ce8fb7558e6f1d073',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:39.526Z',
+  level: 'info',
+  request_id: '91b529ac77232913ad6314f08b2e2d70',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.535Z',
+  level: 'info',
+  request_id: '0ead238fecba33765bc72209f57fb1ff',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T21:17:39.540Z',
+  level: 'info',
+  request_id: '87f59eeee9ee276198f6cba4b50e1334',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (49.965071ms)
+{
+  ts: '2026-11-27T21:17:39.549Z',
+  level: 'info',
+  request_id: '804cfeb8a5e285c961329655b5d32ea2',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.561Z',
+  level: 'info',
+  request_id: '504517d579162cb1797c323c6cab48db',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T21:17:39.565Z',
+  level: 'info',
+  request_id: '91a9fa77c89613786c1ef2ab6fb7005b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.568Z',
+  level: 'info',
+  request_id: 'a42ef2cee3c17fc5fb408a745715abc3',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.572Z',
+  level: 'info',
+  request_id: 'b0628b0374a76aa2b2b7e059ac02323d',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.573Z',
+  level: 'info',
+  request_id: '8dd9208784caaa2f9079ce750345bedc',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ a configured signing key works without DEV and is never stored (32.871894ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (11.242346ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (11.427897ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (1.401825ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (2.340427ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (0.891783ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (0.810851ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (0.72049ms)
+✔ the top level logs as ENVIRONMENT = "local" (0.652241ms)
+✔ the runbook says how to read the logs (0.481539ms)
+{
+  ts: '2026-11-27T21:17:39.660Z',
+  level: 'info',
+  request_id: 'ed20b58b5456304199cfe999e1cd1165',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 11
+}
+{
+  ts: '2026-11-27T21:17:39.675Z',
+  level: 'info',
+  request_id: '321d6226c232cbf1ed6f5b7d858ad9c7',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T21:17:39.685Z',
+  level: 'info',
+  request_id: 'b405230579ac572ac33004c001619467',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:39.748Z',
+  level: 'info',
+  request_id: '7a2618352f50d90d7dbc8b9d5f46cdba',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.758Z',
+  level: 'info',
+  request_id: '3d8911d3af3b956c8c3e616f98ec4f92',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.771Z',
+  level: 'info',
+  request_id: '9ec3c7b9c418d06068914a0184b0789e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 11
+}
+✔ ArbiterClient.accept, response lost (hang): unknown, sent once (389.110642ms)
+{
+  ts: '2026-11-27T21:17:39.929Z',
+  level: 'info',
+  request_id: 'e48203b38cc821d7a194d0a62093a2dc',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:39.933Z',
+  level: 'info',
+  request_id: 'ba5467bce4399994eeb6430236700e7a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.935Z',
+  level: 'info',
+  request_id: '4494a39ea21b4ff146f7a2aafc572495',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:39.943Z',
+  level: 'info',
+  request_id: '5679e08664f1c1b0c3607ade9c57fe43',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:39.960Z',
+  level: 'info',
+  request_id: '975118b18e18a44974e5d9375014d161',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T21:17:39.974Z',
+  level: 'info',
+  request_id: '96521e20bbb01074256b6179079192f6',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.119Z',
+  level: 'info',
+  request_id: '2985623ef61cc64c6875626ebfc4da23',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.129Z',
+  level: 'info',
+  request_id: 'd9e016cac4733fe9f8ab3bb031f29579',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.137Z',
+  level: 'info',
+  request_id: '40f7af3d4e4ff47900bfc08ad8619786',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/receipts/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (231.620524ms)
+{
+  ts: '2026-11-27T21:17:40.168Z',
+  level: 'info',
+  request_id: 'afd5a9816875fb71d6c7ed3bf61b5747',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.177Z',
+  level: 'info',
+  request_id: '5897862a875ac72b746645a7b1760bf3',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T21:17:40.178Z',
+  level: 'info',
+  request_id: '852e5c3334e31987259b2ba7ff65f1d6',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.191Z',
+  level: 'info',
+  request_id: '587a22a1c6dac492399c7dc23e63d8ad',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.198Z',
+  level: 'info',
+  request_id: '1fbe0cabb6c12b0f5f4d5c5f2ca78e9b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:40.212Z',
+  level: 'info',
+  request_id: '270283a865e357c5c0c2cfe4569629fa',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (65.248945ms)
+{
+  ts: '2026-11-27T21:17:40.224Z',
+  level: 'info',
+  request_id: 'e6461f93e81a78e2b149e824c8368187',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.226Z',
+  level: 'info',
+  request_id: '9e7ff9806e91bbf51de978c47a08fb38',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.228Z',
+  level: 'info',
+  request_id: '5ede372b87ac23b69ffd1d696c152024',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.231Z',
+  level: 'info',
+  request_id: '4ee08d35607ac7c892fdaea7f7c06509',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.236Z',
+  level: 'info',
+  request_id: '231ffc4cb0bfeeabe51f1c564d529673',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.241Z',
+  level: 'info',
+  request_id: '1cb2ab8febef3fd487720477d449d089',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.242Z',
+  level: 'info',
+  request_id: '6ac9fc05b503d7d1412feb027a61f031',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.244Z',
+  level: 'info',
+  request_id: '94fbae51f7d0daaa9fe568b2580545bd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.245Z',
+  level: 'info',
+  request_id: '49f97eae10078a9c40dca091a5d3f3ed',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/receipts/:id',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (32.020708ms)
+{
+  ts: '2026-11-27T21:17:40.254Z',
+  level: 'info',
+  request_id: '1feb0487655e0ea3393111c7c0a62164',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.256Z',
+  level: 'info',
+  request_id: '55cb6941f03bf97f62d682a409ec6d21',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.257Z',
+  level: 'info',
+  request_id: '5253d1d54a6cf7a5d0923b383c3c7325',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.261Z',
+  level: 'info',
+  request_id: '782a2799c3e05a0e6c18975acb829cc0',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.264Z',
+  level: 'info',
+  request_id: '8146894745c1d32edfbbdc1e79b910c3',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.287Z',
+  level: 'info',
+  request_id: '8f52efe0886db9a77a6b9ad85b4aa029',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+✔ through the runtime: a lost accept response is a receipt with status unknown, run once (178.337661ms)
+{
+  ts: '2026-11-27T21:17:39.819Z',
+  level: 'info',
+  request_id: '60ac6e6cbd664832b8b980dc28a932c0',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T21:17:39.830Z',
+  level: 'info',
+  request_id: '98337933b35b78ca79704ad373b2e030',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.843Z',
+  level: 'info',
+  request_id: '4cac5a38d4e3c218e45b30472fd426de',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T21:17:39.892Z',
+  level: 'info',
+  request_id: '7eba8996e7247c3394390ad81105c804',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:39.899Z',
+  level: 'info',
+  request_id: '86d659fdf516d634c1cf2cd2b89f4729',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.912Z',
+  level: 'info',
+  request_id: 'ad1990dfa34a19037ac52b115072fced',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 10
+}
+✔ accept answered by a platform 502 page after the arbiter settled: unknown, sent once, re-accept blocked (265.074156ms)
+{
+  ts: '2026-11-27T21:17:39.965Z',
+  level: 'info',
+  request_id: '6ca8bc92724aa224b18d79b38e203cc5',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.972Z',
+  level: 'info',
+  request_id: '6d1e2f8692211ea1dd767337c781ab8c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:39.978Z',
+  level: 'info',
+  request_id: '8e016eec5ceef35a355a0cb8d23c429e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:39.991Z',
+  level: 'info',
+  request_id: '0f7dc84ac346fe50be7b47a789c39a7e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T21:17:39.996Z',
+  level: 'info',
+  request_id: '33c011f6256ec7a26a8456e938b3cc3c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.005Z',
+  level: 'info',
+  request_id: 'f285e29b1ce3c03fa4671f55bb27e157',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:40.017Z',
+  level: 'info',
+  request_id: 'e4b7763c9906d43209efff54c0ff0406',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+✔ mandate create answered by a platform 502 page after the arbiter made it: unknown, secret kept, asking again recovers it (101.107135ms)
+{
+  ts: '2026-11-27T21:17:40.038Z',
+  level: 'info',
+  request_id: '82068741368e0ec973492c6c0063a5d4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.041Z',
+  level: 'info',
+  request_id: 'c1f79986ade0d9411b991d92763b78e1',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.042Z',
+  level: 'info',
+  request_id: '32080ec8661daf11ef3c0ca517657cb4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T21:17:40.047Z',
+  level: 'info',
+  request_id: 'f6968dd1ea5b8efa1f0e1d69c39f6513',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.051Z',
+  level: 'info',
+  request_id: '88f9f1d0dc7e197be7eb8a8c41614034',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.057Z',
+  level: 'info',
+  request_id: 'ef15be82b1eb6311eaec64817a8f4494',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ accept answered by a platform 500 JSON without the arbiter's shape after the arbiter settled: unknown, sent once, re-accept blocked (36.350058ms)
+{
+  ts: '2026-11-27T21:17:40.076Z',
+  level: 'info',
+  request_id: '120396228b590a73a326be53a3a001d3',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:40.079Z',
+  level: 'info',
+  request_id: 'c758e7756c15e1e0457bbe0c83b18d43',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.081Z',
+  level: 'info',
+  request_id: 'f3b77d9bf2b7217fc6c53148f1704349',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.084Z',
+  level: 'info',
+  request_id: '1f9d5758983db7651b72c00aa657c277',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.086Z',
+  level: 'info',
+  request_id: '2a4ef60ce2a18df252d6f50e995be7b1',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.093Z',
+  level: 'info',
+  request_id: '6072fc20ff2b01e247ed6c827cdfc244',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.097Z',
+  level: 'info',
+  request_id: '8c7633c2b0c4b51c2c8a6271618ca46c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ mandate create answered by a platform 500 JSON without the arbiter's shape after the arbiter made it: unknown, secret kept, asking again recovers it (37.989632ms)
+{
+  ts: '2026-11-27T21:17:40.109Z',
+  level: 'info',
+  request_id: 'b2dc3805c4799ead74df7127b9967de7',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.112Z',
+  level: 'info',
+  request_id: '403b7f8d939c8bfbf775e69e0c6f7ef7',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.113Z',
+  level: 'info',
+  request_id: '025c5c9e6f35eebb2f62d9f8dcef0346',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.117Z',
+  level: 'info',
+  request_id: '76e364d9fb28a447814d35e35acf5c8b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.120Z',
+  level: 'info',
+  request_id: '00c8aadb5e90cca13fbaf1998b30b9fc',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.126Z',
+  level: 'info',
+  request_id: '215225f45da0d88e360e21cf4440d5fc',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ accept answered by a arbiter catch-all internal 500 after the arbiter settled: unknown, sent once, re-accept blocked (29.205486ms)
+{
+  ts: '2026-11-27T21:17:40.135Z',
+  level: 'info',
+  request_id: 'a83c488f4ace3b6ff3a86ba428ea038d',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.138Z',
+  level: 'info',
+  request_id: 'bedb3a438f63a5f3a7111af278d0fe84',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.141Z',
+  level: 'info',
+  request_id: '8adfefb3e3afe6142e39d66b52ab3ffd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.147Z',
+  level: 'info',
+  request_id: '8f4de03701dd5b8b23a48cf79750986c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.150Z',
+  level: 'info',
+  request_id: '84fe37018ee168b2ee119fac7b07c1d2',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.153Z',
+  level: 'info',
+  request_id: '8619b481955c602cc37294ea10a88e61',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.157Z',
+  level: 'info',
+  request_id: 'f1041b7d82d95a3d49276b5b16d1217e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ mandate create answered by a arbiter catch-all internal 500 after the arbiter made it: unknown, secret kept, asking again recovers it (30.932264ms)
+{
+  ts: '2026-11-27T21:17:40.166Z',
+  level: 'info',
+  request_id: 'e3a327c3263f26b88880a28bb1a67263',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.169Z',
+  level: 'info',
+  request_id: 'b1ae55b0535dbd3454dd5f7e47b884f4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.171Z',
+  level: 'info',
+  request_id: '49b6c813e523489d061006b0186acc0b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.175Z',
+  level: 'info',
+  request_id: '0b84cf1ec198a8671c0ac4f83de0c5b2',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.178Z',
+  level: 'info',
+  request_id: '98346a2bd0aeaded5a924c6fddb35ac8',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.183Z',
+  level: 'info',
+  request_id: 'f5b66ab562425e04a9aab343bfb8fb94',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+✔ a definite arbiter refusal on a binding call stays definite (busy 503) (25.790721ms)
+✔ CALLERS lists exact origins only, never "*"; EVERY_SITE is ["*"] (6.852752ms)
+✔ only the owner-confirmed reads are shared with every site, through EVERY_SITE (1.61096ms)
+✔ every other shared action lists exact origins (verify_receipt included) (0.456842ms)
+✔ a shared write or irreversible action lists exact callers, never "*" (agentic-web e67e306) (0.418029ms)
+✔ no shipped copy makes a banned claim (11.897813ms)
+✔ every mention of the midpoint also mentions the price step (3.856327ms)
+✔ README and the page state the bounded leak and the AI-provider caveat (1.027299ms)
+✔ README explains Connect with Otari and why otari.ai is in connect-src (P1.0) (3.015892ms)
+✔ every HTML page gets the same page CSP from _headers (3.364038ms)
+✔ the page CSP is strict for scripts and locked down elsewhere (11.571558ms)
+✔ the page CSP turns on Trusted Types, allowing only the runtime's one policy (P1.3b) (1.657779ms)
+✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (1.274605ms)
+✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (4.331204ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.553465ms)
+✔ Oja's own HTML has no inline script, event handler or style attribute (1.506803ms)
+✔ environments.json names exactly staging and production and passes validation (25.544907ms)
+✔ validation: a kid in both environments is refused (7.310716ms)
+✔ validation: a non-https, loopback or credentialed arbiter URL is refused (17.415616ms)
+✔ validation: private fields, extra fields or a duplicate kid are refused (6.887137ms)
+✔ validation: each kid must be its key's thumbprint (6.066839ms)
+✔ an environment with no arbiter URL or no keys does not build (fail closed) (8.026427ms)
+✔ staging build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (31.449761ms)
+✔ production build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (26.143367ms)
+✔ the build leaves out tests, build-only files and local secrets (19.280766ms)
+✔ the build's own tripwire catches a tampered output (23.372848ms)
+{
+  ts: '2026-11-27T21:17:39.993Z',
+  level: 'info',
+  request_id: '8ae1f7df78324974de09b26f43bfdd2e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 11
+}
+{
+  ts: '2026-11-27T21:17:40.001Z',
+  level: 'info',
+  request_id: '091e9d9bb78124cdda0b076b15c0ce72',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:40.006Z',
+  level: 'info',
+  request_id: '13fd7718c362081eda2be6871fff3749',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.078Z',
+  level: 'info',
+  request_id: 'bcbc8959e02dc4c09bc196227bc718c8',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 10
+}
+{
+  ts: '2026-11-27T21:17:40.091Z',
+  level: 'info',
+  request_id: '14a722432cecc94b3b9c24d6104ea171',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T21:17:40.117Z',
+  level: 'info',
+  request_id: '1c1b81d20aad66334071a28627382a4f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 19
+}
+{
+  ts: '2026-11-27T21:17:40.142Z',
+  level: 'info',
+  request_id: '8d0c641257f65725266ffe98584596fd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.145Z',
+  level: 'info',
+  request_id: 'ae92337d1229d41849c4e6a316331a73',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/receipts/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ negotiate, accept and verify through the page; budget and tokens never in state (263.009069ms)
+{
+  ts: '2026-11-27T21:17:40.161Z',
+  level: 'info',
+  request_id: 'bd49de05b364135f54dd0a0b25318599',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.165Z',
+  level: 'info',
+  request_id: 'e7f6831fc9b92e21b352552aead4aee0',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.171Z',
+  level: 'info',
+  request_id: '02d8dc81df9ddd2b451c09bf314736bd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ page checks refuse bad input before anything is sent (26.538312ms)
+{
+  ts: '2026-11-27T21:17:40.188Z',
+  level: 'info',
+  request_id: 'f3bac171bc9b23a17d25d86676dd03df',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.190Z',
+  level: 'info',
+  request_id: 'd9dff647611aa5e1d0724306dbc0f648',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.193Z',
+  level: 'info',
+  request_id: 'f9ac877ffcffad08e357e3fc0fdf8a7f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.199Z',
+  level: 'info',
+  request_id: '204f3cbb26c360c81085c846b9c5ee12',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.203Z',
+  level: 'info',
+  request_id: 'c85108a3beadf37e28e143415316ee08',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.207Z',
+  level: 'info',
+  request_id: '3dd87dba0b00d24f0237a65e713dad67',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 409,
+  code: 'identical_terms',
+  duration_ms: 3
+}
+✔ repeat terms are refused with the arbiter's reason (32.230885ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (5.470373ms)
+{
+  ts: '2026-11-27T21:17:40.041Z',
+  level: 'info',
+  request_id: 'ad5a4f3c31f59a51dfede89cbcc9ddbf',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 39
+}
+{
+  ts: '2026-11-27T21:17:40.056Z',
+  level: 'info',
+  request_id: '6bafce94dd2360aefab4231d337eb676',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T21:17:40.066Z',
+  level: 'info',
+  request_id: '6c2c85638f82a2a56ef10f19b03a4e3a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:40.160Z',
+  level: 'info',
+  request_id: '13823624fc1e00b9e6a443eebd6dbd83',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T21:17:40.164Z',
+  level: 'info',
+  request_id: 'd991be05e940bbd4bad48386402eb5d4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.171Z',
+  level: 'info',
+  request_id: '731e9b6285c57c30a33a47233b317c79',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+✔ one lost answer (network-error): the client retries with the same secret and gets the same mandate (285.85341ms)
+{
+  ts: '2026-11-27T21:17:40.186Z',
+  level: 'info',
+  request_id: '546b153fc22e89bd0a3452e12702a30f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T21:17:40.195Z',
+  level: 'info',
+  request_id: '179921d4019742c0b4cada17603f14dd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:40.197Z',
+  level: 'info',
+  request_id: '0d3b9704b1c986f7e13541406740add0',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.204Z',
+  level: 'info',
+  request_id: '8f0aeb4e873176c5a9766d97e52f9c6b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.357Z',
+  level: 'info',
+  request_id: '40d475e0bef68f5656cce6d22c8b224f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.366Z',
+  level: 'info',
+  request_id: '523e74e7e12479e73e99d58d4b52cdd6',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ one lost answer (hang): the client retries with the same secret and gets the same mandate (192.090785ms)
+{
+  ts: '2026-11-27T21:17:40.377Z',
+  level: 'info',
+  request_id: '7fcf64440db054639aab0e7f4f75321c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.381Z',
+  level: 'info',
+  request_id: 'aa714aaf4d7c2000746735c405a3a826',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.383Z',
+  level: 'info',
+  request_id: 'f4a6cc127f263508c768e9a825c9e480',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.388Z',
+  level: 'info',
+  request_id: 'ead03533096a8518fae046581d690123',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.391Z',
+  level: 'info',
+  request_id: '38d1ff40cfe664185896559b78da16d2',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ only the hash of the secret is sent; the secret is not in the page state (26.141884ms)
+{
+  ts: '2026-11-27T21:17:40.403Z',
+  level: 'info',
+  request_id: 'f1534c4ff1af91371b02cecb0b9bc7d6',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:40.408Z',
+  level: 'info',
+  request_id: 'a1fdc48f62e6dc807b06af8e3f5282c9',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.409Z',
+  level: 'info',
+  request_id: '63b0b1bd3e63a7e3a8c0c7fc69818a9d',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.412Z',
+  level: 'info',
+  request_id: '14b6449f78c64e11a431aa49712c9d80',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.414Z',
+  level: 'info',
+  request_id: '31ec72672dd5eda4da908dfef1b48ef7',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.417Z',
+  level: 'info',
+  request_id: '7086f6f8b5fb918bce6d036b329d1b8f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.420Z',
+  level: 'info',
+  request_id: 'c4ab22063b0e7ecf7cd645918a84b7bf',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (27.780196ms)
+{
+  ts: '2026-11-27T21:17:40.433Z',
+  level: 'info',
+  request_id: '6c57d965ab4d0d78010da844d4879f0b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:40.438Z',
+  level: 'info',
+  request_id: '514e754a6a873025b04cee347a8912ce',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T21:17:40.439Z',
+  level: 'info',
+  request_id: 'c0c5442fe1b50176ef4a7d1bdb0ca0ae',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.442Z',
+  level: 'info',
+  request_id: 'fe6175997221c9882cd56385330c02c4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.446Z',
+  level: 'info',
+  request_id: '7f692ac7be3f070823d6db3495997522',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.455Z',
+  level: 'info',
+  request_id: '320532de610ed03dbafd73321267e0a9',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 409,
+  code: 'identical_terms',
+  duration_ms: 4
+}
+✔ a new budget for the same terms is a new secret, and is refused as identical terms (33.696711ms)
+✔ AC-F5-1: ?arbiter= is ignored on a non-loopback page (7.727192ms)
+✔ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (1.606542ms)
+{
+  ts: '2026-11-27T21:17:40.250Z',
+  level: 'info',
+  request_id: 'ca4e45f3dd7355e5d3a7325027244cb6',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T21:17:40.260Z',
+  level: 'info',
+  request_id: 'bc01df64d79265fb1bd8421df81dbcb3',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:40.266Z',
+  level: 'info',
+  request_id: 'bd7ee1fe284a6d7c80367db59c3a4f2c',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.323Z',
+  level: 'info',
+  request_id: '4098ee661baea62dfec26503e9d63dd0',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T21:17:40.329Z',
+  level: 'info',
+  request_id: '7790fe9cde2353110f4c07b117c0db73',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:40.348Z',
+  level: 'info',
+  request_id: '707eb2220fbc525b6ae5ae72068f5099',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T21:17:40.352Z',
+  level: 'info',
+  request_id: '467fdcc87a3b1d9ba64d58b8c7eb708e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (308.675809ms)
+{
+  ts: '2026-11-27T21:17:40.368Z',
+  level: 'info',
+  request_id: '51b7eed0a627c01574eecc80e462df64',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.373Z',
+  level: 'info',
+  request_id: '9e00621c6618c2c12cc88584905c13f0',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.376Z',
+  level: 'info',
+  request_id: '3d3800fee01d659720775fd2ef12b748',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.381Z',
+  level: 'info',
+  request_id: '2af418f4b30dacebb525a8213adaf9d5',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.384Z',
+  level: 'info',
+  request_id: '5c1f6c2ed15b9b27383c049515110d54',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.394Z',
+  level: 'info',
+  request_id: 'bb6d5a608d771beef8a59eafddb3c4bd',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T21:17:40.404Z',
+  level: 'info',
+  request_id: 'ba963c453ab83093ee25f21795fbf596',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (50.009706ms)
+{
+  ts: '2026-11-27T21:17:40.417Z',
+  level: 'info',
+  request_id: '07eb49d1ecc34ad7032f6eb66de6e1f4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.420Z',
+  level: 'info',
+  request_id: '3588865dbc27dd837fb58578237b64c4',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.421Z',
+  level: 'info',
+  request_id: '99eeaa2d531dc2ff3db487b70688bcb1',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.428Z',
+  level: 'info',
+  request_id: '2b174fd89c055f3b1a2a613e7aba107b',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.431Z',
+  level: 'info',
+  request_id: '96eaf5361cc53039e7ee39488563ccb9',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.439Z',
+  level: 'info',
+  request_id: 'bde71b4eb1467ac02426ea6f00b739b9',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T21:17:40.440Z',
+  level: 'info',
+  request_id: '9e99e380114324c94f0d2149f2b6d75a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (36.203612ms)
+{
+  ts: '2026-11-27T21:17:40.449Z',
+  level: 'info',
+  request_id: '44f0b6394466c813c7847476ca176375',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.452Z',
+  level: 'info',
+  request_id: 'd099a7f3c12154c5b46da45e59d9ad32',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.457Z',
+  level: 'info',
+  request_id: 'baea559eae4badc0febcef85b203966a',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.461Z',
+  level: 'info',
+  request_id: 'ab3ffe54f093fcc8e46a19b905375868',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.465Z',
+  level: 'info',
+  request_id: 'dbc95f8c681354970a748ad5a4482732',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.473Z',
+  level: 'info',
+  request_id: '8a277e6eb8b41f70f6082b7c2a27f92f',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.476Z',
+  level: 'info',
+  request_id: 'c693e8c428b574eac6fe336b75417b07',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (35.544588ms)
+{
+  ts: '2026-11-27T21:17:40.484Z',
+  level: 'info',
+  request_id: '1e1b91aa7ed7c6fd8ebab69911efe040',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.486Z',
+  level: 'info',
+  request_id: '95e97ccd7ac574ab9a3d1e2fd6098b67',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.487Z',
+  level: 'info',
+  request_id: 'a2e6cead9e7e71b4873c4921a95100ee',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T21:17:40.490Z',
+  level: 'info',
+  request_id: '42bc4149ceab0f32b321d1d8dc478ece',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T21:17:40.494Z',
+  level: 'info',
+  request_id: '8aa26ffe7266a9fc3af7c92de150d437',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T21:17:40.501Z',
+  level: 'info',
+  request_id: '008d5ddd06e80b42cfd0011672c8a31e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T21:17:40.503Z',
+  level: 'info',
+  request_id: 'fb4b600a4ffb35dbd73f74de13657a1e',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T21:17:40.505Z',
+  level: 'info',
+  request_id: '62b08ad57d984c4e3578d30d36218056',
+  env: 'unknown',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (28.043803ms)
+✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (1.988172ms)
+✔ the tripwire itself: a public URL with no keys is refused (0.316247ms)
+✔ the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter) (4.933781ms)
+✔ model routers plus sign-in endpoints are exactly the CSP's other origins (1.173325ms)
+✔ every runtime provider URL is allowed (0.699821ms)
+✔ a custom provider is blocked on the published site, with its origin named (0.61458ms)
+✔ empty, invalid and same-origin values are not reported; local models are fine on a dev page (0.737973ms)
+✔ the message names the blocked origin and every allowed provider (0.665917ms)
+✔ only connect-src blocks of a model URL count, not the arbiter or this page (0.889469ms)
+✔ a key sign-in is never reported as a blocked AI provider (0.776616ms)
+✔ runtime/ is exactly the locked upstream copy: same files, same bytes (41.148023ms)
+✔ CI and CLAUDE.md pin the same agentic-web commit as the runtime lock (1.288942ms)
+✔ CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there (0.674743ms)
+✔ needsKey matches the runtime's needsByok rule (2.057943ms)
+✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (2.063073ms)
+✔ every HTML write, HTML parse and worker start in Oja's pages uses the runtime's policy (69.98357ms)
+✔ the runtime has one Trusted Types policy, and nothing else creates one (23.937494ms)
+✔ Oja's own code imports the policy module only by its one URL (a ?v= copy cannot create the policy again) (3.085703ms)
+ℹ tests 235
+ℹ suites 0
+ℹ pass 235
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3573.284652
+exit: 0

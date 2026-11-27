@@ -1,0 +1,34 @@
+✔ every code in the registry has one integer HTTP status and a meaning (1.691863ms)
+✔ every ArbiterError in src/ names a registry code as a literal, with no status of its own (3.586469ms)
+✔ ArbiterError takes its status from the registry and refuses an unknown code (1.002783ms)
+✔ the README lists every error code with its status (0.710251ms)
+✔ a request writes one JSON line: route template, never the raw path or query (56.519752ms)
+✔ route templates for every endpoint; anything else is 'unmatched' (31.653075ms)
+✔ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (3.389908ms)
+✔ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (4.54115ms)
+✔ a cf-ray header that is not a plain ray id is not trusted as the request id (2.577053ms)
+✔ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (6.511789ms)
+✔ the same failure gives the same fingerprint (6.97373ms)
+✔ a misconfiguration is logged with a fixed reason, and nothing else is written (3.228523ms)
+✔ MCP calls log the JSON-RPC method and the tool, and a tool's error code (7.544217ms)
+✔ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (138.921276ms)
+✔ the same, when unexpected errors carry sentinels in their messages (70.16966ms)
+✔ the same, with no signing key (misconfigured paths) (62.617008ms)
+✔ every error response uses its code's registry status and carries request_id (42.534579ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (19.132085ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (3.124646ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (5.508255ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (2.039209ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.413778ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (1.193312ms)
+✔ the top level logs as ENVIRONMENT = "local" (1.001651ms)
+✔ the runbook says how to read the logs (0.605953ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1270.418747
+exit: 0

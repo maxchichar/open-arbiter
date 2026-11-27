@@ -3,13 +3,9 @@
 import { MECHANISM, LIMITS, checkListing, checkMandate, termsKey, resolve, canonicalJson, unitStep } from "./mechanism.js";
 import { newId, newToken, sha256Hex, generateSigningKey, publicFromPrivate, keyId, signPayload, verifyPayload } from "./crypto.js";
 
-export class ArbiterError extends Error {
-  constructor(code, message, status = 400) {
-    super(message);
-    this.code = code;
-    this.status = status;
-  }
-}
+import { ArbiterError } from "./errors.js";
+
+export { ArbiterError };
 
 const DAY = 86_400;
 // Chain-head contention: 12 attempts; the jittered wait before retry k is up to 4 ms × 2^k, capped at
@@ -74,8 +70,7 @@ export class Arbiter {
     if (this._key) return this._key;
     let priv = this._signingJwk;
     if (!priv && !this._allowGeneratedKey) {
-      console.error("Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not \"1\"; refusing to sign.");
-      throw new ArbiterError("misconfigured", "Signing key not configured.", 500);
+      throw new ArbiterError("misconfigured", "Signing key not configured.", { reason: "signing_key_missing" });
     }
     if (!priv) {
       const row = await this.q("SELECT private_jwk FROM signing_keys ORDER BY created_at LIMIT 1").first();
@@ -150,7 +145,7 @@ export class Arbiter {
         if (attempt < CHAIN_ATTEMPTS - 1) await sleep(this.random() * Math.min(CHAIN_BACKOFF_MS * 2 ** attempt, CHAIN_BACKOFF_CAP_MS));
       }
     }
-    throw new ArbiterError("busy", "The arbiter's audit log is busy. Try again in a moment.", 503);
+    throw new ArbiterError("busy", "The arbiter's audit log is busy. Try again in a moment.");
   }
 
   /**
@@ -172,8 +167,7 @@ export class Arbiter {
     }
     const missing = REQUIRED_MIGRATIONS.filter((name) => !applied.has(name));
     if (missing.length) {
-      console.error(`Open Arbiter: database migrations not applied (missing: ${missing.join(", ")}); refusing to write.`);
-      throw new ArbiterError("misconfigured", "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes.", 500);
+      throw new ArbiterError("misconfigured", "The arbiter's database schema is out of date. It must be migrated or reset before it can accept writes.", { reason: "migrations_missing" });
     }
     this.schemaVerified.add(this.db);
   }
@@ -181,7 +175,7 @@ export class Arbiter {
   async mandateFor(mandateId, token) {
     const m = await this.q("SELECT * FROM mandates WHERE id = ?", mandateId).first();
     if (!m || typeof token !== "string" || m.token_hash !== (await sha256Hex(token))) {
-      throw new ArbiterError("not_found", "Unknown mandate or wrong buyer token.", 404);
+      throw new ArbiterError("not_found", "Unknown mandate or wrong buyer token.");
     }
     return m;
   }
@@ -206,9 +200,9 @@ export class Arbiter {
   }
 
   async vendorByKey(apiKey) {
-    if (typeof apiKey !== "string" || !apiKey.startsWith("vk_")) throw new ArbiterError("unauthorized", "Missing or malformed vendor key.", 401);
+    if (typeof apiKey !== "string" || !apiKey.startsWith("vk_")) throw new ArbiterError("unauthorized", "Missing or malformed vendor key.");
     const v = await this.q("SELECT id, name, origin FROM vendors WHERE key_hash = ?", await sha256Hex(apiKey)).first();
-    if (!v) throw new ArbiterError("unauthorized", "Unknown vendor key.", 401);
+    if (!v) throw new ArbiterError("unauthorized", "Unknown vendor key.");
     return v;
   }
 
@@ -281,7 +275,7 @@ export class Arbiter {
       problems.push("buyer_token_hash must be the SHA-256 of your buyer secret, as 64 lowercase hex characters");
     }
     if (problems.length) throw new ArbiterError("invalid", problems.join("; "));
-    if (typeof buyerKey !== "string" || !buyerKey) throw new ArbiterError("invalid", "buyerKey required.", 500);
+    if (typeof buyerKey !== "string" || !buyerKey) throw new Error("createMandate: buyerKey required"); // a caller bug: internal
     const tk = termsKey(m);
 
     // A retry of a create whose answer was lost: same secret, same terms and budget.
@@ -290,7 +284,7 @@ export class Arbiter {
       const row = await this.q("SELECT id, state, terms_key, max_total_cents FROM mandates WHERE token_hash = ?", clientHash).first();
       if (!row) return null;
       if (row.terms_key !== tk || row.max_total_cents !== m.max_total_cents) {
-        throw new ArbiterError("token_reused", "This buyer secret already belongs to a negotiation with other terms. Use a new secret for new terms.", 409);
+        throw new ArbiterError("token_reused", "This buyer secret already belongs to a negotiation with other terms. Use a new secret for new terms.");
       }
       return { mandate_id: row.id, state: row.state, replayed: true };
     };
@@ -323,15 +317,15 @@ export class Arbiter {
         if (concurrent) return concurrent;
       }
       if (isTermsConflict(e)) {
-        throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.", 409);
+        throw new ArbiterError("identical_terms", "These exact terms were already negotiated. Change the quantity, deadline or vendors to negotiate again; changing only the budget is not allowed.");
       }
-      if (isTokenConflict(e)) throw new ArbiterError("token_reused", "This buyer secret is already in use. Use a new secret.", 409);
+      if (isTokenConflict(e)) throw new ArbiterError("token_reused", "This buyer secret is already in use. Use a new secret.");
       throw e;
     }
     if (created.results[0].meta.changes !== 1) {
       const concurrent = await replay();
       if (concurrent) return concurrent;
-      throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`, 429);
+      throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`);
     }
     return { mandate_id: id, ...(token ? { buyer_token: token } : {}), state: "OPEN", replayed: false };
   }
@@ -418,13 +412,13 @@ export class Arbiter {
   async acceptOffer(offerId, token) {
     await this.key(); // fail closed on a missing signing key before anything is written
     const o = await this.q("SELECT * FROM offers WHERE id = ?", offerId).first();
-    if (!o) throw new ArbiterError("not_found", "Unknown offer.", 404);
+    if (!o) throw new ArbiterError("not_found", "Unknown offer.");
     const m = await this.mandateFor(o.mandate_id, token);
     // Early, friendly answers. The batch below re-checks all of these itself.
-    if (m.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
-    if (o.state !== "OPEN") throw new ArbiterError("offer_closed", "This offer is no longer open.", 409);
+    if (m.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.");
+    if (o.state !== "OPEN") throw new ArbiterError("offer_closed", "This offer is no longer open.");
     const now = this.clock();
-    if (o.expires_at <= now) throw new ArbiterError("offer_expired", "This offer expired; offers last 15 minutes.", 410);
+    if (o.expires_at <= now) throw new ArbiterError("offer_expired", "This offer expired; offers last 15 minutes.");
 
     const vendor = await this.q("SELECT id, name, origin FROM vendors WHERE id = ?", o.vendor_id).first();
     const listing = await this.q("SELECT title, unit, currency FROM listings WHERE vendor_id = ? AND sku = ?", o.vendor_id, o.sku).first();
@@ -482,22 +476,22 @@ export class Arbiter {
       if (isStockCheck(e)) {
         // Nothing of the accept was committed. Close only this offer; the mandate stays RESOLVED.
         await this.q("UPDATE offers SET state = 'VOID' WHERE id = ? AND state = 'OPEN'", o.id).run();
-        throw new ArbiterError("out_of_stock", "The seller no longer has enough stock; choose another offer.", 409);
+        throw new ArbiterError("out_of_stock", "The seller no longer has enough stock; choose another offer.");
       }
       throw e;
     }
     if (done.results[3].meta.changes !== 1) {
       // Nothing was written. Say why, from the state that won.
       const cur = await this.q("SELECT state FROM mandates WHERE id = ?", m.id).first();
-      if (cur.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.", 409);
-      throw new ArbiterError("offer_closed", "This offer can no longer be accepted; nothing changed.", 409);
+      if (cur.state === "SETTLED") throw new ArbiterError("already_settled", "This mandate already has an accepted offer.");
+      throw new ArbiterError("offer_closed", "This offer can no longer be accepted; nothing changed.");
     }
     return { receipt: payload, signature, key_id: kid };
   }
 
   async getReceipt(receiptId) {
     const r = await this.q("SELECT payload, signature, key_id FROM receipts WHERE id = ?", receiptId).first();
-    if (!r) throw new ArbiterError("not_found", "Unknown receipt.", 404);
+    if (!r) throw new ArbiterError("not_found", "Unknown receipt.");
     return { receipt: JSON.parse(r.payload), signature: r.signature, key_id: r.key_id };
   }
 

@@ -87,6 +87,30 @@ Then pin the environment in `sites/oja/environments.json`: its arbiter origin as
 - **MCP:** list `{"url": "https://<arbiter>/mcp", "tools": ["list_catalog", "negotiate"]}` in an agent's `tools`. Note that over MCP the `buyer_token` is returned to the caller.
 - **Peer network:** call `https://<oja-site>/oja_market` from your network; Oja's bridge shares `get_market_state` and `verify_receipt` with every origin.
 
+## Error codes
+
+Every error is JSON `{"error": "<code>", "message": "...", "request_id": "..."}` with the status below. Branch on `error`; `message` is for people and may change. `request_id` is also the `x-request-id` header, and it finds the request's line in the arbiter's logs. The registry is `arbiter/src/errors.js`.
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `invalid` | 400 | The request's fields are missing, malformed or out of range; the message says which. |
+| `invalid_json` | 400 | The request body is not JSON. |
+| `unauthorized` | 401 | The admin token or vendor key is missing or wrong. |
+| `not_found` | 404 | No such route, mandate, offer or receipt, or the buyer token does not match. |
+| `unknown_tool` | 404 | An MCP tools/call named a tool this server does not have. |
+| `method_not_allowed` | 405 | The route exists but not for this HTTP method. |
+| `already_settled` | 409 | The mandate already has an accepted offer. |
+| `offer_closed` | 409 | The offer is no longer open; nothing changed. |
+| `out_of_stock` | 409 | The seller no longer has the stock for this offer; nothing changed. |
+| `identical_terms` | 409 | These exact terms were already negotiated by this caller; changing only the budget is not allowed. |
+| `token_reused` | 409 | This buyer secret already belongs to a negotiation with other terms or budget. |
+| `offer_expired` | 410 | The offer's 15 minutes have passed. |
+| `too_large` | 413 | The request body is over 64 KB. |
+| `rate_limited` | 429 | The caller reached 3 negotiations for this item in 24 hours (anti-probing). |
+| `internal` | 500 | An unexpected error. Whether a write happened is unknown; the request_id identifies it in the logs. |
+| `misconfigured` | 500 | The deployment is missing its signing key or its database migrations; nothing was written. |
+| `busy` | 503 | The audit log is busy with concurrent writes; nothing was written. Retry shortly. |
+
 ## Limits (honest list)
 
 - Settlement is simulated; no money moves. Payments, delivery and disputes are out of scope.

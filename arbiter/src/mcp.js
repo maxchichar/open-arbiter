@@ -104,16 +104,25 @@ export async function callTool(arb, name, args, ctx) {
     case "verify_receipt":
       return arb.verifyReceipt(args);
     default:
-      throw new ArbiterError("unknown_tool", `Unknown tool ${name}.`, 404);
+      throw new ArbiterError("unknown_tool", `Unknown tool ${name}.`);
   }
 }
 
-/** Handle one JSON-RPC message. Returns the response object, or null for notifications. */
+const RPC_METHODS = new Set(["initialize", "ping", "tools/list", "tools/call", "notifications/initialized"]);
+const TOOL_NAMES = new Set(TOOLS.map((t) => t.name));
+
+/**
+ * Handle one JSON-RPC message. Returns the response object, or null for notifications.
+ * ctx.trace, if given, receives {method, tool?, code} for the request's log line (P1.5). Only
+ * names this server knows are passed on; anything else a caller sends is logged as "unknown".
+ */
 export async function handleRpc(arb, msg, ctx) {
+  const trace = (entry) => ctx?.trace?.({ code: null, ...entry });
   const reply = (result) => ({ jsonrpc: "2.0", id: msg.id, result });
-  const fail = (code, message) => ({ jsonrpc: "2.0", id: msg.id ?? null, error: { code, message } });
-  if (!msg || msg.jsonrpc !== "2.0" || typeof msg.method !== "string") return fail(-32600, "Invalid request");
+  const fail = (code, message) => ({ jsonrpc: "2.0", id: msg?.id ?? null, error: { code, message } });
+  if (!msg || msg.jsonrpc !== "2.0" || typeof msg.method !== "string") { trace({ method: "invalid" }); return fail(-32600, "Invalid request"); }
   const isNotification = msg.id === undefined;
+  if (msg.method !== "tools/call") trace({ method: RPC_METHODS.has(msg.method) ? msg.method : "unknown" });
   switch (msg.method) {
     case "initialize":
       return reply({
@@ -128,11 +137,17 @@ export async function handleRpc(arb, msg, ctx) {
       return reply({ tools: TOOLS });
     case "tools/call": {
       const { name, arguments: args } = msg.params || {};
+      const tool = TOOL_NAMES.has(name) ? name : "unknown";
       try {
         const data = await callTool(arb, name, args, ctx);
+        trace({ method: "tools/call", tool });
         return reply({ content: [{ type: "text", text: JSON.stringify(data) }], structuredContent: data });
       } catch (e) {
-        if (e instanceof ArbiterError) return reply({ content: [{ type: "text", text: `${e.code}: ${e.message}` }], isError: true });
+        if (e instanceof ArbiterError) {
+          trace({ method: "tools/call", tool, code: e.code });
+          return reply({ content: [{ type: "text", text: `${e.code}: ${e.message}` }], isError: true });
+        }
+        trace({ method: "tools/call", tool, code: "internal" });
         throw e;
       }
     }

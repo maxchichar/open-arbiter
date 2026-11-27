@@ -5,8 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../src/index.js";
-// Loaded lazily so the leak checks also run against code that predates the registry (red evidence).
-const ERRORS = await import("../src/errors.js").then((m) => m.ERRORS, () => ({}));
+import { ERRORS } from "../src/errors.js";
 import { generateSigningKey, newToken, sha256Hex } from "../src/crypto.js";
 import { memoryD1 } from "./sqlite-d1.mjs";
 import { captureLogs, renderCalls } from "./log-capture.mjs";

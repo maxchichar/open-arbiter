@@ -34,3 +34,18 @@ Template and tests: `arbiter/test/fixtures/rebuild-mandates.sql`, `arbiter/test/
 3. `npm run test:m2` passes on the commit being deployed.
 4. Migrate, then deploy (never the reverse).
 5. Production: owner approval at this step, manual, never from CI.
+
+## Logs
+
+Workers Logs is on in both environments (`[env.X.observability]`, sampling 1), with Cloudflare's own invocation logs **off** (`invocation_logs = false`): the docs don't say whether they leave out headers such as `Authorization` or the caller IP. Every request writes one JSON object (`arbiter/src/log.js`):
+
+```json
+{"ts": "…", "level": "info|error", "request_id": "…", "env": "staging", "version": "3.0.0", "method": "POST", "route": "/v1/mandates/:id/resolve", "status": 404, "code": "not_found", "duration_ms": 12}
+```
+
+Optional fields: `mcp` (`[{method, tool, code}]`), `reason` on `misconfigured` (`signing_key_missing`, `migrations_missing`), and `error_class` plus `error_fingerprint` on `internal`. A line never holds a body, a header, a raw path, a query or an error message, so a floor, a maximum, a token, a key or an IP cannot appear in it (`arbiter/test/redaction.test.mjs`).
+
+- Live: `npx wrangler tail --env staging --format json` or `npx wrangler tail --env production --format json`, run in `arbiter/`. Add `--status error` for failures only.
+- Stored: Cloudflare dashboard, Workers & Pages → the Worker → Logs. Free plan: 200,000 log events per day, kept 3 days (Workers Logs docs, 2026-11-18; Cloudflare Observability pricing from 1 Dec 2026).
+- From a user report: every response carries `x-request-id`, and every error body has `request_id`. Search the logs for it.
+- An `internal` with the same `error_fingerprint` is the same failure path. The fingerprint is a hash of the stack's function names, not the message, so reproduce it locally to see the message.

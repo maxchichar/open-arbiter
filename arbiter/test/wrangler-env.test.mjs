@@ -67,6 +67,10 @@ for (const env of ENVS) {
     const c = read(env);
     assert.equal(c.observability?.enabled, true, "observability.enabled");
     assert.equal(c.observability?.head_sampling_rate ?? 1, 1, "every request logged");
+    // Cloudflare's automatic invocation logs record "the Request, Response, and related metadata";
+    // the docs do not say whether headers (Authorization: buyer, vendor and admin tokens) or the IP
+    // are excluded, so they are off. Our own line (src/log.js) carries what operations need.
+    assert.equal(c.observability?.logs?.invocation_logs, false, "invocation logs off");
     assert.equal(c.vars?.ENVIRONMENT, env, "vars are not inherited: set ENVIRONMENT per environment");
   });
 }
