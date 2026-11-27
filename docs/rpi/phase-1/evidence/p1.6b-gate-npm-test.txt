@@ -1,0 +1,4617 @@
+npm notice run open-arbiter@1.0.0 test
+npm notice run node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (107.49671ms)
+✔ fault at "decrement stock": nothing of the accept is committed, and a later accept works (54.368137ms)
+✔ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (22.743487ms)
+✔ fault at "insert receipt": nothing of the accept is committed, and a later accept works (31.024596ms)
+✔ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (25.403798ms)
+✔ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (45.816126ms)
+✔ concurrent accepts of the same offer: exactly one receipt (24.469972ms)
+✔ concurrent accepts of different offers on one mandate: exactly one receipt (81.209633ms)
+✔ the schema refuses negative stock (CHECK stock_nonneg) (18.104845ms)
+✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (30.641281ms)
+✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (28.138418ms)
+✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (41.51317ms)
+✔ R6: a legacy SETTLED-without-receipt mandate is not settled by a later accept (batch-level) (28.437083ms)
+✔ R6: the accept records which attempt settled the mandate (15.333315ms)
+✔ batch commits every statement together (7.257444ms)
+✔ batch rolls back everything when one statement fails (5.970009ms)
+✔ injected fault aborts a batch at the chosen statement (2.992529ms)
+✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (317.500697ms)
+✔ 5 concurrent identical terms: one succeeds, four get identical_terms (46.635365ms)
+✔ a refused mandate writes no row and no event (13.96147ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (18.338007ms)
+✔ concurrent writes of every kind keep one linear chain (361.477195ms)
+✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (25.778756ms)
+✔ chain-head conflicts are retried with a fresh head (32.437137ms)
+✔ when retries run out: 503 busy, and the business write is not committed (329.524213ms)
+✔ createVendor: a failed event insert rolls back the business write (18.668491ms)
+✔ upsertListing: a failed event insert rolls back the business write (19.982385ms)
+✔ createMandate: a failed event insert rolls back the business write (11.778443ms)
+✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (30.075491ms)
+✔ [tree] every workflow passes the guards, and ci.yml runs every required check (14.621809ms)
+✔ the minimal good workflow passes (0.571731ms)
+✔ AC-3.4: production, remote migrations, credentials and deploys are refused (2.037162ms)
+✔ AC-3.7: hardening rules (1.201151ms)
+✔ ci.yml requirements: each missing check is named (1.471983ms)
+✔ AC-3.5 M3: a mechanism version change may not ship as split traffic (6.357351ms)
+✔ AC-3.5 M3 CLI: base = HEAD compares with HEAD~1 and passes (201.949557ms)
+✔ test:m2 without tags (a shallow clone) fails loudly instead of checking nothing (794.196885ms)
+✔ secret scan --history finds a key that was committed and later removed, without printing it (532.110414ms)
+✔ reviewed blobs: only the exact reviewed .env.example blob passes; a different .env.example is refused (628.962055ms)
+✔ Discord bot tokens and NVIDIA API keys are detected; placeholders are not (0.938505ms)
+✔ the detector finds DEV however it is written, and ignores comments (3.190243ms)
+✔ arbiter/wrangler.toml never defines DEV (4.399649ms)
+✔ midpoint of the zone of agreement (3.291344ms)
+✔ budget above list price is capped at list price (0.501138ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (2.090604ms)
+✔ offers ranked by price, then delivery, then vendor id (1.103917ms)
+✔ vendor filter is respected (0.541995ms)
+✔ listing validation (0.977819ms)
+✔ terms key ignores budget and vendor order (0.480228ms)
+✔ canonical json sorts keys at every level (0.663956ms)
+✔ catalog never exposes floors (56.370534ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (94.472061ms)
+✔ cannot accept twice, with a wrong token, or after expiry (46.604637ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (42.874814ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (23.549251ms)
+✔ tampering with the audit log is detected (15.69016ms)
+✔ no environment, an unknown one or the empty top level is refused (2.886258ms)
+✔ staging deploys with --env staging (1.631755ms)
+✔ production needs --confirm-production (owner approval A3 is still required; this only stops slips) (0.419132ms)
+✔ unknown flags are refused rather than passed to wrangler (0.394786ms)
+✔ an environment whose ids are still placeholders is refused, except for a dry run (0.42853ms)
+✔ the CLI exits 2 without an environment, before starting wrangler (1330.746483ms)
+✔ the checked-in wrangler.toml still has placeholder ids (resources are created at approval A1/A3) (14.097648ms)
+✔ a deploy passes the git commit as GIT_SHA and as the version tag (0.505175ms)
+✔ every code in the registry has one integer HTTP status and a meaning (3.228836ms)
+✔ every ArbiterError in src/ names a registry code as a literal, with no status of its own (23.088209ms)
+✔ ArbiterError takes its status from the registry and refuses an unknown code (1.723319ms)
+✔ the README lists every error code with its status (1.267176ms)
+✔ healthy: 200 with versions, db, key (kid only), migrations and schema (135.332857ms)
+✔ the log line carries the Worker version, the mechanism and the git commit (16.90667ms)
+✔ local dev (DEV=1, no secret): 200, the key is the dev key and nothing is written (10.366112ms)
+✔ misconfigured: 503 key_missing, with the checks and a request id (12.928357ms)
+✔ misconfigured: 503 key_invalid, with the checks and a request id (11.670298ms)
+✔ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (16.387247ms)
+✔ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (8.39798ms)
+✔ misconfigured: 503 schema_outdated, with the checks and a request id (7.398811ms)
+✔ misconfigured: 503 migrations_pending, with the checks and a request id (17.349296ms)
+✔ misconfigured: 503 db_unavailable, with the checks and a request id (21.056416ms)
+{
+  ts: '2026-11-27T22:05:36.356Z',
+  level: 'error',
+  request_id: 'a9c8dd4c495cae251bf8021e6eb9a256',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_invalid'
+}
+✔ an unparseable signing key makes other routes refuse as misconfigured, not crash as internal (8.077715ms)
+{
+  ts: '2026-11-27T22:05:36.398Z',
+  level: 'info',
+  request_id: 'b454bcaffc12186cd4d4b5d4be2be695',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 34
+}
+{
+  ts: '2026-11-27T22:05:36.398Z',
+  level: 'info',
+  request_id: '0506deb5c57629419dd0f81a55f59fef',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 34
+}
+{
+  ts: '2026-11-27T22:05:36.400Z',
+  level: 'info',
+  request_id: 'eedd9dadff8b84c789493b4c46e8771e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.400Z',
+  level: 'info',
+  request_id: 'f2a9dfd7ecd6fd71122eaa10372018ee',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 35
+}
+{
+  ts: '2026-11-27T22:05:36.400Z',
+  level: 'info',
+  request_id: '1a70115f16185a5b642c82565f8f6054',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 35
+}
+{
+  ts: '2026-11-27T22:05:36.401Z',
+  level: 'info',
+  request_id: '1d70d6ae301681202541bc780c033b43',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.401Z',
+  level: 'info',
+  request_id: '6db8e8276f0ca0b30303227638ed2dd6',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.401Z',
+  level: 'info',
+  request_id: '09b74133e9bbd5128da3b2a1e479523c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.401Z',
+  level: 'info',
+  request_id: 'df1e681a11380153141e4c1cba31853c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.401Z',
+  level: 'info',
+  request_id: '2d7bc5cda91f31afa4998a294007185f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.402Z',
+  level: 'info',
+  request_id: '1644f2bef88bb5f4847cc90cc4562339',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.402Z',
+  level: 'info',
+  request_id: 'c3b9c617a541f2b387c68d7828a4630c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.402Z',
+  level: 'info',
+  request_id: 'ecb7989ee0c38b4ab4106038437d7b77',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.402Z',
+  level: 'info',
+  request_id: 'b23b44c481e492f7bf8dd34f131fc88c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.402Z',
+  level: 'info',
+  request_id: '0e9b975a084462115668929230d5dcda',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.402Z',
+  level: 'info',
+  request_id: '51a8f5fa555c8282378abffa002c8714',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 36
+}
+{
+  ts: '2026-11-27T22:05:36.403Z',
+  level: 'info',
+  request_id: 'd6c02ef44fefe6c03862bf20b4f25654',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.403Z',
+  level: 'info',
+  request_id: '72dac10c42ba4027f9fc92f2337882fc',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.403Z',
+  level: 'info',
+  request_id: '8821f2c102440449145edb66e7ad30b5',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.403Z',
+  level: 'info',
+  request_id: 'bc07664d9a47791f832a522df20009df',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.403Z',
+  level: 'info',
+  request_id: '4f8bf856de12706031466b5dbf347e5e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.403Z',
+  level: 'info',
+  request_id: 'caf3e307ac3380510211cf32d1dce11f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.404Z',
+  level: 'info',
+  request_id: 'ba90ac597c24c6f2136d0504a04be4c5',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.404Z',
+  level: 'info',
+  request_id: 'fbd4455ea125acef4e9f91028f69f2be',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.404Z',
+  level: 'info',
+  request_id: 'b25dcaf27a7ecd1085d79ed13c9115a5',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 37
+}
+{
+  ts: '2026-11-27T22:05:36.407Z',
+  level: 'info',
+  request_id: '34df53087d0d0f62737f3570436a2644',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 40
+}
+{
+  ts: '2026-11-27T22:05:36.408Z',
+  level: 'info',
+  request_id: '9554bea759adb6f88a391629a9737c41',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 41
+}
+{
+  ts: '2026-11-27T22:05:36.409Z',
+  level: 'info',
+  request_id: '6ea93a2889818e7f9d9e3ad8effde060',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 41
+}
+{
+  ts: '2026-11-27T22:05:36.409Z',
+  level: 'info',
+  request_id: 'f67227b27388b02b3422f06d644f6a70',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 41
+}
+{
+  ts: '2026-11-27T22:05:36.409Z',
+  level: 'info',
+  request_id: '5a34410fdd1f5438a35d330f04687d3f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 41
+}
+{
+  ts: '2026-11-27T22:05:36.409Z',
+  level: 'info',
+  request_id: 'c76acc08562ba123b2b977ca7e6cc189',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 41
+}
+{
+  ts: '2026-11-27T22:05:36.412Z',
+  level: 'info',
+  request_id: '3e0ce28c242481aa0083ffbd106fb590',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 44
+}
+{
+  ts: '2026-11-27T22:05:36.412Z',
+  level: 'info',
+  request_id: '16e412856224ea76ac367e9ac4e66db4',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 42
+}
+{
+  ts: '2026-11-27T22:05:36.412Z',
+  level: 'info',
+  request_id: 'da8c888b0b515232719b85992589d3f0',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 42
+}
+{
+  ts: '2026-11-27T22:05:36.412Z',
+  level: 'info',
+  request_id: 'eab7c29b23377ff4f47146307c74a43f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 42
+}
+{
+  ts: '2026-11-27T22:05:36.412Z',
+  level: 'info',
+  request_id: '94425966da860699d9e1a614d11139f8',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 42
+}
+{
+  ts: '2026-11-27T22:05:36.415Z',
+  level: 'info',
+  request_id: '10bf35f4a962dbdb7cc28d9f4bf54b5a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.416Z',
+  level: 'info',
+  request_id: 'cbaee2a0ddebf4f8732ba454dd77414a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.416Z',
+  level: 'info',
+  request_id: '06db8bb4666a9adb9d9d21de2b7de80e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.416Z',
+  level: 'info',
+  request_id: '3aa756b25ff9e7bbbff9d6f272f6c63e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.416Z',
+  level: 'info',
+  request_id: 'aca4b9a8f7bc7e8eed86f23c604d80a9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '3739c5292642e6a580669afdf0795bcf',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 46
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '7a02b05ffb124d36de4cf14398f51d2b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 46
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '359404a4f4f8c0e35f8eb9c5dc50668c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '2c313d1473197a7654b23653f9855486',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 45
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: 'afc3ccc552471c92bbc416c18b5c1160',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 44
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '6b563d760a1451518fa01de996f51410',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 44
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: 'aecef4c69d077e5a3599cafe17a057bc',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 44
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '486a467bf522ea858e49b23502203da2',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 43
+}
+{
+  ts: '2026-11-27T22:05:36.417Z',
+  level: 'info',
+  request_id: '0501c1eb8909773bf93d517e3b29cb60',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 43
+}
+{
+  ts: '2026-11-27T22:05:36.418Z',
+  level: 'info',
+  request_id: '4b5d12ad75b095a406104784b8ab24c3',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.423Z',
+  level: 'info',
+  request_id: 'abd2e7d68d359c778612386f15803603',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:36.426Z',
+  level: 'info',
+  request_id: 'ec56c87b15ed45136bc44e77ee95c18b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.429Z',
+  level: 'info',
+  request_id: '9393365b2459e37e059f74509ca113a1',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:36.431Z',
+  level: 'info',
+  request_id: '5a7a840318b7ea785ea94a1f89f5157c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.433Z',
+  level: 'info',
+  request_id: '3a612cd5e33caa681af4ee029a9ac810',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.433Z',
+  level: 'info',
+  request_id: '032e0049329109b83e8f41ed17cdf691',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.435Z',
+  level: 'info',
+  request_id: 'fd755c1f02ac5bf69d1456894f18e37c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.435Z',
+  level: 'info',
+  request_id: 'b3e022c7ad37df9b3e08eef52ecba6da',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.436Z',
+  level: 'info',
+  request_id: 'f9edb9d5a2bd86a090b7338444e18730',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.436Z',
+  level: 'info',
+  request_id: 'f337c999163386220a7298f62c737ef9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.437Z',
+  level: 'info',
+  request_id: '14b1c37b3a0671d496b24b4632e96154',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.442Z',
+  level: 'info',
+  request_id: '1fecc22db2a00bfd47aaf70deb7ae753',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:36.446Z',
+  level: 'info',
+  request_id: '8989da131de2d22ab292e87503dd0efd',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.447Z',
+  level: 'info',
+  request_id: 'd8a14049f5c642805c8a9a419f5fd7cd',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.448Z',
+  level: 'info',
+  request_id: '74e33857e7046723d62e593b3332b7c2',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.450Z',
+  level: 'info',
+  request_id: '71f78c7473612e8cc8406f5bfcc308dc',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.450Z',
+  level: 'info',
+  request_id: '2cadd7138f5dc5fca419fe38359dae33',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.452Z',
+  level: 'info',
+  request_id: '5ae410a86916d9d9090e21397c6b3865',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:36.452Z',
+  level: 'info',
+  request_id: 'f695b17846ff732c9242f095ebbaef2c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.454Z',
+  level: 'info',
+  request_id: 'c4a4739b7406a0551efe3456f5947056',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:36.457Z',
+  level: 'info',
+  request_id: 'c496e748ba14ae15b2909464a9196b26',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:36.457Z',
+  level: 'info',
+  request_id: 'f030c9b310c5ff78d33bb2ad33000e92',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.458Z',
+  level: 'info',
+  request_id: '10dcb093a72938762d9b721dfb118e66',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.459Z',
+  level: 'info',
+  request_id: 'c4d4378fbf8a28508e5facd6ba5e7c5a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.459Z',
+  level: 'info',
+  request_id: '31dbf7970c79647f2b706cae955882b3',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.460Z',
+  level: 'info',
+  request_id: 'd0934f80b7af70d810513e080c26a280',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.460Z',
+  level: 'info',
+  request_id: '50d8c8eaaef5bf953cc686e97b162443',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.460Z',
+  level: 'info',
+  request_id: '191211391542e1cf97f8c6b16dc5fcdb',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.461Z',
+  level: 'info',
+  request_id: 'e64a2dd3eb3fe3533f0b8ad96911c3ea',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.461Z',
+  level: 'info',
+  request_id: '2b96f78d94213bfa6e4b2f47bea77783',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.463Z',
+  level: 'info',
+  request_id: '6224a568f431ae60d6ed707adcc6b26c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.463Z',
+  level: 'info',
+  request_id: '45f713d467deda01327570ac7786392c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.464Z',
+  level: 'info',
+  request_id: '588d05b722ed7f5b98094e7fd619130f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.464Z',
+  level: 'info',
+  request_id: '62c4e40ec379febed3636fcd0d76906d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.465Z',
+  level: 'info',
+  request_id: '945ec6cf33f03a38a954a83660587478',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.466Z',
+  level: 'info',
+  request_id: '2711a0dd61d883cc2cb653d2511837d7',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.467Z',
+  level: 'info',
+  request_id: '05cf5f284568ffc701d908aa519769c2',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.467Z',
+  level: 'info',
+  request_id: '737ff490405fe1c663691f61c372976c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.468Z',
+  level: 'info',
+  request_id: 'c0fe43fb66e1d20007ab5e6b542a0e5b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.469Z',
+  level: 'info',
+  request_id: 'cc54b0730ba2eadc7db246114e49466a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.469Z',
+  level: 'info',
+  request_id: '3080028e6b728d801168ee2b53bfe239',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.469Z',
+  level: 'info',
+  request_id: 'c348b008cf9084eb2914a87b161b18eb',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.470Z',
+  level: 'info',
+  request_id: '798ebb62e3f43f2a04e6a2ce215840f0',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.470Z',
+  level: 'info',
+  request_id: 'c3a611a923ab05ac2d5604fb4cbd7c91',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.471Z',
+  level: 'info',
+  request_id: '6b6e9746024d0d6801e1bce115f8b396',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:36.473Z',
+  level: 'info',
+  request_id: 'dcde0aeaf1fa353c295457f5528eb318',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:36.474Z',
+  level: 'info',
+  request_id: 'bb808cae33232ec5711e013fc08c6639',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.475Z',
+  level: 'info',
+  request_id: 'c803ae1e5c09fb07759b9d9ca8f17ee0',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:36.476Z',
+  level: 'info',
+  request_id: '1566346f38ff2fe0583b105278dcea72',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ cache: a burst of 100 requests costs at most 3 statements (118.328363ms)
+{
+  ts: '2026-11-27T12:00:00.000Z',
+  level: 'info',
+  request_id: '5b1194b98e405ebd179b61973ed81e9a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:09.999Z',
+  level: 'info',
+  request_id: '943e2cb25755bc6c353aa2942defaa23',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:10.000Z',
+  level: 'info',
+  request_id: 'e977383ea24e4bfeb0d9ebb252ce40af',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ cache: the checks run again after 10 s, not before (12.900625ms)
+{
+  ts: '2026-11-27T12:00:00.000Z',
+  level: 'error',
+  request_id: '713968e93eccbdb8a6059e851ac5aec2',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 503,
+  code: 'db_unavailable',
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:00.000Z',
+  level: 'error',
+  request_id: '81ab7263493881c4b069014796932c38',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 503,
+  code: 'db_unavailable',
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:10.000Z',
+  level: 'info',
+  request_id: 'bab3a3d0f9d963ea52df249f33f55685',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ cache: a failure is cached too, and clears within 10 s of the fix (9.692308ms)
+{
+  ts: '2026-11-27T22:05:36.513Z',
+  level: 'info',
+  request_id: 'bb84006421d8c8d4fafb591ed6c376a4',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:36.518Z',
+  level: 'error',
+  request_id: 'a17a7e78ba68130e9e399f8599a07f22',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 503,
+  code: 'schema_outdated',
+  duration_ms: 4
+}
+✔ cache: each database has its own entry (17.61528ms)
+✔ a client-made secret: only its hash is sent, and the secret then works as the buyer token (50.98509ms)
+✔ a retry with the same secret and terms returns the same mandate: no new row, no new event (17.321544ms)
+✔ the same secret with different terms or a different budget is refused, and writes nothing (11.479887ms)
+✔ the daily cap still holds, and a retry of an existing mandate is not counted against it (19.707426ms)
+✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (10.44429ms)
+✔ concurrent retries with one secret create exactly one mandate (14.87633ms)
+✔ a malformed hash is refused (6.956615ms)
+{
+  ts: '2026-11-27T22:05:36.292Z',
+  level: 'info',
+  request_id: 'f75604e63b1def35065b966517c3adcd',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:36.298Z',
+  level: 'info',
+  request_id: '18ed8b7d82bd486604e90a6eb05a4ed6',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ over HTTP: 201 when created, 200 when replayed, never a token in the body (91.104934ms)
+✔ piped stdout gets a private P-256 JWK (237.825455ms)
+✔ --out outside the repo writes a new file, mode 0600, and refuses to overwrite (325.039202ms)
+✔ --out inside the repo is refused and nothing is written (396.187029ms)
+✔ stdout redirected to a file inside the repo is refused (Linux) (178.853653ms)
+✔ unknown arguments are refused (240.810831ms)
+✔ a request writes one JSON line: route template, never the raw path or query (91.092701ms)
+✔ route templates for every endpoint; anything else is 'unmatched' (88.797962ms)
+✔ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (6.086168ms)
+✔ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (7.959571ms)
+✔ a cf-ray header that is not a plain ray id is not trusted as the request id (4.654231ms)
+✔ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (14.45295ms)
+✔ the same failure gives the same fingerprint (19.652352ms)
+✔ a misconfiguration is logged with a fixed reason, and nothing else is written (9.051215ms)
+✔ MCP calls log the JSON-RPC method and the tool, and a tool's error code (12.704213ms)
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (6.442171ms)
+✔ AC-F1-6: mechanism identity, and each offer names its step (3.120782ms)
+✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.392733ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.377353ms)
+✔ tie between two grid points goes to the buyer (lower) (0.673945ms)
+✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (101.849232ms)
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (458.103861ms)
+✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (12.055146ms)
+✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (107.759387ms)
+✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (170.405909ms)
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (32.693141ms)
+✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (17.510752ms)
+✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (1.187696ms)
+✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (5.122988ms)
+✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (247.019983ms)
+✔ [tree] migration files are numbered 0000…, in order, with no gaps (3.907779ms)
+✔ [tree] the Worker requires exactly the migrations in its tree (2.268089ms)
+✔ [tree] migrations/lock.json pins every migration's SHA-256: an applied migration is never edited (3.134587ms)
+✔ empty database: every migration applies and is recorded (4.577505ms)
+✔ AC-2.1: 0000_baseline alone gives exactly v0.0's schema (sqlite_master name, type, sql) (5.270055ms)
+✔ v0.0-seeded database: migrations apply; no row lost; chain, receipt and accept still work (81.267343ms)
+✔ 0000_baseline refuses a database made before CHECK stock_nonneg; nothing is recorded (7.81639ms)
+✔ 0000_baseline refuses a database whose audit chain forked (the unique index cannot be built) (3.208707ms)
+✔ [tree] HEAD inserts name their columns, so an added column never breaks a running Worker (M2) (5.791772ms)
+✔ AC-2.6: a parent-table rebuild under PRAGMA defer_foreign_keys keeps every child row (59.894838ms)
+✔ a clean tree whose npm test passes on HEAD is pushed (1302.409349ms)
+✔ a commit whose npm test fails is not pushed (867.988391ms)
+✔ OPEN_ARBITER_ALLOW_RED_PUSH=1 pushes a red commit and says the hook was bypassed (249.72692ms)
+✔ any other value of the opt-out does not bypass (1534.686644ms)
+✔ a dirty working tree is refused, even with the opt-out (165.322977ms)
+✔ a secret file in history is refused, even with the opt-out (160.198026ms)
+✔ pushing a ref that is not HEAD is refused (npm test runs on HEAD only) (75.249333ms)
+✔ deleting a remote branch needs no test run (364.677837ms)
+✔ the pre-push hook is versioned and executable (0.500526ms)
+✔ a clean v0.0 database, before and after migrating: no findings (9.335002ms)
+✔ SETTLED mandate without a receipt is reported (3.748598ms)
+✔ ACCEPTED offer without a receipt is reported (3.152151ms)
+✔ receipt whose audit_hash names no event is reported (7.119653ms)
+✔ missing unique indexes are reported (4.395522ms)
+✔ a database without CHECK stock_nonneg is reported (3.709554ms)
+✔ CLI: exit 1 and the findings on a bad database, exit 0 on a clean one (484.104005ms)
+✔ pubkey.mjs prints only the public key, with the kid the arbiter signs under (198.574885ms)
+✔ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (444.30094ms)
+✔ the same, when unexpected errors carry sentinels in their messages (261.391708ms)
+✔ the same, with no signing key (misconfigured paths) (171.867102ms)
+✔ every error response uses its code's registry status and carries request_id (96.127923ms)
+✔ a failing command: non-zero exit, output saved with its exit code (313.763631ms)
+✔ a failing node --test run exits non-zero (612.733789ms)
+✔ a passing command exits 0 (213.704073ms)
+✔ a killed command is a failure (220.642975ms)
+✔ a missing command is a failure (151.462608ms)
+✔ secret-shaped output is redacted in the file, exit code unchanged (257.06682ms)
+✔ usage errors exit 2 (107.024708ms)
+✔ a Cloudflare account id in an API path is replaced (178.822754ms)
+✔ no d1_migrations table (a database made from the old schema.sql): writes refused (38.669271ms)
+✔ a required migration missing (database at an older level): writes refused, nothing written (10.618078ms)
+✔ a level recorded out of order still needs every required name (6.865122ms)
+✔ all required migrations applied: writes work; newer migrations than this Worker knows are fine (9.828005ms)
+✔ the guard reads the migration level, not sqlite_master (8.836199ms)
+✔ [tree] REQUIRED_MIGRATIONS is the tree's migrations (2.356065ms)
+{
+  ts: '2026-11-27T22:05:37.133Z',
+  level: 'info',
+  request_id: '1702f2c4c627c20b5510f9bd3e94057a',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:37.143Z',
+  level: 'info',
+  request_id: '58ce4e1786ed6275f133df8f92e4ecd5',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:37.152Z',
+  level: 'info',
+  request_id: '7346e67243fd37a5e0576d5afb75cc9f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:37.166Z',
+  level: 'info',
+  request_id: 'a0408257bea5908ca1db7a201ca78523',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 12
+}
+✔ schema check: one d1_migrations query per Worker instance, not one per write (132.702444ms)
+{
+  ts: '2026-11-27T22:05:37.180Z',
+  level: 'info',
+  request_id: '8f0b93312d72bc6465e63f694fa8b8a6',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T22:05:37.184Z',
+  level: 'error',
+  request_id: '12d5edfae3231ab60322528cafd75b2d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 2,
+  reason: 'migrations_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.186Z',
+  level: 'info',
+  request_id: 'fd6ba05b5649f8e57c0cbea2d4622298',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.190Z',
+  level: 'error',
+  request_id: '6cb20fafddcaae057c5973247eb524b9',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 3,
+  reason: 'migrations_missing'
+}
+✔ schema check cache is per database: an outdated binding is still refused (24.589437ms)
+✔ an unexpected database error in the check is not reported as an outdated schema (13.395861ms)
+secret scan: 3 file(s), no findings
+secret scan: 3 file(s), no findings
+✔ the detector finds secret shapes and ignores dev values (10.862631ms)
+✔ redact removes every value and keeps the rest (1.132832ms)
+✔ no tracked file is a secret file or holds a secret value (295.811274ms)
+✔ pre-commit hook: blocks a staged fake key, a forbidden file, and a staged secret fixed only in the work tree (882.934023ms)
+✔ pre-commit hook: a clean commit goes through (541.063654ms)
+✔ the hook is versioned, executable, and npm install enables it (1.682312ms)
+{
+  ts: '2026-11-27T22:05:37.164Z',
+  level: 'info',
+  request_id: 'a382aed23a531a4dc3eff2d1e4f5352b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 44
+}
+{
+  ts: '2026-11-27T22:05:37.171Z',
+  level: 'info',
+  request_id: 'd02b2fd7210b6e7bfce6f56450bc7672',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:37.180Z',
+  level: 'info',
+  request_id: '5bdcf4df6329e24b55c58b60f8dc2a59',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:37.188Z',
+  level: 'info',
+  request_id: '09fa5ed5f8cf08b64649ce0d64718be7',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:37.192Z',
+  level: 'error',
+  request_id: '3bb7ba8c17d162e76fb92d2fffd1baa8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.195Z',
+  level: 'error',
+  request_id: '0c2576474f6e7070c95228919b61b26a',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 2,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.199Z',
+  level: 'error',
+  request_id: 'dcca787ebeecab930cb40920133b9577',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 2,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (183.466526ms)
+{
+  ts: '2026-11-27T22:05:37.222Z',
+  level: 'info',
+  request_id: '90d3f57888d2c234a33a16b40181e973',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:37.227Z',
+  level: 'info',
+  request_id: 'dff13c93d1367b063efd580ef88470c1',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.232Z',
+  level: 'info',
+  request_id: 'a5c9604b750e9b392199d6f9aa081168',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.243Z',
+  level: 'info',
+  request_id: 'd41db5100559a4089ed851a7821878cd',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T22:05:37.244Z',
+  level: 'error',
+  request_id: 'cd9e9bf86ccb0a1aed87a5776bf19a8f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 0,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.245Z',
+  level: 'error',
+  request_id: 'ad1cd30247ef629beaaaa9677fb1060d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 0,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.247Z',
+  level: 'error',
+  request_id: '41ee23a3310c35e469ff02e9f02fb7fc',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (43.127252ms)
+{
+  ts: '2026-11-27T22:05:37.260Z',
+  level: 'info',
+  request_id: '489265fd640ccf8cb2e702e9af50285b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:37.263Z',
+  level: 'info',
+  request_id: 'beb2d8a7b4951b6c50d9458914da9f7e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.266Z',
+  level: 'info',
+  request_id: '53e0ff0a2eb74124064fb43c6a411385',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.270Z',
+  level: 'info',
+  request_id: 'daab07d58c9312fb71d9f4bf62a662d7',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.271Z',
+  level: 'error',
+  request_id: 'bcc19af0fecf9f7419a6fce3f86689a4',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 0,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.276Z',
+  level: 'error',
+  request_id: 'e9297142222c7e76e38c2bf8ffd4bf79',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.278Z',
+  level: 'error',
+  request_id: 'f2cd6fe1a920d8839c90f52df619269e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (29.788058ms)
+{
+  ts: '2026-11-27T22:05:37.286Z',
+  level: 'info',
+  request_id: 'a46545748f96598e256f987cc4cd8558',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:37.288Z',
+  level: 'info',
+  request_id: '0a3c0d4a6f6519d4961f3a78f14bc0ab',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.295Z',
+  level: 'info',
+  request_id: '8e9588cadba254be7ea94da2752c366e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:37.299Z',
+  level: 'info',
+  request_id: '32d6d0fb0f05d2c042c59879672b8bfc',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.301Z',
+  level: 'error',
+  request_id: '007a45faf4b21ee46e9b0e17a2f16382',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.302Z',
+  level: 'error',
+  request_id: '581ee0f1d138424681cd1669ce58319e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 0,
+  reason: 'signing_key_missing'
+}
+{
+  ts: '2026-11-27T22:05:37.304Z',
+  level: 'error',
+  request_id: '66a812d8eb87f4d41a0c8cfc743926c1',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_missing'
+}
+✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (26.044038ms)
+{
+  ts: '2026-11-27T22:05:37.318Z',
+  level: 'info',
+  request_id: 'df3eceb98c42e4bb942b847944821789',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:37.321Z',
+  level: 'info',
+  request_id: 'f6b363a24228fa25ed3a31c596fea285',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.326Z',
+  level: 'info',
+  request_id: '224c05899bc301a628a4aa22fa3c62fe',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:37.330Z',
+  level: 'info',
+  request_id: '22b2a9518899d6d411b31e0844ca5ee8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:37.340Z',
+  level: 'info',
+  request_id: 'ce91798819e985dd4a96be1d04ae2fec',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:37.352Z',
+  level: 'info',
+  request_id: '0b66675d168f3fdca546a10b14eed7c2',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 11
+}
+{
+  ts: '2026-11-27T22:05:37.358Z',
+  level: 'info',
+  request_id: 'e3302ff77f0681a16aa3ac9fc06ad059',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/receipts/verify',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (54.64998ms)
+{
+  ts: '2026-11-27T22:05:37.375Z',
+  level: 'info',
+  request_id: 'b9970569d33fd86eed5810d1da4ec57f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.383Z',
+  level: 'info',
+  request_id: '94bd7f669f6ca9f763f8e98c45e3fd94',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T22:05:37.386Z',
+  level: 'info',
+  request_id: '5ca263e185619f33e9c5d275de5cd1be',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.389Z',
+  level: 'info',
+  request_id: 'd3addede79e39e7203103a39a3ed8ad6',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.397Z',
+  level: 'info',
+  request_id: '60f424085d697589810fca6a0ed0ea19',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:37.399Z',
+  level: 'info',
+  request_id: '24259dde4ebc0dc1ca3fed58f460c750',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ a configured signing key works without DEV and is never stored (39.694641ms)
+✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (5.310743ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (14.562347ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (1.80329ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (3.05645ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (1.204127ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.02063ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (1.140577ms)
+✔ the top level logs as ENVIRONMENT = "local" (0.995262ms)
+✔ the runbook says how to read the logs (0.61885ms)
+✔ the top level binds version metadata as CF_VERSION_METADATA (0.997967ms)
+✔ [env.staging] binds version metadata as CF_VERSION_METADATA (0.956899ms)
+✔ [env.production] binds version metadata as CF_VERSION_METADATA (0.927664ms)
+{
+  ts: '2026-11-27T22:05:37.652Z',
+  level: 'info',
+  request_id: '0d6b65173c26ac25ccf828d5cf102a84',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:37.680Z',
+  level: 'info',
+  request_id: 'd6fcbe641ee5f14f0a10bc6534f44920',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 18
+}
+{
+  ts: '2026-11-27T22:05:37.685Z',
+  level: 'info',
+  request_id: '265305d2ce70c388fc9a4497f88114bc',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.730Z',
+  level: 'info',
+  request_id: 'b9cbde50cf16e0128b519f665130d4a3',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:37.743Z',
+  level: 'info',
+  request_id: '095b3c714b42ae2032e438171433631c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 11
+}
+{
+  ts: '2026-11-27T22:05:37.770Z',
+  level: 'info',
+  request_id: '79c512ad169720924c31a79d8a379d8e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 25
+}
+✔ ArbiterClient.accept, response lost (hang): unknown, sent once (413.877431ms)
+{
+  ts: '2026-11-27T22:05:37.921Z',
+  level: 'info',
+  request_id: '1ef29ce1673a6dc1e9e1f08defaec76d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:37.928Z',
+  level: 'info',
+  request_id: '7ca8c6e4a6cd299bdcc7c5356c14505f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:37.937Z',
+  level: 'info',
+  request_id: '91f1e3c267758a32df940c68a71cd607',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:37.947Z',
+  level: 'info',
+  request_id: '2736ff552675059d576e47619d493e45',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:37.955Z',
+  level: 'info',
+  request_id: '00ff6dddc7f40a261b38ef342234f637',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T22:05:37.969Z',
+  level: 'info',
+  request_id: '92227481d0c006244aced4e2656e8d77',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:38.116Z',
+  level: 'info',
+  request_id: '96744502c042e24a2c3c084c79d8b89d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.129Z',
+  level: 'info',
+  request_id: '4130e37d7ff52b64d4266663797507a9',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.136Z',
+  level: 'info',
+  request_id: '7b3ce22e28c41675efeb16d979340df7',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/receipts/:id',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (241.889561ms)
+{
+  ts: '2026-11-27T22:05:38.173Z',
+  level: 'info',
+  request_id: 'fc81a85b171ff7abe726ff8b8d9528f5',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 11
+}
+{
+  ts: '2026-11-27T22:05:38.176Z',
+  level: 'info',
+  request_id: 'a3f21d024622f5da136099f5c8aa452c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.177Z',
+  level: 'info',
+  request_id: 'b098baff98c776a23529f0b4df652544',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:38.185Z',
+  level: 'info',
+  request_id: '82305323ad46b28031f39aa711bf99f0',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.188Z',
+  level: 'info',
+  request_id: '33abc91e5583763084ecbfc1a4473090',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.194Z',
+  level: 'info',
+  request_id: '3373ff2247f0207b396efdcdfe621386',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (49.086079ms)
+{
+  ts: '2026-11-27T22:05:38.206Z',
+  level: 'info',
+  request_id: 'd9a55e6b2dfbf277c2be378b9e941033',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.209Z',
+  level: 'info',
+  request_id: '9651914303e7413fcacdb2dd46e1014f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.213Z',
+  level: 'info',
+  request_id: '8165f06550ed552fe532faa81a15e768',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.222Z',
+  level: 'info',
+  request_id: '32c36118425f23607faa57dc1fc03342',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.230Z',
+  level: 'info',
+  request_id: '205a1f62643841cff5c4db00313cdc13',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.243Z',
+  level: 'info',
+  request_id: 'c2c1911837a396763f1757b260c4f483',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:38.247Z',
+  level: 'info',
+  request_id: '89a8d984afc9a5a1ea06a2a9803fec94',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.250Z',
+  level: 'info',
+  request_id: 'b0ed8ebe42008b2d2effab248a6606be',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.257Z',
+  level: 'info',
+  request_id: 'e1590960bd9d51fb00f99f33ba411b2f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/receipts/:id',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (64.805133ms)
+{
+  ts: '2026-11-27T22:05:38.276Z',
+  level: 'info',
+  request_id: 'ed47d3b706d445c5f858cffc7ff4da4e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.278Z',
+  level: 'info',
+  request_id: '0ec1c679de4feccc67f6916d72f7a40c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.279Z',
+  level: 'info',
+  request_id: '3a622a144cd52c447f273dc0587fa43e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.283Z',
+  level: 'info',
+  request_id: 'd523e3b0aebd5ada1c512f22a008908c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.287Z',
+  level: 'info',
+  request_id: 'c5c53030204a4490a5cfae73120905c2',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.299Z',
+  level: 'info',
+  request_id: '9e9f4303122e0a46210f3e638dd9ac7f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+✔ through the runtime: a lost accept response is a receipt with status unknown, run once (184.123778ms)
+{
+  ts: '2026-11-27T22:05:37.765Z',
+  level: 'info',
+  request_id: 'bf3203ff76f6fe432be10eeba900dc81',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:37.777Z',
+  level: 'info',
+  request_id: '0795b228599f36fc7f4cbf6940f547da',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T22:05:37.782Z',
+  level: 'info',
+  request_id: '216f643834978fa904fefa23fabbe122',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:37.836Z',
+  level: 'info',
+  request_id: '505d5ef083c25b27ca67fb467bb430ec',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.843Z',
+  level: 'info',
+  request_id: 'b5993281631b17cea2d0ae3c6a136ab8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:37.863Z',
+  level: 'info',
+  request_id: '0acd0217394a6123fec45536b31a750c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 17
+}
+✔ accept answered by a platform 502 page after the arbiter settled: unknown, sent once, re-accept blocked (216.322074ms)
+{
+  ts: '2026-11-27T22:05:37.875Z',
+  level: 'info',
+  request_id: '37674a2329cf4eea851a22efe8203919',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.878Z',
+  level: 'info',
+  request_id: '9a315b8e84d2ae2c1b3affc6ca4b9659',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.881Z',
+  level: 'info',
+  request_id: '39f0dd0634c3d05d617212886c62c4b8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.887Z',
+  level: 'info',
+  request_id: 'f543ee24520099a69226d89628b3c9c3',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.889Z',
+  level: 'info',
+  request_id: '8ffabc8f3974c7492e781075c97dffe8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.892Z',
+  level: 'info',
+  request_id: 'a5e9437625933b35f85ccdfc5bba634f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.895Z',
+  level: 'info',
+  request_id: 'e58f4aa7e379e12b5ff92dfb6ab75dfd',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ mandate create answered by a platform 502 page after the arbiter made it: unknown, secret kept, asking again recovers it (30.52445ms)
+{
+  ts: '2026-11-27T22:05:37.909Z',
+  level: 'info',
+  request_id: 'b8f92a9dbcb1d16299343679beb28c81',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.911Z',
+  level: 'info',
+  request_id: '53fc266333cf6c8eb68f59830c09ec1f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.914Z',
+  level: 'info',
+  request_id: 'c77f79474e04c5c9d2f3d25c48e6555e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.917Z',
+  level: 'info',
+  request_id: 'f6e17a08a60824e150aa3a5467db9946',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.921Z',
+  level: 'info',
+  request_id: 'dad7c62b94229fc05bdbb1d82c345e4f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.932Z',
+  level: 'info',
+  request_id: 'e359a5407190eef11c8dcb3012191683',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 10
+}
+✔ accept answered by a platform 500 JSON without the arbiter's shape after the arbiter settled: unknown, sent once, re-accept blocked (35.593856ms)
+{
+  ts: '2026-11-27T22:05:37.941Z',
+  level: 'info',
+  request_id: 'e20b8df3ad154e2cfdc81fd47b20bd77',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.943Z',
+  level: 'info',
+  request_id: 'd5b7163f358a8263c7574c31461c45dd',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.945Z',
+  level: 'info',
+  request_id: '860ade035580a2659d8ccd7737f3935d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.949Z',
+  level: 'info',
+  request_id: 'edb6b2812e83ae13cf1c32d6d433e5d7',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.952Z',
+  level: 'info',
+  request_id: 'c0628e1c4461497dc630e8267c820045',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.956Z',
+  level: 'info',
+  request_id: 'e4a0dc01ed16567c70dba5121c8e8952',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.958Z',
+  level: 'info',
+  request_id: 'd65a3eb0cd132daa0c4e27995195e1f3',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ mandate create answered by a platform 500 JSON without the arbiter's shape after the arbiter made it: unknown, secret kept, asking again recovers it (24.6963ms)
+{
+  ts: '2026-11-27T22:05:37.966Z',
+  level: 'info',
+  request_id: '049df0051452d3ba42d22ef564095f28',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.969Z',
+  level: 'info',
+  request_id: '45c75df448a647e4e08934f6f521de90',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:37.970Z',
+  level: 'info',
+  request_id: '65029dbde000c01b1aab45cbed2e7f4a',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.973Z',
+  level: 'info',
+  request_id: '52c12239bbcc582716c10f3886f9d504',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.976Z',
+  level: 'info',
+  request_id: '8a549a69a19a18df4df7086114614239',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.982Z',
+  level: 'info',
+  request_id: 'b06cc931ec041138a939611f20528813',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ accept answered by a arbiter catch-all internal 500 after the arbiter settled: unknown, sent once, re-accept blocked (24.536227ms)
+{
+  ts: '2026-11-27T22:05:37.992Z',
+  level: 'info',
+  request_id: '55e88284b160262d8770aaf15fa25c47',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:37.995Z',
+  level: 'info',
+  request_id: '30b55a88af213649f69b739c69b36d26',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:37.999Z',
+  level: 'info',
+  request_id: 'e81da016053d3f8bd3cfa77551c6bfc9',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.002Z',
+  level: 'info',
+  request_id: '666d6a32ef6c5a7d61498bdfab173211',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.005Z',
+  level: 'info',
+  request_id: '2c555ac5af0d9d8981c910286f267809',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.007Z',
+  level: 'info',
+  request_id: '17d8ebee708e01f17b9069fcbc5c7b90',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:38.011Z',
+  level: 'info',
+  request_id: 'd429a27be4ef11743e22c8cb6e0dcae0',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ mandate create answered by a arbiter catch-all internal 500 after the arbiter made it: unknown, secret kept, asking again recovers it (27.867676ms)
+{
+  ts: '2026-11-27T22:05:38.021Z',
+  level: 'info',
+  request_id: '0749fb290b33b41f6ba4fb0f542eeb2b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.025Z',
+  level: 'info',
+  request_id: 'b05a019f4ca98643255f0163960200d8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.026Z',
+  level: 'info',
+  request_id: '4960af42670a85154468f64b465b37d4',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.030Z',
+  level: 'info',
+  request_id: '9a4af17ea7caeac796b089b0d219ad8a',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.033Z',
+  level: 'info',
+  request_id: 'dada4ee47b5a4de9470ab566fe538285',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.038Z',
+  level: 'info',
+  request_id: '34f70440f9ecf4488a5413b411bf35c5',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+✔ a definite arbiter refusal on a binding call stays definite (busy 503) (26.37818ms)
+✔ CALLERS lists exact origins only, never "*"; EVERY_SITE is ["*"] (6.176649ms)
+✔ only the owner-confirmed reads are shared with every site, through EVERY_SITE (0.968461ms)
+✔ every other shared action lists exact origins (verify_receipt included) (0.990082ms)
+✔ a shared write or irreversible action lists exact callers, never "*" (agentic-web e67e306) (0.419814ms)
+✔ no shipped copy makes a banned claim (13.540564ms)
+✔ every mention of the midpoint also mentions the price step (3.115691ms)
+✔ README and the page state the bounded leak and the AI-provider caveat (2.671542ms)
+✔ README explains Connect with Otari and why otari.ai is in connect-src (P1.0) (3.29464ms)
+✔ every HTML page gets the same page CSP from _headers (3.568497ms)
+✔ the page CSP is strict for scripts and locked down elsewhere (6.249116ms)
+✔ the page CSP turns on Trusted Types, allowing only the runtime's one policy (P1.3b) (1.722096ms)
+✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (1.432339ms)
+✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.974433ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.594745ms)
+✔ Oja's own HTML has no inline script, event handler or style attribute (2.67069ms)
+✔ environments.json names exactly staging and production and passes validation (28.725228ms)
+✔ validation: a kid in both environments is refused (9.178686ms)
+✔ validation: a non-https, loopback or credentialed arbiter URL is refused (15.107017ms)
+✔ validation: private fields, extra fields or a duplicate kid are refused (10.669826ms)
+✔ validation: each kid must be its key's thumbprint (4.455646ms)
+✔ an environment with no arbiter URL or no keys does not build (fail closed) (6.966393ms)
+✔ staging build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (33.48579ms)
+✔ production build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (25.760462ms)
+✔ the build leaves out tests, build-only files and local secrets (22.86159ms)
+✔ the build's own tripwire catches a tampered output (29.746069ms)
+{
+  ts: '2026-11-27T22:05:38.042Z',
+  level: 'info',
+  request_id: 'a1bb4549fe3ab952f4983ee7566a58c2',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:38.050Z',
+  level: 'info',
+  request_id: '353a89289eb133ecd3ee4fbcdf2316cb',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.056Z',
+  level: 'info',
+  request_id: '0de00afa1d728fe5a72494aa1d433a0f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.112Z',
+  level: 'info',
+  request_id: 'b0a6afdbd8d6d969d4f05d42f0074947',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T22:05:38.123Z',
+  level: 'info',
+  request_id: '29e302ff85c51543db732bafe791cefc',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:38.147Z',
+  level: 'info',
+  request_id: 'f08e0be6152ff2fcf5adacec0035e3fb',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 20
+}
+{
+  ts: '2026-11-27T22:05:38.175Z',
+  level: 'info',
+  request_id: '475539901fd299965f7551747b4735fc',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.182Z',
+  level: 'info',
+  request_id: 'f17bca7866deeb4d9a4db1398968a0cd',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/receipts/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ negotiate, accept and verify through the page; budget and tokens never in state (250.601645ms)
+{
+  ts: '2026-11-27T22:05:38.217Z',
+  level: 'info',
+  request_id: 'f1da465726e45d323750efc2e18814e4',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T22:05:38.224Z',
+  level: 'info',
+  request_id: '0bce5864df0cfc0ec9718d3ffe6edde6',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:38.229Z',
+  level: 'info',
+  request_id: 'f581d88a6ecf8f275136c46baa6a574f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ page checks refuse bad input before anything is sent (41.708629ms)
+{
+  ts: '2026-11-27T22:05:38.257Z',
+  level: 'info',
+  request_id: '31c1640067d707279c3d52475e9adda8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 9
+}
+{
+  ts: '2026-11-27T22:05:38.262Z',
+  level: 'info',
+  request_id: '6ebd9baf6fc13994dee3fc06550ecb1f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.266Z',
+  level: 'info',
+  request_id: 'd50cf032b54442e977c230974054ff92',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.272Z',
+  level: 'info',
+  request_id: 'dddb7bfc938dfd83fb7228bec05d6c7b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.275Z',
+  level: 'info',
+  request_id: '20d2bd98e03ea270acf8037db1b6ea1d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.281Z',
+  level: 'info',
+  request_id: '730fd072455faecc068596dec1427865',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 409,
+  code: 'identical_terms',
+  duration_ms: 4
+}
+✔ repeat terms are refused with the arbiter's reason (48.256079ms)
+✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (10.757923ms)
+{
+  ts: '2026-11-27T22:05:38.293Z',
+  level: 'info',
+  request_id: '95cac09e472e0fd390be1a4acf39cf90',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 56
+}
+{
+  ts: '2026-11-27T22:05:38.308Z',
+  level: 'info',
+  request_id: '7441ad689a79e5123ab2812c9842c2e1',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:38.314Z',
+  level: 'info',
+  request_id: '573597ec40487fcbcd62236658d97dc1',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.369Z',
+  level: 'info',
+  request_id: 'a3d480bcc629604709686c81e49616ac',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:38.374Z',
+  level: 'info',
+  request_id: 'a1846ae162b0b6009dcc824e37c9d786',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.381Z',
+  level: 'info',
+  request_id: 'bcb5b554bd1dd603ed9a250d8eb077f1',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ one lost answer (network-error): the client retries with the same secret and gets the same mandate (275.012745ms)
+{
+  ts: '2026-11-27T22:05:38.401Z',
+  level: 'info',
+  request_id: 'c8efe67f6745d98823fb551e0a7aa95d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:38.405Z',
+  level: 'info',
+  request_id: '11ca45b0bfd4ddb8b6ad6b98ff04ec2f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.408Z',
+  level: 'info',
+  request_id: '3bbfa8a8cdd036505a3610a194f7d55e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.412Z',
+  level: 'info',
+  request_id: 'b17affabaa4075325685ccf2f68e957f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.568Z',
+  level: 'info',
+  request_id: '6b01c991d31d71fba109e66c863d5607',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:38.578Z',
+  level: 'info',
+  request_id: '06219470f61e66b938bb64acfbe949e5',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 9
+}
+✔ one lost answer (hang): the client retries with the same secret and gets the same mandate (194.788345ms)
+{
+  ts: '2026-11-27T22:05:38.587Z',
+  level: 'info',
+  request_id: 'ee3132c6ada7678511722191d09853ef',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.591Z',
+  level: 'info',
+  request_id: '4c6307c3a910b8762c53e7c8346c446b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.593Z',
+  level: 'info',
+  request_id: 'c2bfce6f9a3464b57bf3dc1405aed155',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.597Z',
+  level: 'info',
+  request_id: '2b68afbe442d94917c87bf43685c0685',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.610Z',
+  level: 'info',
+  request_id: 'f7bffbd84bb397eceef910035a31dd86',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+✔ only the hash of the secret is sent; the secret is not in the page state (32.186393ms)
+{
+  ts: '2026-11-27T22:05:38.621Z',
+  level: 'info',
+  request_id: '3c6de8da46d4ecd25ac2525b5b50027d',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.624Z',
+  level: 'info',
+  request_id: '64fdc9d1ea03159b82415063f03d4a18',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.624Z',
+  level: 'info',
+  request_id: 'a9c9c99e3807adfff4490ef9a3e05df0',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:38.628Z',
+  level: 'info',
+  request_id: '6492a88faef8cfb04ce29e441bfe2922',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.635Z',
+  level: 'info',
+  request_id: 'f93b988f5487a65dc9d74d31d763085c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.638Z',
+  level: 'info',
+  request_id: '69cf6f1daed5742ca7d999a81318e647',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.644Z',
+  level: 'info',
+  request_id: '042a6396dcde6facc5abdd4b7eb3f3a0',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+✔ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (31.837283ms)
+{
+  ts: '2026-11-27T22:05:38.651Z',
+  level: 'info',
+  request_id: 'a0cb448a245a32fd07930cc5a4fe41db',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.654Z',
+  level: 'info',
+  request_id: '8829fb8b8587ccae9db30d544f0f618b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.655Z',
+  level: 'info',
+  request_id: '4e2239173c8ca68648a0638445521603',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:38.661Z',
+  level: 'info',
+  request_id: '04a26587541511b59e6d3e6a67195b69',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.662Z',
+  level: 'info',
+  request_id: '8cdf13e86dc2ea01f7fda47ee11c83e6',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.665Z',
+  level: 'info',
+  request_id: '2c247ff9cd26092bbdd26dcca995a2be',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 409,
+  code: 'identical_terms',
+  duration_ms: 2
+}
+✔ a new budget for the same terms is a new secret, and is refused as identical terms (21.077327ms)
+✔ AC-F5-1: ?arbiter= is ignored on a non-loopback page (6.993624ms)
+✔ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (4.386014ms)
+{
+  ts: '2026-11-27T22:05:38.417Z',
+  level: 'info',
+  request_id: '89baa0de4e5be4c18a0c2b7de25b9b32',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:38.428Z',
+  level: 'info',
+  request_id: '8d39f7193f8f13c63090ffa42a2ab0d7',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 7
+}
+{
+  ts: '2026-11-27T22:05:38.432Z',
+  level: 'info',
+  request_id: 'bc1e8eccef82d635d73d928860d0b9f3',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.490Z',
+  level: 'info',
+  request_id: '67c61c90cc3e96fe13a69431bfd238fa',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:05:38.510Z',
+  level: 'info',
+  request_id: 'd07d0a05e257b417097c64552293b8c8',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 17
+}
+{
+  ts: '2026-11-27T22:05:38.540Z',
+  level: 'info',
+  request_id: 'be1541d78ed08f24350cff46a5045d9f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 20
+}
+{
+  ts: '2026-11-27T22:05:38.544Z',
+  level: 'info',
+  request_id: 'afe71a54ec223337e562afb0cdbb4d40',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+✔ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (254.144213ms)
+{
+  ts: '2026-11-27T22:05:38.574Z',
+  level: 'info',
+  request_id: '411b87d4d5e905ee895060c372964051',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:38.579Z',
+  level: 'info',
+  request_id: 'ff5b956c3739adb1a4b0adc67f17108f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.582Z',
+  level: 'info',
+  request_id: 'c9598357ca19be6653adb914f91fae15',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.588Z',
+  level: 'info',
+  request_id: 'd428747bda11342308aa7a8d7fc9e335',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.592Z',
+  level: 'info',
+  request_id: '6223695f61c221b3c70f40d0c4523c0e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.600Z',
+  level: 'info',
+  request_id: '666ab8c6166714232a6414dc03ad7db0',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:05:38.607Z',
+  level: 'info',
+  request_id: '3d090c6ab1873b7b9f5abc8ee8bb2474',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (63.002905ms)
+{
+  ts: '2026-11-27T22:05:38.619Z',
+  level: 'info',
+  request_id: 'ffb7e695772d1ffe70336d93db36f3cd',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.622Z',
+  level: 'info',
+  request_id: '8fc08d0ec40b4d8cd0d22c57beab1836',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.624Z',
+  level: 'info',
+  request_id: '0aa114172a386d7c7e249e3919d1f78f',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.631Z',
+  level: 'info',
+  request_id: '6ea0e588032bfb300cad36ba0e7143df',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.635Z',
+  level: 'info',
+  request_id: '3191988f2d1dca92de3001605446be99',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.641Z',
+  level: 'info',
+  request_id: '9fbbe0b425a83d8779633d04d34c070a',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.643Z',
+  level: 'info',
+  request_id: 'b6a691ee65302ae52c75cdb9cd9df082',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (35.076488ms)
+{
+  ts: '2026-11-27T22:05:38.654Z',
+  level: 'info',
+  request_id: 'd5fad918db56d93c7353cc554b28b4cf',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:05:38.657Z',
+  level: 'info',
+  request_id: '66d32551d296d83348e180decf659d2c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.659Z',
+  level: 'info',
+  request_id: 'f022e3d100b8c39aa2ed7a87fa6c786b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.661Z',
+  level: 'info',
+  request_id: '103b6c0501b0ef31abace226cb58951b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.664Z',
+  level: 'info',
+  request_id: '15b8786f1b928e59aa6ef88ab05b3bbf',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.669Z',
+  level: 'info',
+  request_id: '3817fd910c0efbed715e32ecc032ca00',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.670Z',
+  level: 'info',
+  request_id: 'be26089093575adf70dff7192bef8d08',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (25.692053ms)
+{
+  ts: '2026-11-27T22:05:38.675Z',
+  level: 'info',
+  request_id: 'a8fdbf48e6118ae667a550b1e952d485',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/vendors',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.677Z',
+  level: 'info',
+  request_id: '7098949a7dbcf27277a38d8f25ae7893',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'PUT',
+  route: '/v1/listings',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.677Z',
+  level: 'info',
+  request_id: '9168baf4f573493942f922c00fd2b0db',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/catalog',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:38.680Z',
+  level: 'info',
+  request_id: '40d4bdd459ef98984e8e30da9d9081ed',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:05:38.684Z',
+  level: 'info',
+  request_id: 'cb788ee679ae0fbe0586ef045b9da0da',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates/:id/resolve',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:05:38.690Z',
+  level: 'info',
+  request_id: 'b133d57ab0cbc490491e911f00986825',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:05:38.692Z',
+  level: 'info',
+  request_id: '5fdee3cec248a241b70aaee26a2c9d1c',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:38.695Z',
+  level: 'info',
+  request_id: 'a09798daf252c77f6c24e8b4f37064f4',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (24.798032ms)
+✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (1.983631ms)
+✔ the tripwire itself: a public URL with no keys is refused (0.38591ms)
+✔ the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter) (4.207236ms)
+✔ model routers plus sign-in endpoints are exactly the CSP's other origins (1.326348ms)
+✔ every runtime provider URL is allowed (0.691307ms)
+✔ a custom provider is blocked on the published site, with its origin named (0.716895ms)
+✔ empty, invalid and same-origin values are not reported; local models are fine on a dev page (0.659297ms)
+✔ the message names the blocked origin and every allowed provider (0.643126ms)
+✔ only connect-src blocks of a model URL count, not the arbiter or this page (0.63473ms)
+✔ a key sign-in is never reported as a blocked AI provider (0.467404ms)
+✔ runtime/ is exactly the locked upstream copy: same files, same bytes (23.93474ms)
+✔ CI and CLAUDE.md pin the same agentic-web commit as the runtime lock (1.16322ms)
+✔ CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there (0.661641ms)
+✔ needsKey matches the runtime's needsByok rule (2.388696ms)
+✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (6.27724ms)
+✔ every HTML write, HTML parse and worker start in Oja's pages uses the runtime's policy (58.981912ms)
+✔ the runtime has one Trusted Types policy, and nothing else creates one (19.713788ms)
+✔ Oja's own code imports the policy module only by its one URL (a ?v= copy cannot create the policy again) (12.449131ms)
+✔ the seller console shows the arbiter's /health in a status line (3.285733ms)
+✔ the runbook's first check after a deploy is /health (1.326128ms)
+ℹ tests 265
+ℹ suites 0
+ℹ pass 265
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5424.461178
+exit: 0

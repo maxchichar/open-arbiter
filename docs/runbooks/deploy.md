@@ -47,7 +47,7 @@ Template and tests: `arbiter/test/fixtures/rebuild-mandates.sql`, `arbiter/test/
 2. Oja's seller console (`/vendor`) shows the same check in its status line: "Arbiter healthy · signing key <kid> · database at <migration>".
 3. Then the environment's smoke test (P1.4b).
 
-`/health` makes at most 3 queries, reads no business table and is never cached (`cache-control: no-store`).
+`/health` makes at most 3 queries, reads no business table and is never cached by clients or the edge (`cache-control: no-store`). Each Worker instance reuses its checks for 10 s (`checked_at` says when they ran), so a burst costs at most 3 queries per instance per 10 s. A failure is held for those 10 s as well: after a fix, wait 10 s before rechecking.
 
 ## Logs
 

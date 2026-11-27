@@ -45,8 +45,32 @@ const FAILURES = {
   key_dev_in_deployed_env: (o) => new ArbiterError("key_dev_in_deployed_env", "DEV=1 is set in a deployed environment.", o),
 };
 
+/** How long one instance reuses its /health checks: a burst costs at most 3 statements per 10 s. */
+export const HEALTH_TTL_MS = 10_000;
+const cache = new WeakMap(); // database binding -> { at, checks: Promise<{ out, failed }> }
+
+/**
+ * GET /health. The checks run at most once per database per instance per HEALTH_TTL_MS (a failure
+ * is cached too, so a fix shows within 10 s); concurrent requests share one run. Each call still
+ * builds its own body and error, so every response has its own request id.
+ */
 export async function health(db, env) {
-  const out = { version: versionOf(env), db: "unknown", key: { loaded: false, kid: null, source: null }, migrations: { latest: REQUIRED_MIGRATIONS.at(-1), applied: null }, schema: "unknown" };
+  const now = Date.now();
+  let entry = db && typeof db === "object" ? cache.get(db) : undefined;
+  if (!entry || now - entry.at >= HEALTH_TTL_MS) {
+    entry = { at: now, checks: runChecks(db, env, now) };
+    if (db && typeof db === "object") {
+      cache.set(db, entry);
+      entry.checks.catch(() => { if (cache.get(db) === entry) cache.delete(db); });
+    }
+  }
+  const { out, failed } = await entry.checks;
+  if (failed) throw FAILURES[failed]({ details: { ok: false, ...structuredClone(out) }, headers: { "cache-control": "no-store" } });
+  return { ok: true, ...structuredClone(out) };
+}
+
+async function runChecks(db, env, now) {
+  const out = { version: versionOf(env), db: "unknown", key: { loaded: false, kid: null, source: null }, migrations: { latest: REQUIRED_MIGRATIONS.at(-1), applied: null }, schema: "unknown", checked_at: new Date(now).toISOString() };
   let failed = null;
   const fail = (code) => { failed ??= code; };
 
@@ -98,6 +122,5 @@ export async function health(db, env) {
     }
   }
 
-  if (failed) throw FAILURES[failed]({ details: { ok: false, ...out }, headers: { "cache-control": "no-store" } });
-  return { ok: true, ...out };
+  return { out, failed };
 }

@@ -1,0 +1,1784 @@
+✔ healthy: 200 with versions, db, key (kid only), migrations and schema (72.144061ms)
+✔ the log line carries the Worker version, the mechanism and the git commit (5.123749ms)
+✔ local dev (DEV=1, no secret): 200, the key is the dev key and nothing is written (3.467186ms)
+✔ misconfigured: 503 key_missing, with the checks and a request id (4.871341ms)
+✔ misconfigured: 503 key_invalid, with the checks and a request id (6.736759ms)
+✔ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (3.783685ms)
+✔ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (3.816567ms)
+✔ misconfigured: 503 schema_outdated, with the checks and a request id (4.689858ms)
+✔ misconfigured: 503 migrations_pending, with the checks and a request id (6.337945ms)
+✔ misconfigured: 503 db_unavailable, with the checks and a request id (7.055181ms)
+{
+  ts: '2026-11-27T22:05:32.472Z',
+  level: 'error',
+  request_id: 'bbc0cf8dea01ceb2c0dbf4af01a6782d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_invalid'
+}
+✔ an unparseable signing key makes other routes refuse as misconfigured, not crash as internal (6.116827ms)
+{
+  ts: '2026-11-27T22:05:32.489Z',
+  level: 'info',
+  request_id: 'c78ff118a9952709b9c39323b634cdb7',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 11
+}
+{
+  ts: '2026-11-27T22:05:32.490Z',
+  level: 'info',
+  request_id: '53e03a0c0d0cb6bfba048579163e7762',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:32.490Z',
+  level: 'info',
+  request_id: '63373650ac3a82d4994285c27214a497',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:32.490Z',
+  level: 'info',
+  request_id: '039fd1b65635d8843855c89f9465153d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:32.490Z',
+  level: 'info',
+  request_id: 'afb33b890b3e9766e246c05e1fb2b5df',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:32.491Z',
+  level: 'info',
+  request_id: 'e66c15eef69c3488e072a3929e6f894f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.491Z',
+  level: 'info',
+  request_id: '6c4e04afe8cc758ce4b132ecb91358a1',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.491Z',
+  level: 'info',
+  request_id: '712a7645d6fc6554fb6614e8c0dc487f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.491Z',
+  level: 'info',
+  request_id: 'bd75fe8fc347c4a9c367f147ee48a1fa',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:32.491Z',
+  level: 'info',
+  request_id: 'fb1465f67e3e8ed464c5d72a5c028df9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: '7d543ec8bdda0ea22b81291e91bb4805',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: '254d93aafef005a461db16218bcaba3b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: '5cd75fbe5df812cae6e6d44746541f95',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: 'c8f09706b58110f95c6047c3e989eb8a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: 'df6ed1b9568341070ad43e2db39a097b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: '4cff78fb7190597aebc4b383f245b4df',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.492Z',
+  level: 'info',
+  request_id: '52bdb86f721a08f293e77856acb63ec7',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: 'dc5293ecedf7439a9e464caa87ba7922',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: '39db7127afbafba81b8f0d7be4e725bb',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: '98f05228f2d19020c47af495b3eabc79',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: 'ff7e593b4c20ff1823da8f8be1007f47',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: '54f7d2fc0fdaf4261773f22b9e2c1d3e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: '594565981f19fcba581a852a0bd1d0b9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.493Z',
+  level: 'info',
+  request_id: 'aaed49e11e705a7df5575166b0227dfe',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:05:32.494Z',
+  level: 'info',
+  request_id: 'f3c05740df3673ebbc99cecdedf88572',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.494Z',
+  level: 'info',
+  request_id: '5ca0ef2fdb26cb3ddf92ef6c6f6e48b4',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.494Z',
+  level: 'info',
+  request_id: '56c3e256815e5e60096eb7f41b997b28',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.494Z',
+  level: 'info',
+  request_id: '8b7a5c17cb157430aaf025583b8db815',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 14
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '724137ff96ec1a8420ab342c7ef533c6',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '6a3ebd22f82e0d33fd21b32fe67ec370',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '1261fcd0706ec629212fd192bca92f71',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '78be8551a7c42b2dd6fcc9b3736e1b6a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '6effe717b3b439711ef1c9d7f654b501',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '9cfa107e97e86c2a5676cc5024bd2f6e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.495Z',
+  level: 'info',
+  request_id: '21eefa57bc1e85a5be31aefe02c954f9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: 'a31c21aa1d9564585ff19eb548fe829e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: 'a95f6e72c617e53316a5e89a20745d3c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: 'fc8bd53d109e4b272cf26ee428f989d6',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: 'f779c2748c6e3d74ff7f7bdca501210b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: '97fcd6df07665d867472220679dcb565',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: '3960a52348b0c8419b7b5bbd41be9583',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.496Z',
+  level: 'info',
+  request_id: '146184f8cee93ac87048d948799d9fad',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 15
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: '0db65e00b31976684405952789e4eb32',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: 'fb59d0f58d4eb99b50931a8ab817389a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: '06cc8215b389ee6f6bc13d4165d4847a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: '8d923bf0bd38bf4cbfd6435a14eb2d4c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: '6fdc421c1f7435a1ab8c7f11fd41e034',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: 'cf0ed6c81cde6997f9b64d66b39b9807',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.497Z',
+  level: 'info',
+  request_id: '48d8ea306819b6b3dd03c12a5212e264',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:05:32.498Z',
+  level: 'info',
+  request_id: '4667e37294e08ec556937d0f75fb5304',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 17
+}
+{
+  ts: '2026-11-27T22:05:32.498Z',
+  level: 'info',
+  request_id: '1f52185c5b731b28b0d60468ba8f7ecc',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.499Z',
+  level: 'info',
+  request_id: '359b7e12aa7b7b1e11d59cfe8d03eb16',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.499Z',
+  level: 'info',
+  request_id: '3cf97ad22006f7a4b29ee008e239069a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.499Z',
+  level: 'info',
+  request_id: '47aed428b52a141cb1d41efa48f144dd',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.500Z',
+  level: 'info',
+  request_id: 'f3acca5953ec9f491c9888fb72fd8c97',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.500Z',
+  level: 'info',
+  request_id: '48c93690d0694e2a62a8bf74bd0bd61a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.501Z',
+  level: 'info',
+  request_id: 'c3e14d361967692319f17c07dc850d4b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.501Z',
+  level: 'info',
+  request_id: '6b7da3f43799bcc97dd73246f5cf36f5',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.501Z',
+  level: 'info',
+  request_id: '86a536b4875d8a77ddee6de3b02f3760',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.502Z',
+  level: 'info',
+  request_id: 'c91457e8f0f45026fed67abde6dc442d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.502Z',
+  level: 'info',
+  request_id: '0c96809132bf747e69bfe0552270c1be',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.503Z',
+  level: 'info',
+  request_id: '0868f3424a12df6fc4824faffc8bd8d3',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.503Z',
+  level: 'info',
+  request_id: '22d39fbce369f984a2bbd84c69b38601',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.508Z',
+  level: 'info',
+  request_id: '3a9ec0e07efc95536b318c6664abef15',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.509Z',
+  level: 'info',
+  request_id: '6e6834300c39546bc7778a8ea85f71fe',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.509Z',
+  level: 'info',
+  request_id: '371f57164b03990bcc192259095d2545',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.510Z',
+  level: 'info',
+  request_id: '181a84988de11795bf3c69fa75fdfc25',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.510Z',
+  level: 'info',
+  request_id: '3be51b6ba0e01395877b5bebd8fb2b8c',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.511Z',
+  level: 'info',
+  request_id: '7da649bac02e4929cf3f04e0e32877f2',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.511Z',
+  level: 'info',
+  request_id: 'f517caff5be375d28316f207ea9565b0',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.512Z',
+  level: 'info',
+  request_id: 'b26ec6805f01c91dd94f50be259a2579',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.512Z',
+  level: 'info',
+  request_id: '11d245a4868a5f252e1ae77a2d3238ca',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.513Z',
+  level: 'info',
+  request_id: '6e0e226c992075173bdc303b3c7e30ea',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.513Z',
+  level: 'info',
+  request_id: '5d5bc458887ca2c937e46b89c1d3b405',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.513Z',
+  level: 'info',
+  request_id: '764e00b79e2eb5f9ca148daa08a63870',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.514Z',
+  level: 'info',
+  request_id: 'da5f095d46ef2d3e985d8f9f480665b5',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.514Z',
+  level: 'info',
+  request_id: '80b5a171983b5183cac559f5dd592471',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.514Z',
+  level: 'info',
+  request_id: '7c1d7945fb2f9c6f34b1f4ba585f97fb',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.515Z',
+  level: 'info',
+  request_id: '9701395288f191d100ea14de63ac2b9e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.515Z',
+  level: 'info',
+  request_id: 'cdf19b57a26514b1aa093809590f48b0',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.515Z',
+  level: 'info',
+  request_id: '6ade64744d7569f37bdd5de5e5bc0036',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.516Z',
+  level: 'info',
+  request_id: '2935f0ae3ed7967a764f881d8168e4b9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.516Z',
+  level: 'info',
+  request_id: '132e291c92e0cddee2839adc1f7c8c4b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.517Z',
+  level: 'info',
+  request_id: '16ec6c4b942dc0250390293ae1c06e7f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.517Z',
+  level: 'info',
+  request_id: '3d2de5fdfbe8894cbaac7df8234af7cc',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.517Z',
+  level: 'info',
+  request_id: '21b8d4eafc902d2db806346bb538b6fc',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.518Z',
+  level: 'info',
+  request_id: 'c00abbbc2ecd8881586692ca861ca74f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.518Z',
+  level: 'info',
+  request_id: '9ea00da6a5a3cd82a9346613771a3b4f',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.519Z',
+  level: 'info',
+  request_id: '0570789a293e23f9ce4e68f241939f83',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.519Z',
+  level: 'info',
+  request_id: 'f5781a88ce89b6dfea253512527ebeb3',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.519Z',
+  level: 'info',
+  request_id: '551e46906c623c327ee6c95a85fb0354',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.520Z',
+  level: 'info',
+  request_id: '06d0f821bd052b645c58e9f58de44bd9',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.520Z',
+  level: 'info',
+  request_id: '0595f4debc1c593281e26eaf6e203b7e',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.520Z',
+  level: 'info',
+  request_id: '37bdc327d96c99cca559e6268f55f16d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.521Z',
+  level: 'info',
+  request_id: '7d8d9879701c97e2fdd075a248006193',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.522Z',
+  level: 'info',
+  request_id: '8d4d1b01de4540e6cf34967be5d7a78d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.522Z',
+  level: 'info',
+  request_id: 'bf122ab12678a4936d56a59421251fdb',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.522Z',
+  level: 'info',
+  request_id: '60ad34cffd4728761a5098ad0573f4a6',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.523Z',
+  level: 'info',
+  request_id: 'c33f6f05101df333475b3197282af83d',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:05:32.523Z',
+  level: 'info',
+  request_id: '431a2f8a26bae2bbc6208065f49b08ff',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ cache: a burst of 100 requests costs at most 3 statements (50.316225ms)
+{
+  ts: '2026-11-27T12:00:00.000Z',
+  level: 'info',
+  request_id: '6deea5edc5c1e1b1a38bd57d384cf951',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:09.999Z',
+  level: 'info',
+  request_id: '2a1d6248fc95492d8ac69e9b43608ce3',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:10.000Z',
+  level: 'info',
+  request_id: '07eb510ba93305ff16811707c170285a',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ cache: the checks run again after 10 s, not before (8.568633ms)
+{
+  ts: '2026-11-27T12:00:00.000Z',
+  level: 'error',
+  request_id: '3af8f71c8ded368da2302235c00da825',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 503,
+  code: 'db_unavailable',
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:00.000Z',
+  level: 'error',
+  request_id: '7e56b027842006859258027ccda69d45',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 503,
+  code: 'db_unavailable',
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T12:00:10.000Z',
+  level: 'info',
+  request_id: 'f3b136dd73141166d5c9229114b453d3',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 0
+}
+✔ cache: a failure is cached too, and clears within 10 s of the fix (5.502264ms)
+{
+  ts: '2026-11-27T22:05:32.544Z',
+  level: 'info',
+  request_id: 'f399a011b853836e34747c42cafe0434',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:05:32.545Z',
+  level: 'error',
+  request_id: '61d234e9e6dae97f83f5a243c4ce8e3b',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/health',
+  status: 503,
+  code: 'schema_outdated',
+  duration_ms: 1
+}
+✔ cache: each database has its own entry (6.342464ms)
+✔ a clean tree whose npm test passes on HEAD is pushed (449.789879ms)
+✔ a commit whose npm test fails is not pushed (368.795123ms)
+✔ OPEN_ARBITER_ALLOW_RED_PUSH=1 pushes a red commit and says the hook was bypassed (151.908581ms)
+✔ any other value of the opt-out does not bypass (1233.503922ms)
+✔ a dirty working tree is refused, even with the opt-out (289.477026ms)
+✔ a secret file in history is refused, even with the opt-out (138.581861ms)
+✔ pushing a ref that is not HEAD is refused (npm test runs on HEAD only) (66.688694ms)
+✔ deleting a remote branch needs no test run (516.702468ms)
+✔ the pre-push hook is versioned and executable (3.949648ms)
+✔ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (151.385893ms)
+✔ the same, when unexpected errors carry sentinels in their messages (64.466333ms)
+✔ the same, with no signing key (misconfigured paths) (46.516801ms)
+✔ every error response uses its code's registry status and carries request_id (37.947627ms)
+✔ the seller console shows the arbiter's /health in a status line (2.306972ms)
+✔ the runbook's first check after a deploy is /health (0.817226ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3316.487729
+exit: 0
