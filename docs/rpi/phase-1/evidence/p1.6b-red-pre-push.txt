@@ -1,0 +1,187 @@
+✖ a clean tree whose npm test passes on HEAD is pushed (23.251996ms)
+✖ a commit whose npm test fails is not pushed (17.276846ms)
+✖ OPEN_ARBITER_ALLOW_RED_PUSH=1 pushes a red commit and says the hook was bypassed (17.4699ms)
+✖ any other value of the opt-out does not bypass (15.232041ms)
+✖ a dirty working tree is refused, even with the opt-out (14.326901ms)
+✖ a secret file in history is refused, even with the opt-out (16.986036ms)
+✖ pushing a ref that is not HEAD is refused (npm test runs on HEAD only) (14.952875ms)
+✖ deleting a remote branch needs no test run (15.403245ms)
+✖ the pre-push hook is versioned and executable (0.377743ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 0
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 222.287296
+
+✖ failing tests:
+
+test at arbiter/test/pre-push.test.mjs:47:1
+✖ a clean tree whose npm test passes on HEAD is pushed (23.251996ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-xIjkVB/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:48:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-xIjkVB/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:55:1
+✖ a commit whose npm test fails is not pushed (17.276846ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-qMEOuZ/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:56:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-qMEOuZ/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:66:1
+✖ OPEN_ARBITER_ALLOW_RED_PUSH=1 pushes a red commit and says the hook was bypassed (17.4699ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-w6wrXc/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:67:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-w6wrXc/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:76:1
+✖ any other value of the opt-out does not bypass (15.232041ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-O4cWDk/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:77:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-O4cWDk/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:86:1
+✖ a dirty working tree is refused, even with the opt-out (14.326901ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-8YFyg8/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:87:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-8YFyg8/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:101:1
+✖ a secret file in history is refused, even with the opt-out (16.986036ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-z87r0T/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:102:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-z87r0T/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:112:1
+✖ pushing a ref that is not HEAD is refused (npm test runs on HEAD only) (14.952875ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-S1UXQY/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:113:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-S1UXQY/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:122:1
+✖ deleting a remote branch needs no test run (15.403245ms)
+  Error: ENOENT: no such file or directory, copyfile '/home/maxchichar/open-arbiter/.githooks/pre-push' -> '/tmp/prepush-z5o04G/work/.githooks/pre-push'
+      at copyFileSync (node:fs:3200:11)
+      at pushRepo (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:27:3)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:123:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'copyfile',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push',
+    dest: '/tmp/prepush-z5o04G/work/.githooks/pre-push'
+  }
+
+test at arbiter/test/pre-push.test.mjs:131:1
+✖ the pre-push hook is versioned and executable (0.377743ms)
+  Error: ENOENT: no such file or directory, stat '/home/maxchichar/open-arbiter/.githooks/pre-push'
+      at statSync (node:fs:1794:25)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/pre-push.test.mjs:132:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'stat',
+    path: '/home/maxchichar/open-arbiter/.githooks/pre-push'
+  }
+exit: 1

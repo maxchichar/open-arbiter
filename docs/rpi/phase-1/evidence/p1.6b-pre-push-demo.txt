@@ -1,0 +1,104 @@
+secret scan: 1 file(s), no findings
+### 1. push a commit whose npm test fails (no opt-out)
+secret scan (history): 44 commit(s), 523 file version(s), no findings
+pre-push: running npm test on ba0d41143a6f…
+  method: 'POST',
+  route: '/v1/offers/:id/accept',
+  status: 200,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:04:08.838Z',
+  level: 'info',
+  request_id: 'ab67a0e636a643ae334c546886127032',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 200,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:04:08.841Z',
+  level: 'info',
+  request_id: '5bfa484229da63fe189c10318261ea8e',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/v1/mandates/:id',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (35.850271ms)
+✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (2.972817ms)
+✔ the tripwire itself: a public URL with no keys is refused (0.450381ms)
+✔ the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter) (18.25305ms)
+✔ model routers plus sign-in endpoints are exactly the CSP's other origins (4.391899ms)
+✔ every runtime provider URL is allowed (0.77801ms)
+✔ a custom provider is blocked on the published site, with its origin named (1.192714ms)
+✔ empty, invalid and same-origin values are not reported; local models are fine on a dev page (4.327707ms)
+✔ the message names the blocked origin and every allowed provider (0.857611ms)
+✔ only connect-src blocks of a model URL count, not the arbiter or this page (7.281559ms)
+✔ a key sign-in is never reported as a blocked AI provider (0.926681ms)
+✔ runtime/ is exactly the locked upstream copy: same files, same bytes (46.776226ms)
+✔ CI and CLAUDE.md pin the same agentic-web commit as the runtime lock (1.332068ms)
+✔ CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there (0.773582ms)
+✔ needsKey matches the runtime's needsByok rule (2.202431ms)
+✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (1.691837ms)
+✔ every HTML write, HTML parse and worker start in Oja's pages uses the runtime's policy (55.014964ms)
+✔ the runtime has one Trusted Types policy, and nothing else creates one (10.632832ms)
+✔ Oja's own code imports the policy module only by its one URL (a ?v= copy cannot create the policy again) (4.056044ms)
+✔ the seller console shows the arbiter's /health in a status line (3.168818ms)
+✔ the runbook's first check after a deploy is /health (0.891765ms)
+ℹ tests 262
+ℹ suites 0
+ℹ pass 261
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5350.181534
+
+✖ failing tests:
+
+test at arbiter/test/zz-red.test.mjs:3:1
+✖ deliberately red (14.56412ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///tmp/claude-1000/-home-maxchichar-open-arbiter/6b144c50-6caa-4208-b815-67dccbaab064/scratchpad/prepush-demo/work/arbiter/test/zz-red.test.mjs:3:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+pre-push: npm test failed on ba0d41143a6f; the push is blocked. For a deliberate red-test push: OPEN_ARBITER_ALLOW_RED_PUSH=1 git push …
+error: failed to push some refs to '/tmp/claude-1000/-home-maxchichar-open-arbiter/6b144c50-6caa-4208-b815-67dccbaab064/scratchpad/prepush-demo/remote.git'
+push exit: 1
+remote phase-1: (none)
+### 2. same commit with OPEN_ARBITER_ALLOW_RED_PUSH=1
+secret scan (history): 44 commit(s), 523 file version(s), no findings
+pre-push: BYPASSED: npm test was NOT run on ba0d41143a6f (OPEN_ARBITER_ALLOW_RED_PUSH=1). Use only for a deliberate red-test push.
+To /tmp/claude-1000/-home-maxchichar-open-arbiter/6b144c50-6caa-4208-b815-67dccbaab064/scratchpad/prepush-demo/remote.git
+ * [new branch]      phase-1 -> phase-1
+push exit: 0
+remote phase-1: ba0d41143a6f6c7e30092173fe7a081d28c53231 (HEAD ba0d41143a6f6c7e30092173fe7a081d28c53231)
+### 3. fixed commit, no opt-out
+secret scan (history): 45 commit(s), 523 file version(s), no findings
+pre-push: running npm test on 6852e575fae9…
+pre-push: npm test passed on 6852e575fae9
+To /tmp/claude-1000/-home-maxchichar-open-arbiter/6b144c50-6caa-4208-b815-67dccbaab064/scratchpad/prepush-demo/remote.git
+   ba0d411..6852e57  phase-1 -> phase-1
+push exit: 0
+remote phase-1: 6852e575fae9bed36d862ce2b52b5c9d9b945087 (HEAD 6852e575fae9bed36d862ce2b52b5c9d9b945087)
+exit: 0

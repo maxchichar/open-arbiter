@@ -37,7 +37,9 @@ test("healthy: 200 with versions, db, key (kid only), migrations and schema", as
   const { res, data, sql, text } = await health(env);
   assert.equal(res.status, 200);
   const kid = await keyId(publicFromPrivate(privateJwk));
-  assert.deepEqual(data, {
+  const { checked_at, ...body } = data;
+  assert.match(checked_at, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/, "when the checks ran (they are cached for 10 s)");
+  assert.deepEqual(body, {
     ok: true,
     version: { worker: VM.id, tag: VM.tag, mechanism: MECHANISM.version, git: GIT },
     db: "ok",
@@ -101,4 +103,71 @@ test("an unparseable signing key makes other routes refuse as misconfigured, not
   const res = await worker.fetch(new Request("https://arb.test/.well-known/jwks.json"), env);
   assert.equal(res.status, 500);
   assert.equal((await res.json()).error, "misconfigured");
+});
+
+// Follow-up to P1.6 (owner, 2026-11-27): /health is cached per Worker instance (per database) for
+// 10 s, so a burst costs at most 3 statements per instance per 10 s. Failures are cached too.
+function counting(env) {
+  const sql = [];
+  env.DB.setFault((s) => { sql.push(s); return env.__fault?.(s) ?? false; });
+  const get = () => worker.fetch(new Request("https://arb.test/health"), env);
+  return { sql, get };
+}
+
+test("cache: a burst of 100 requests costs at most 3 statements", async () => {
+  const { env } = await deployed();
+  const { sql, get } = counting(env);
+  const concurrent = await Promise.all(Array.from({ length: 50 }, get));
+  const sequential = [];
+  for (let i = 0; i < 50; i++) sequential.push(await get());
+  const all = [...concurrent, ...sequential];
+  assert.ok(all.every((r) => r.status === 200));
+  assert.ok(sql.length <= 3, `${sql.length} statements for 100 requests`);
+  const ids = new Set(all.map((r) => r.headers.get("x-request-id")));
+  assert.equal(ids.size, 100, "each response still has its own request id");
+  assert.ok(all.every((r) => r.headers.get("cache-control") === "no-store"));
+});
+
+test("cache: the checks run again after 10 s, not before", async (t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: Date.parse("2026-11-27T12:00:00.000Z") });
+  const { env } = await deployed();
+  const { sql, get } = counting(env);
+  const first = await (await get()).json();
+  const n = sql.length;
+  t.mock.timers.tick(9_999);
+  const second = await (await get()).json();
+  assert.equal(sql.length, n, "within 10 s: no statement");
+  assert.equal(second.checked_at, first.checked_at, "checked_at shows the cached check's time");
+  t.mock.timers.tick(1);
+  const third = await (await get()).json();
+  assert.ok(sql.length > n && sql.length <= 2 * n, "at 10 s the checks ran once more");
+  assert.equal(third.checked_at, "2026-11-27T12:00:10.000Z");
+});
+
+test("cache: a failure is cached too, and clears within 10 s of the fix", async (t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: Date.parse("2026-11-27T12:00:00.000Z") });
+  const { env } = await deployed();
+  env.__fault = (s) => /^\s*SELECT 1\b/.test(s);
+  const { sql, get } = counting(env);
+  let r = await get();
+  assert.equal(r.status, 503);
+  const a = await r.json();
+  delete env.__fault; // fixed
+  r = await get();
+  const b = await r.json();
+  assert.equal(r.status, 503, "still the cached failure");
+  assert.equal(b.error, "db_unavailable");
+  assert.notEqual(b.request_id, a.request_id);
+  const n = sql.length;
+  t.mock.timers.tick(10_000);
+  r = await get();
+  assert.equal(r.status, 200);
+  assert.ok(sql.length - n <= 3);
+});
+
+test("cache: each database has its own entry", async () => {
+  const one = await deployed();
+  const two = await deployed({ DB: memoryD1({ migrations: [] }) });
+  assert.equal((await worker.fetch(new Request("https://arb.test/health"), one.env)).status, 200);
+  assert.equal((await worker.fetch(new Request("https://arb.test/health"), two.env)).status, 503);
 });
