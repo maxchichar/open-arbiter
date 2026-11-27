@@ -1,0 +1,60 @@
+// P1.1 AC-1.1: two named environments, each with its own D1, KV, cron trigger and required secrets,
+// and no DEV. The top level is local development only. Read through wrangler's own config reader,
+// so inheritance (triggers, workers_dev) is resolved exactly as `wrangler deploy --env X` resolves it.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { unstable_readConfig } from "wrangler";
+
+const ENVS = ["staging", "production"];
+const SECRETS = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"];
+const BINDINGS = { d1: ["DB"], kv: ["AUDIT_ANCHOR"] };
+
+// ARBITER_WRANGLER_TOML points the check at another file (used to record red evidence).
+function configPath() {
+  const src = process.env.ARBITER_WRANGLER_TOML || new URL("../wrangler.toml", import.meta.url).pathname;
+  // wrangler resolves `main` relative to the config file, so read a copy placed next to src/.
+  const dir = mkdtempSync(join(tmpdir(), "wrangler-env-"));
+  const p = join(dir, "wrangler.toml");
+  writeFileSync(p, readFileSync(src, "utf8").replace(/^main = "src\/index\.js"$/m, `main = "${new URL("../src/index.js", import.meta.url).pathname}"`));
+  return p;
+}
+const read = (env) => unstable_readConfig({ config: configPath(), env }, { hideWarnings: true });
+
+for (const env of ENVS) {
+  test(`[env.${env}] is a separate Worker with its own D1, KV, cron, required secrets and no DEV`, () => {
+    const c = read(env);
+    assert.equal(c.name, `open-arbiter-${env}`);
+    assert.deepEqual(c.d1_databases.map((d) => d.binding), BINDINGS.d1, "D1 bindings are not inherited: list them per environment");
+    assert.deepEqual(c.kv_namespaces.map((k) => k.binding), BINDINGS.kv, "the audit anchor KV (P1.12) per environment");
+    assert.ok(c.d1_databases[0].database_id, "a database_id");
+    assert.ok(c.kv_namespaces[0].id, "a KV namespace id");
+    assert.ok(c.triggers?.crons?.length >= 1, "a cron trigger for checkpoints (P1.12)");
+    assert.deepEqual([...(c.secrets?.required ?? [])].sort(), SECRETS, "deploy fails while a secret is unset");
+    assert.ok(!("DEV" in (c.vars ?? {})), "DEV never ships");
+    assert.equal(c.workers_dev, true);
+    assert.equal(c.preview_urls, false, "no per-version URLs reaching this environment's database");
+  });
+}
+
+test("staging, production and the local top level never share a database, KV namespace or name", () => {
+  const all = [read(undefined), ...ENVS.map(read)];
+  for (const key of [(c) => c.d1_databases[0].database_id, (c) => c.d1_databases[0].database_name, (c) => c.kv_namespaces[0].id, (c) => c.name]) {
+    const values = all.map(key);
+    assert.equal(new Set(values).size, values.length, `shared: ${values.join(", ")}`);
+  }
+});
+
+test("the top level is local only: placeholder ids, no workers.dev route, no secrets.required", () => {
+  const c = read(undefined);
+  assert.equal(c.d1_databases[0].database_id, "00000000-0000-0000-0000-000000000000");
+  assert.equal(c.kv_namespaces[0].id, "00000000000000000000000000000000");
+  assert.equal(c.workers_dev, false);
+  assert.deepEqual(c.triggers?.crons ?? [], [], "no cron on the local Worker");
+  // In `wrangler dev`, secrets.required loads only the listed keys from .dev.vars, which would drop DEV=1.
+  assert.equal(c.secrets, undefined);
+  assert.deepEqual(c.d1_databases.map((d) => d.binding), BINDINGS.d1);
+  assert.deepEqual(c.kv_namespaces.map((k) => k.binding), BINDINGS.kv, "local dev has the same bindings as the environments");
+});

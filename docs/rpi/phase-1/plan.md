@@ -95,6 +95,8 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 
 ### P1.1: environments, per-environment signing keys and secrets
 
+**State (2026-11-27):** local part done ([`evidence/p1.1-summary.md`](evidence/p1.1-summary.md)). AC-1.3's Cloudflare check and AC-1.7 wait for A1 and P1.4b. Design as built: the top-level `wrangler.toml` is local only; `secrets.required` per environment; `preview_urls = false`; Oja environments come from `sites/oja/environments.json` through `npm run build:oja -- <env>` (output `dist/oja-<env>/`, which P1.4a deploys).
+
 | ID | Given / When / Then | Verification |
 | --- | --- | --- |
 | AC-1.1 | `arbiter/wrangler.toml` has `[env.staging]` and `[env.production]`, each with its own `d1_databases` (different ids), `kv_namespaces` (P1.12) and `triggers`, and **no `DEV`** | Config test (parses the TOML), red first |

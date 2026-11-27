@@ -1,0 +1,218 @@
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/maxchichar/open-arbiter/arbiter/scripts/deploy.mjs' imported from /home/maxchichar/open-arbiter/arbiter/test/deploy-script.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/maxchichar/open-arbiter/arbiter/scripts/deploy.mjs'
+}
+
+Node.js v24.21.0
+✖ arbiter/test/deploy-script.test.mjs (55.038838ms)
+✔ piped stdout gets a private P-256 JWK (44.251637ms)
+✖ --out outside the repo writes a new file, mode 0600, and refuses to overwrite (41.237277ms)
+✖ --out inside the repo is refused and nothing is written (49.778049ms)
+✖ stdout redirected to a file inside the repo is refused (Linux) (41.081622ms)
+✖ unknown arguments are refused (44.505407ms)
+✔ the detector finds secret shapes and ignores dev values (2.469139ms)
+✔ no tracked or staged file is a secret file or holds a secret value (28.441778ms)
+✖ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (10.481171ms)
+✖ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (0.961708ms)
+✖ staging, production and the local top level never share a database, KV namespace or name (1.431557ms)
+✖ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (0.511638ms)
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/maxchichar/open-arbiter/scripts/build-oja.mjs' imported from /home/maxchichar/open-arbiter/sites/oja/tests/environments.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/maxchichar/open-arbiter/scripts/build-oja.mjs'
+}
+
+Node.js v24.21.0
+✖ sites/oja/tests/environments.test.mjs (49.411566ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 3
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 957.400836
+
+✖ failing tests:
+
+test at arbiter/test/deploy-script.test.mjs:1:1
+✖ arbiter/test/deploy-script.test.mjs (55.038838ms)
+  'test failed'
+
+test at arbiter/test/keygen.test.mjs:21:1
+✖ --out outside the repo writes a new file, mode 0600, and refuses to overwrite (41.237277ms)
+  AssertionError [ERR_ASSERTION]: nothing printed when writing a file
+  + actual - expected
+  
+  + '{"key_ops":["sign"],"ext":true,"kty":"EC","x":"leAuWubT3tywtIzYjjHBGJlQrqb78-6NLbj0EsxakN4","y":"pxVZSWy_k6nTsf6zUrWQp8RowCmE94PTlJop1RCN5rY","crv":"P-256","d":"[REDACTED: throwaway private scalar printed by the old keygen during this red run; never used]"}'
+  - ''
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/keygen.test.mjs:26:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '{"key_ops":["sign"],"ext":true,"kty":"EC","x":"leAuWubT3tywtIzYjjHBGJlQrqb78-6NLbj0EsxakN4","y":"pxVZSWy_k6nTsf6zUrWQp8RowCmE94PTlJop1RCN5rY","crv":"P-256","d":"[REDACTED: throwaway private scalar printed by the old keygen during this red run; never used]"}',
+    expected: '',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/keygen.test.mjs:36:1
+✖ --out inside the repo is refused and nothing is written (49.778049ms)
+  AssertionError [ERR_ASSERTION]: arbiter/new.jwk
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/keygen.test.mjs:40:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/keygen.test.mjs:46:1
+✖ stdout redirected to a file inside the repo is refused (Linux) (41.081622ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/keygen.test.mjs:51:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/keygen.test.mjs:58:1
+✖ unknown arguments are refused (44.505407ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/keygen.test.mjs:60:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:27:3
+✖ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (10.481171ms)
+  AssertionError [ERR_ASSERTION]: the audit anchor KV (P1.12) per environment
+  + actual - expected
+  
+  + []
+  - [
+  -   'AUDIT_ANCHOR'
+  - ]
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:31:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'AUDIT_ANCHOR' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:27:3
+✖ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (0.961708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'open-arbiter-production'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:29:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'open-arbiter-production',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:42:1
+✖ staging, production and the local top level never share a database, KV namespace or name (1.431557ms)
+  TypeError: Cannot read properties of undefined (reading 'database_id')
+      at file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:44:47
+      at Array.map (<anonymous>)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:45:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at arbiter/test/wrangler-env.test.mjs:50:1
+✖ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (0.511638ms)
+  TypeError: Cannot read properties of undefined (reading 'database_id')
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:52:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at sites/oja/tests/environments.test.mjs:1:1
+✖ sites/oja/tests/environments.test.mjs (49.411566ms)
+  'test failed'

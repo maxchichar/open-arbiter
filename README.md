@@ -61,18 +61,23 @@ Tests: `npm test` (unit, property and page tests; no network). `npm run test:wor
 
 ## Deploy on Cloudflare
 
+There are two environments, `staging` and `production`, each its own Worker (`open-arbiter-staging`, `open-arbiter-production`) with its own D1 database, KV namespace, secrets and signing key. The top level of `arbiter/wrangler.toml` is for local development only. The full runbook (migrations, rollback, restore, key rotation) is being written in Phase 1. For one environment, here `staging`:
+
 ```shell
 cd arbiter
-npx wrangler d1 create open-arbiter          # paste the database_id into wrangler.toml
-npx wrangler d1 execute open-arbiter --remote --file schema.sql
-npx wrangler secret put ADMIN_TOKEN
-npx wrangler secret put BUYER_SALT
-node scripts/keygen.mjs | npx wrangler secret put ARBITER_SIGNING_JWK
-npx wrangler deploy                          # note the workers.dev URL
-node scripts/seed.mjs https://open-arbiter.<you>.workers.dev <ADMIN_TOKEN> https://<your-pages-site>
+npx wrangler d1 create open-arbiter-staging                      # paste the id into [[env.staging.d1_databases]]
+npx wrangler kv namespace create AUDIT_ANCHOR --env staging      # paste the id into [[env.staging.kv_namespaces]]
+npx wrangler d1 execute open-arbiter-staging --env staging --remote --file schema.sql
+npx wrangler secret put ADMIN_TOKEN --env staging
+npx wrangler secret put BUYER_SALT --env staging
+node scripts/keygen.mjs --out ~/keys/open-arbiter-staging.jwk    # outside the repo; one key per environment
+npx wrangler secret put ARBITER_SIGNING_JWK --env staging < ~/keys/open-arbiter-staging.jwk
+cd .. && npm run deploy:arbiter -- staging                       # refuses without an environment
 ```
 
-Then set `DEFAULT_ARBITER_URL` in `sites/oja/js/config.js` to the Worker URL and pin its key: put the output of `node arbiter/scripts/pubkey.mjs < private.jwk` in `ARBITER_KEYS` (keep retired keys there after a rotation). Copy both into `"open_arbiter"` in `sites/oja/agent-manifest.json`; `npm test` fails until they match, and fails if a public arbiter has no pinned key. Add the Worker's origin to `connect-src` in `sites/oja/_headers` (a test checks this too). Then rebuild the network if you changed the HOCON (`node <agentic-web>/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json` from `sites/oja`), and publish `sites/oja` with `npx wrangler pages deploy sites/oja --project-name oja`. `_headers` sets the CORS headers, the coded-tool worker's CSP and a strict page CSP: scripts only from the site, no inline script or eval, no framing, and network access only to the site, the arbiter, the AI providers listed in the assistant's settings and `https://otari.ai` (where Connect with Otari exchanges its sign-in code for a key). A custom "Provider URL" outside that list is blocked by the CSP.
+`wrangler deploy` fails while a required secret is unset (`secrets.required`). `npm run deploy:arbiter` refuses to run without `staging` or `production` and while that environment's ids are placeholders. Production also needs `--confirm-production`.
+
+Then pin the environment in `sites/oja/environments.json`: its arbiter origin as `arbiter_url`, and the output of `node arbiter/scripts/pubkey.mjs < ~/keys/open-arbiter-staging.jwk` in `keys` (keep retired keys there after a rotation; a key may never be pinned in both environments). `npm run build:oja -- staging` writes `dist/oja-staging/`: the site with that URL and those keys in `js/config.js`, `"open_arbiter"` in `agent-manifest.json` and every `connect-src` in `_headers`. It refuses an environment without a URL or keys, and checks the three agree. `sites/oja/` itself stays the local-development site. Rebuild the network if you changed the HOCON (`node <agentic-web>/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json` from `sites/oja`) before building. Seed a staging arbiter with `node arbiter/scripts/seed.mjs <arbiter-url> <ADMIN_TOKEN> <oja-url>`. `_headers` sets the CORS headers, the coded-tool worker's CSP and a strict page CSP: scripts only from the site, no inline script or eval, no framing, and network access only to the site, the arbiter, the AI providers listed in the assistant's settings and `https://otari.ai` (where Connect with Otari exchanges its sign-in code for a key). A custom "Provider URL" outside that list is blocked by the CSP.
 
 ## Use the arbiter from your own site
 

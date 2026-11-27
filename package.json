@@ -8,7 +8,9 @@
     "dev:arbiter": "cd arbiter && wrangler dev --local",
     "seed": "node arbiter/scripts/seed.mjs",
     "e2e": "node arbiter/scripts/e2e.mjs",
-    "test:worker": "node arbiter/scripts/worker-harness.mjs"
+    "test:worker": "node arbiter/scripts/worker-harness.mjs",
+    "deploy:arbiter": "node arbiter/scripts/deploy.mjs",
+    "build:oja": "node scripts/build-oja.mjs"
   },
   "keywords": [],
   "author": "",

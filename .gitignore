@@ -3,3 +3,6 @@ node_modules/
 .dev.vars
 arbiter/.dev.vars
 arbiter/.seed-keys.json
+*.jwk
+*.pem
+dist/

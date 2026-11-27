@@ -1,15 +1,76 @@
+# Open Arbiter Worker. ADR 0004 (written in P1.4) records the environment design.
+#
+# The top level is LOCAL DEVELOPMENT ONLY (`wrangler dev --local`, `npm run test:worker`). Its ids
+# are placeholders, so a bare `wrangler deploy` fails. Wrangler only warns when --env is missing,
+# so deploy with `npm run deploy:arbiter -- <staging|production>`, which refuses without one.
+#
+# Each environment deploys as its own Worker (open-arbiter-staging, open-arbiter-production) with its
+# own D1, KV and secrets. Bindings and `secrets` are not inherited, so each section lists them all.
+# Never define DEV here (arbiter/test/config-guard.test.mjs); it comes only from the gitignored .dev.vars.
+#
+# Secrets, set per environment with `npx wrangler secret put <NAME> --env <env>` (never in the repo):
+#   ADMIN_TOKEN          registers vendors
+#   ARBITER_SIGNING_JWK  private ECDSA P-256 JWK, one per environment (node scripts/keygen.mjs). Without it the
+#                        arbiter refuses to sign (500 misconfigured). Local dev only: DEV=1 in .dev.vars makes one in D1.
+#   BUYER_SALT           salt for hashing caller IPs
+# `secrets.required` makes `wrangler deploy` fail while any of them is unset. It is not set at the top
+# level, because in `wrangler dev` it would load only the listed keys from .dev.vars (dropping DEV).
+
 name = "open-arbiter"
 main = "src/index.js"
 compatibility_date = "2026-11-01"
+workers_dev = false
+# No per-version preview URLs: they would let anyone call an older uploaded version against the
+# environment's database. Inherited by both environments.
+preview_urls = false
 
 [[d1_databases]]
 binding = "DB"
 database_name = "open-arbiter"
-# Replace with the id printed by `npx wrangler d1 create open-arbiter`.
 database_id = "00000000-0000-0000-0000-000000000000"
 
-# Secrets (set with `npx wrangler secret put <NAME>`):
-#   ADMIN_TOKEN          registers vendors
-#   ARBITER_SIGNING_JWK  private ECDSA P-256 JWK (node scripts/keygen.mjs). Required: without it the arbiter
-#                        refuses to sign (500 misconfigured). Local dev only: DEV=1 in .dev.vars generates one in D1.
-#   BUYER_SALT           salt for hashing caller IPs
+[[kv_namespaces]]
+binding = "AUDIT_ANCHOR"
+id = "00000000000000000000000000000000"
+
+# ---------- staging ----------
+[env.staging]
+workers_dev = true
+
+[env.staging.secrets]
+required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "open-arbiter-staging"
+# Replace with the id printed by `npx wrangler d1 create open-arbiter-staging` (approval A1).
+database_id = "00000000-0000-0000-0000-00000000000a"
+
+[[env.staging.kv_namespaces]]
+binding = "AUDIT_ANCHOR"
+# Replace with the id printed by `npx wrangler kv namespace create AUDIT_ANCHOR --env staging` (approval A1).
+id = "0000000000000000000000000000000a"
+
+[env.staging.triggers]
+crons = ["0 2 * * *"]
+
+# ---------- production ----------
+[env.production]
+workers_dev = true
+
+[env.production.secrets]
+required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "open-arbiter-production"
+# Replace with the id printed by `npx wrangler d1 create open-arbiter-production` (approval A3).
+database_id = "00000000-0000-0000-0000-00000000000b"
+
+[[env.production.kv_namespaces]]
+binding = "AUDIT_ANCHOR"
+# Replace with the id printed by `npx wrangler kv namespace create AUDIT_ANCHOR --env production` (approval A3).
+id = "0000000000000000000000000000000b"
+
+[env.production.triggers]
+crons = ["0 2 * * *"]

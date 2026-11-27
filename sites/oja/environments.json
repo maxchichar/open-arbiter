@@ -1,0 +1,10 @@
+{
+  "staging": {
+    "arbiter_url": null,
+    "keys": []
+  },
+  "production": {
+    "arbiter_url": null,
+    "keys": []
+  }
+}
