@@ -16,6 +16,10 @@ Use the `rpi-production-engineering` skill (`.claude/skills/rpi-production-engin
 
 Keep RPI records in `docs/rpi/<task>/`. Never mark a check `pass` without evidence you actually produced.
 
+Save test output for evidence only through `node scripts/save-output.mjs <file> -- <cmd…>`: it keeps the command's exit status (so `&& next` stops on a red run), appends `exit: <code>`, and redacts secret-shaped values. Never pipe a test run through `grep`/`tail` into evidence, because that loses the exit status.
+
+The versioned pre-commit hook (`.githooks/pre-commit`, enabled by `npm install` via `core.hooksPath`) runs `scripts/secret-scan.mjs --staged` and blocks a commit on any finding. Don't bypass it with `--no-verify`.
+
 Whenever Otari causes friction (sign-in, keys, models, docs, CSP origins), add an entry to `docs/otari-feedback.md`: date, what happened, what would help.
 
 ## Commands

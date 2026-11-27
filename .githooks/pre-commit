@@ -1,0 +1,13 @@
+#!/bin/sh
+# Versioned pre-commit hook (enabled by `npm install`, or `git config core.hooksPath .githooks`).
+# Blocks the commit when the staged content holds a secret file or a secret-shaped value.
+# It scans what is staged, not the work tree. Fix the file, `git add` it again, and commit.
+root=$(git rev-parse --show-toplevel) || exit 1
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit: node not found; the secret scan cannot run, so the commit is blocked." >&2
+  exit 1
+fi
+node "$root/scripts/secret-scan.mjs" --staged || {
+  echo "pre-commit: commit blocked by the secret scan (scripts/secret-scan.mjs). Remove the secret from the staged files." >&2
+  exit 1
+}

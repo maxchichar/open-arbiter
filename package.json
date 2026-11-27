@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "test": "node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs",
     "dev:arbiter": "cd arbiter && wrangler dev --local",
     "seed": "node arbiter/scripts/seed.mjs",

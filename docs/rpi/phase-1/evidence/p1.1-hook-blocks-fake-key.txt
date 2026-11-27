@@ -1,0 +1,8 @@
+$ git add hook-demo-fake-key.txt   # a fake private JWK
+$ git commit -m demo
+secret scan: 1 finding(s) in 1 file(s):
+  hook-demo-fake-key.txt: private JWK ("d")
+pre-commit: commit blocked by the secret scan (scripts/secret-scan.mjs). Remove the secret from the staged files.
+$ git rev-parse --short HEAD
+32b32c2
+exit: 1

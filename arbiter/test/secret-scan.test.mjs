@@ -1,37 +1,21 @@
-// P1.1 AC-1.3: no secret value is in the repository. Scans every tracked file (and every file staged
-// for commit) for private keys, local secret files and secret assignments. Runs in `npm test`, so CI
-// (P1.3) runs it on every push.
+// P1.1 AC-1.3: no secret value is in the repository. The scanner is scripts/secret-scan.mjs; the
+// pre-commit hook (.githooks/pre-commit) runs it on the staged content, and this test runs it on
+// every tracked file, so CI (P1.3) runs it on every push too.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, chmodSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { findSecrets, redact, FORBIDDEN_PATHS, scanRepo } from "../../scripts/secret-scan.mjs";
 
 const REPO = new URL("../../", import.meta.url).pathname;
-
-/** Paths that must never be tracked. */
-export const FORBIDDEN_PATHS = [/(^|\/)\.dev\.vars(\..+)?$/, /(^|\/)\.env(\..+)?$/, /(^|\/)\.seed-keys\.json$/, /\.jwk$/, /\.pem$/, /(^|\/)\.wrangler\//];
-
-/** Values a secret assignment may carry in the repo: local dev values, and code interpolations. */
-const DEV_VALUES = new Set(["dev-admin-token", "dev", "harness", "admin"]);
-
-/** Secret-shaped content: returns a list of "reason" strings for one file's text. */
-export function findSecrets(text) {
-  const found = [];
-  // A private EC/OKP/RSA JWK: a "d" member with a long base64url value.
-  if (/"d"\s*:\s*"[A-Za-z0-9_-]{32,}"/.test(text)) found.push("private JWK (\"d\")");
-  if (/-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(text)) found.push("PEM private key");
-  for (const m of text.matchAll(/\b(ADMIN_TOKEN|BUYER_SALT|ARBITER_SIGNING_JWK|CLOUDFLARE_API_TOKEN)\s*=\s*['"]?([^\s'"\\]+)/g)) {
-    const value = m[2];
-    if (DEV_VALUES.has(value) || value.startsWith("${") || value.startsWith("$")) continue;
-    found.push(`${m[1]} assigned a value`);
-  }
-  // Cloudflare API tokens are 40 characters of [A-Za-z0-9_-]; only flag them next to a token name.
-  if (/(api[_-]?token|CF_API_TOKEN)["'\s:=]+[A-Za-z0-9_-]{40}\b/i.test(text)) found.push("Cloudflare API token");
-  return found;
-}
+// A fake private scalar: the right shape, not a key anyone uses.
+const FAKE_D = "FAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAK";
+const FAKE_JWK = `{"kty":"EC","crv":"P-256","x":"a","y":"b","d":"${FAKE_D}"}`;
 
 test("the detector finds secret shapes and ignores dev values", () => {
-  assert.deepEqual(findSecrets('{"kty":"EC","crv":"P-256","x":"a","y":"b","d":"MkN0bG9uZ1ByaXZhdGVTY2FsYXJGb3JUZXN0aW5nWFla"}'), ["private JWK (\"d\")"]);
+  assert.deepEqual(findSecrets(FAKE_JWK), ["private JWK (\"d\")"]);
   assert.equal(findSecrets("-----BEGIN PRIVATE KEY-----\nabc").length, 1);
   assert.equal(findSecrets("ADMIN_TOKEN=4f1c0a9e8b7d").length, 1);
   assert.equal(findSecrets("export BUYER_SALT='s3cr3t-salt'").length, 1);
@@ -45,20 +29,73 @@ test("the detector finds secret shapes and ignores dev values", () => {
   assert.ok(!FORBIDDEN_PATHS.some((r) => r.test("sites/oja/environments.json")));
 });
 
-test("no tracked or staged file is a secret file or holds a secret value", () => {
-  const files = new Set([
-    ...execFileSync("git", ["ls-files", "-z"], { cwd: REPO }).toString().split("\0"),
-    ...execFileSync("git", ["diff", "--cached", "--name-only", "--diff-filter=AM", "-z"], { cwd: REPO }).toString().split("\0"),
-  ].filter(Boolean));
-  assert.ok(files.size > 50, "git listed the repository");
-  const problems = [];
-  for (const f of files) {
-    if (FORBIDDEN_PATHS.some((r) => r.test(f))) { problems.push(`${f}: must not be committed`); continue; }
-    if (/\.(png|jpe?g|gif|ico|woff2?)$/.test(f)) continue;
-    if (f === "arbiter/test/secret-scan.test.mjs") continue; // its fixtures are fake secrets
-    let text;
-    try { text = readFileSync(REPO + f, "utf8"); } catch { continue; } // deleted in the work tree
-    for (const why of findSecrets(text)) problems.push(`${f}: ${why}`);
-  }
+test("redact removes every value and keeps the rest", () => {
+  const text = `before ${FAKE_JWK} ADMIN_TOKEN=4f1c0a9e8b7d after`;
+  const out = redact(text);
+  assert.deepEqual(findSecrets(out), []);
+  assert.ok(!out.includes(FAKE_D) && !out.includes("4f1c0a9e8b7d"));
+  assert.match(out, /^before \{"kty":"EC","crv":"P-256","x":"a","y":"b","d":"\[REDACTED: private JWK \("d"\)\]"\} ADMIN_TOKEN=\[REDACTED: ADMIN_TOKEN assigned a value\] after$/);
+});
+
+test("no tracked file is a secret file or holds a secret value", () => {
+  const { files, problems } = scanRepo({ cwd: REPO });
+  assert.ok(files > 50, "git listed the repository");
   assert.deepEqual(problems, []);
+});
+
+/** A throwaway git repo with the real hook and scanner, hooks enabled the way `npm install` does. */
+function hookRepo() {
+  const dir = mkdtempSync(join(tmpdir(), "hook-"));
+  const g = (...a) => execFileSync("git", a, { cwd: dir, encoding: "utf8" });
+  g("init", "-q");
+  g("config", "user.email", "test@example.invalid");
+  g("config", "user.name", "test");
+  mkdirSync(join(dir, ".githooks"));
+  mkdirSync(join(dir, "scripts"));
+  copyFileSync(join(REPO, ".githooks/pre-commit"), join(dir, ".githooks/pre-commit"));
+  chmodSync(join(dir, ".githooks/pre-commit"), 0o755);
+  copyFileSync(join(REPO, "scripts/secret-scan.mjs"), join(dir, "scripts/secret-scan.mjs"));
+  g("config", "core.hooksPath", ".githooks");
+  writeFileSync(join(dir, "README.md"), "ok\n");
+  g("add", "-A");
+  g("commit", "-q", "-m", "base");
+  const commit = () => spawnSync("git", ["commit", "-q", "-m", "x"], { cwd: dir, encoding: "utf8" });
+  return { dir, g, commit };
+}
+
+test("pre-commit hook: blocks a staged fake key, a forbidden file, and a staged secret fixed only in the work tree", () => {
+  const { dir, g, commit } = hookRepo();
+  writeFileSync(join(dir, "evidence.txt"), `output ${FAKE_JWK}\n`);
+  g("add", "evidence.txt");
+  let r = commit();
+  assert.notEqual(r.status, 0, "commit must be blocked");
+  assert.match(r.stderr, /evidence\.txt: private JWK/);
+  assert.ok(!r.stderr.includes(FAKE_D), "the value is never printed");
+  assert.equal(g("rev-list", "--count", "HEAD").trim(), "1", "nothing committed");
+
+  writeFileSync(join(dir, "evidence.txt"), "clean now\n"); // fixed in the work tree, not re-staged
+  r = commit();
+  assert.notEqual(r.status, 0, "the staged content is what counts");
+
+  g("rm", "-q", "-f", "--cached", "evidence.txt");
+  writeFileSync(join(dir, "staging.jwk"), "{}");
+  g("add", "staging.jwk");
+  r = commit();
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /staging\.jwk: must not be committed/);
+});
+
+test("pre-commit hook: a clean commit goes through", () => {
+  const { dir, g, commit } = hookRepo();
+  writeFileSync(join(dir, "notes.txt"), "ADMIN_TOKEN=dev-admin-token\n");
+  g("add", "notes.txt");
+  const r = commit();
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(g("rev-list", "--count", "HEAD").trim(), "2");
+});
+
+test("the hook is versioned, executable, and npm install enables it", async () => {
+  assert.ok(statSync(join(REPO, ".githooks/pre-commit")).mode & 0o111, "executable");
+  const pkg = JSON.parse((await import("node:fs")).readFileSync(join(REPO, "package.json"), "utf8"));
+  assert.match(pkg.scripts.prepare, /git config core\.hooksPath \.githooks/);
 });
