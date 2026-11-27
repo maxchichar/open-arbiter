@@ -64,7 +64,8 @@ Edited files. Each one has a line near its top saying that it was changed:
   partner's own window, the chat asks in a message with an Open button that names the
   partner. "Agents working for you" shows each partner's address with its path, such as
   `localhost:8081/marrow_point_harbor_tours`, not only its host. Before the first call it
-  names the partner from `link_labels`, as the consent card does.
+  names the partner from `link_labels`, as the consent card does. The Enter that confirms
+  Japanese, Chinese or Korean input does not send the message (`enter-key.js`).
 - `action-transport.js` opens the confirmation dialog with focus on its heading, so a
   stray Enter cannot confirm an action. Closing the dialog puts focus back where it was.
   It lets the chat ask before a partner's window opens (`setActionWindowPrompt`). An
@@ -83,6 +84,12 @@ Edited files. Each one has a line near its top saying that it was changed:
   HTTP status in the trace (see "Publisher-funded router" below).
 - `engine.js`, `ui.js` and `in-use-line.js` also support a publisher-funded router; see
   below.
+- `ui.js`, `cruse-render.js`, `discovered-actions.js`, `form-actions.js` and `sandbox.js`
+  pass what they write as HTML, parse as HTML or load as a script through
+  `trusted-types.js`, so the chat works under `require-trusted-types-for 'script'`. `ui.js`
+  also escapes the provider links, the theme's logo address and the log's event names.
+- `discovered-actions.js` fills its copy of a source page's form inside the parsed page,
+  not the live page, so nothing in the form loads or runs.
 
 Publisher-funded router. nsdeploy's runtime can run without a visitor key only on its
 mock router. Spec §4 ("Default inference") also allows a default router that the
@@ -113,12 +120,23 @@ Added files:
   EU). Sites need no app registration.
 - `in-use-line.js` builds the "In use" line of ⚙ AI model settings: the provider, the
   model and the last four characters of the key the chat uses.
+- `enter-key.js` tells whether Enter in the chat box sends the message. It does not while
+  an input method (IME) is composing text, such as Japanese, Chinese or Korean, so the
+  Enter that confirms the characters does not send a half-written message.
+- `trusted-types.js` holds the runtime's one Trusted Types policy, `agentify-website`. It
+  returns each string unchanged. That is safe because the runtime escapes every value it
+  puts in its own HTML, cleans a model's HTML with `renderSafeHtml`, keeps the pages it
+  parses with `DOMParser` out of the live page, and loads no script but its own sandbox
+  worker.
 
 Protocol name: `nsdeploy`. Use it for `<protocol_name>` in `agent-manifest.json`. It
 names the discovery files, such as `.well-known/nsdeploy.json`, that nsdeploy's tools read.
 
-Do not edit or replace these files for one site. This copy is for use until nsdeploy's
-own runtime offers these tools and partner limits.
+This runtime is an example. The skill copies it unchanged, and a coding agent following
+the skill does not edit it. After that, a site's copy is the site owner's to change. Bugs
+and conflicts with the spec are fixed in the skill's copy. To share a new feature with
+other sites, open a pull request. This copy is for use until nsdeploy's own runtime
+offers these tools and partner limits.
 
 nsdeploy plans to move to a runtime built on the neuro-san TS package (nsdeploy PR #10).
 That runtime has no `website_*` tools yet. Before a site switches to it, move the edits

@@ -1,0 +1,27 @@
+ci-guards workflows: OK
+✔ CALLERS lists exact origins only, never "*"; EVERY_SITE is ["*"] (3.73981ms)
+✔ only the owner-confirmed reads are shared with every site, through EVERY_SITE (0.671663ms)
+✔ every other shared action lists exact origins (verify_receipt included) (0.320047ms)
+✔ a shared write or irreversible action lists exact callers, never "*" (agentic-web e67e306) (0.340245ms)
+✔ every HTML page gets the same page CSP from _headers (1.845889ms)
+✔ the page CSP is strict for scripts and locked down elsewhere (2.875281ms)
+✔ the page CSP turns on Trusted Types, allowing only the runtime's one policy (P1.3b) (0.815857ms)
+✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (0.789647ms)
+✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.436598ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.276885ms)
+✔ Oja's own HTML has no inline script, event handler or style attribute (1.182732ms)
+✔ runtime/ is exactly the locked upstream copy: same files, same bytes (13.418199ms)
+✔ CI and CLAUDE.md pin the same agentic-web commit as the runtime lock (0.820886ms)
+✔ CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there (0.25866ms)
+✔ every HTML write, HTML parse and worker start in Oja's pages uses the runtime's policy (34.206791ms)
+✔ the runtime has one Trusted Types policy, and nothing else creates one (8.8671ms)
+✔ Oja's own code imports the policy module only by its one URL (a ?v= copy cannot create the policy again) (1.80896ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 142.56805
+exit: 0

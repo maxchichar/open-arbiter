@@ -42,5 +42,5 @@ test("CI and CLAUDE.md pin the same agentic-web commit as the runtime lock", () 
 test("CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there", () => {
   const ci = read(".github/workflows/ci.yml");
   assert.match(ci, /diff -r \.agentic-web\/skills\/agentify-website\/runtime sites\/oja\/runtime/);
-  assert.match(ci, /node --test tests\/skills\/agentify-website\/runtime\//);
+  assert.match(ci, /node --test "tests\/skills\/agentify-website\/runtime\/\*\.test\.mjs"/);
 });

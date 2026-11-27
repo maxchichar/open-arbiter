@@ -225,7 +225,7 @@ with sync_playwright() as p:
     print("blocked provider, after sending:", bpage.locator("#assistant-status").inner_text())
     blocked_ctx.close()
 
-    # 9. Connect with Otari (runtime d67755e), with otari.ai mocked: the authorize step is a top-level
+    # 9. Connect with Otari (runtime since d67755e), with otari.ai mocked: the authorize step is a top-level
     # navigation that the mock answers with a redirect back, and the key exchange is a fetch from the
     # page, which connect-src must allow. Every other external host is refused, so nothing reaches
     # the real network.

@@ -28,7 +28,9 @@ import { reviewActions, setActionWindowPrompt } from "./action-transport.js";
 import { OpenRouterConnect } from "./openrouter-connect.js";
 import { OtariConnect } from "./otari-connect.js";
 import { InUseLine } from "./in-use-line.js";
+import { EnterKey } from "./enter-key.js";
 import { isPublisherFundedRouter } from "./engine.js";
+import { trustedHtml } from "./trusted-types.js";
 
 export const AI_MODEL_SETTINGS_LABEL = "AI model settings";
 export const API_KEY_HELP_URL = "https://ai.google.dev/gemini-api/docs/api-key";
@@ -359,7 +361,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
     if (canConnect && provider.name === OpenRouterConnect.NAME) continue;
     if (canConnectOtari && provider.name === OtariConnect.NAME) continue;
     providerLinksHtml += `
-        <a href="${provider.keyUrl}" target="_blank" rel="noopener noreferrer" data-ns-provider="${provider.name}" data-router="${provider.router}" data-model="${provider.model}">${provider.name} <span aria-hidden="true">↗</span><small>${provider.accessNote}</small></a>`;
+        <a href="${escapeHtml(provider.keyUrl)}" target="_blank" rel="noopener noreferrer" data-ns-provider="${escapeHtml(provider.name)}" data-router="${escapeHtml(provider.router)}" data-model="${escapeHtml(provider.model)}">${escapeHtml(provider.name)} <span aria-hidden="true">↗</span><small>${escapeHtml(provider.accessNote)}</small></a>`;
   }
   const settingsBodyHtml = `
     <div class="ns-settings-body">
@@ -416,7 +418,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
 
   const headerHtml = `
     <div class="ns-header">
-      ${theme.logo ? `<img class="ns-logo" src="${theme.logo}" alt="logo">` : ""}
+      ${theme.logo ? `<img class="ns-logo" src="${escapeHtml(theme.logo)}" alt="logo">` : ""}
       <div class="ns-title">${escapeHtml(manifest?.brand || net?.name || "neuro-san-web")}</div>
       ${engine.mockLLM
         ? `<div class="ns-llmbadge mock" title="The default router is a deterministic mock — it ignores the model name. Add a real key + router in ⚙ settings.">⚠ MOCK LLM — no real model</div>`
@@ -469,9 +471,9 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
     root.classList.add("ns-composed-app");
     root.dataset.nsLayout = "composed";
     root.dataset.dev = "false";
-    headerSlot.innerHTML = headerHtml;
-    chatSlot.innerHTML = chatHtml;
-    agentsSlot.innerHTML = agentsHtml + devHtml;
+    headerSlot.innerHTML = trustedHtml(headerHtml);
+    chatSlot.innerHTML = trustedHtml(chatHtml);
+    agentsSlot.innerHTML = trustedHtml(agentsHtml + devHtml);
     if (settingsSlot) {
       // A theme can wrap the empty slot in native <details>/<summary> to choose
       // its own gear label and drawer placement. Otherwise the runtime supplies
@@ -480,22 +482,22 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
       if (disclosure && root.contains(disclosure)) {
         disclosure.classList.add("ns-settings");
         if (needsByok) disclosure.open = true;
-        settingsSlot.innerHTML = settingsBodyHtml;
+        settingsSlot.innerHTML = trustedHtml(settingsBodyHtml);
       } else {
-        settingsSlot.innerHTML = settingsHtml;
+        settingsSlot.innerHTML = trustedHtml(settingsHtml);
       }
     }
     if (activitySlot) {
       // Theme prompt v10 briefly exposed a separate activity rail. Keep those
       // themes valid, but retire the empty rail now that status lives in chat.
-      activitySlot.innerHTML = "";
+      activitySlot.replaceChildren();
       activitySlot.hidden = true;
     }
-    root.insertAdjacentHTML("beforeend", modalHtml);
+    root.insertAdjacentHTML("beforeend", trustedHtml(modalHtml));
     app = root;
   } else {
     root.removeAttribute("data-ns-layout");
-    root.innerHTML = `
+    root.innerHTML = trustedHtml(`
       <div class="ns-app" data-dev="false">
         ${headerHtml}
         <main class="ns-main">${chatHtml}</main>
@@ -503,7 +505,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
         ${agentsHtml}
         ${modalHtml}
         ${devHtml}
-      </div>`;
+      </div>`);
     app = root.querySelector(".ns-app");
   }
 
@@ -697,7 +699,8 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
 
   sendBtn.addEventListener("click", send);
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") send();
+    // Not the Enter that confirms Japanese, Chinese or Korean input (enter-key.js).
+    if (EnterKey.sendsMessage(e)) send();
   });
   newChatBtn.addEventListener("click", () => {
     engine.resetHistory();
@@ -839,7 +842,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
   };
 
   function renderANodes() {
-    anodesEl.innerHTML = "";
+    anodesEl.replaceChildren();
     for (const [host, meta] of nodeMeta) {
       const st = nodeStatus.get(host) || "idle";
       const el = document.createElement("div");
@@ -848,9 +851,9 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
       const address = meta.address
         ? `<div class="ns-aaddr">${escapeHtml(meta.address).replace(/[/_]/g, "$&<wbr>")}</div>`
         : "";
-      el.innerHTML = `<span class="ns-aicon">${escapeHtml(meta.icon)}</span>` +
+      el.innerHTML = trustedHtml(`<span class="ns-aicon">${escapeHtml(meta.icon)}</span>` +
         `<div class="ns-ameta"><div class="ns-aname">${escapeHtml(meta.label)}</div><div class="ns-arole">${escapeHtml(meta.role)}</div>${address}</div>` +
-        `<span class="ns-adot" title="${st}"></span>`;
+        `<span class="ns-adot" title="${escapeHtml(st)}"></span>`);
       el.addEventListener("click", () => openInspector(host));
       anodesEl.appendChild(el);
     }
@@ -919,11 +922,11 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
     statusText.textContent = `Waiting for the ${info.reference} network URL…`;
     const el = document.createElement("div");
     el.className = "ns-msg bot ns-linker";
-    el.innerHTML =
+    el.innerHTML = trustedHtml(
       `<div class="ns-linker-title">Link ${escapeHtml(info.reference)}</div>` +
       `<div class="ns-linker-sub">Enter the root URL of the nsDeploy site that provides this network.</div>` +
       `<form class="ns-linker-form"><input type="url" required placeholder="https://airline.example.com" aria-label="Target nsDeploy site URL">` +
-      `<button type="submit">Link</button><button type="button" class="ghost">Cancel</button></form>`;
+      `<button type="submit">Link</button><button type="button" class="ghost">Cancel</button></form>`);
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
     const form = el.querySelector("form");
@@ -939,13 +942,13 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
         nodeMeta.set(host, { label: host, role: "linked partner network", icon: "🏢", kind: "remote", origin: new URL(target).origin });
         renderANodes();
       }
-      form.innerHTML = `<div class="ns-consent-done">Linked to ${escapeHtml(host)}. Validating…</div>`;
+      form.innerHTML = trustedHtml(`<div class="ns-consent-done">Linked to ${escapeHtml(host)}. Validating…</div>`);
       statusEl.classList.add("busy");
       statusText.textContent = `Validating ${host}…`;
       resolve(target);
     }, { once: true });
     el.querySelector("button.ghost").addEventListener("click", () => {
-      form.innerHTML = `<div class="ns-consent-done">Linking cancelled.</div>`;
+      form.innerHTML = trustedHtml(`<div class="ns-consent-done">Linking cancelled.</div>`);
       statusText.textContent = "Continuing without that network…";
       resolve(null);
     }, { once: true });
@@ -963,7 +966,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
     const cost = info.est?.costText ? ` (~${info.est.costText})` : "";
     const el = document.createElement("div");
     el.className = "ns-msg bot ns-consent";
-    el.innerHTML =
+    el.innerHTML = trustedHtml(
       `<div class="ns-consent-title">🔗 Contact <b>${escapeHtml(info.peerLabel)}</b> on your behalf?</div>` +
       `<div class="ns-consent-sub">${escapeHtml(info.peerOrigin)}${tokens ? " · est. " + escapeHtml(tokens) + escapeHtml(cost) : ""}</div>` +
       (info.requestText ? `<div class="ns-consent-req">“${escapeHtml(info.requestText.slice(0, 140))}”</div>` : "") +
@@ -971,14 +974,14 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
         `<button data-d="allow">Allow</button>` +
         `<button data-d="always">Always allow</button>` +
         `<button data-d="decline" class="ghost">Decline</button>` +
-      `</div>`;
+      `</div>`);
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
     el.querySelectorAll("button").forEach((b) =>
       b.addEventListener("click", () => {
         const d = b.dataset.d;
         el.querySelector(".ns-consent-actions").outerHTML =
-          `<div class="ns-consent-done">${d === "decline" ? "✕ Declined" : "✓ Allowed"}</div>`;
+          trustedHtml(`<div class="ns-consent-done">${d === "decline" ? "✕ Declined" : "✓ Allowed"}</div>`);
         statusEl.classList.add("busy");
         statusText.textContent = d === "decline" ? "Skipping that partner…" : `Contacting ${info.peerLabel}…`;
         resolve(d);
@@ -996,13 +999,13 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
     statusText.textContent = `Waiting for you to open ${label}…`;
     const el = document.createElement("div");
     el.className = "ns-msg bot ns-consent ns-action-window";
-    el.innerHTML =
+    el.innerHTML = trustedHtml(
       `<div class="ns-consent-title"><b>${escapeHtml(label)}</b> will open its own window, so you can check and finish this there.</div>` +
       `<div class="ns-consent-sub">Opens on ${escapeHtml(host)}</div>` +
       `<div class="ns-consent-actions">` +
         `<button data-d="open">Open ${escapeHtml(label)}</button>` +
         `<button data-d="cancel" class="ghost">Cancel</button>` +
-      `</div>`;
+      `</div>`);
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
     const finish = (text) => {
@@ -1066,14 +1069,14 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
       if (sess) instructions = sess.network.getAgentSpec(sess.network.findFrontMan())?.instructions?.trim() || "";
     }
     const acts = trace.events.filter((ev) => ev.phase !== "update" && (ev.origin === host || ev.peerOrigin === host)).map(friendlyActivity).filter(Boolean);
-    modalCard.innerHTML =
+    modalCard.innerHTML = trustedHtml(
       `<button class="ns-modal-close" title="Close">×</button>` +
       `<h4>${escapeHtml(meta.icon)} ${escapeHtml(meta.label)}</h4>` +
       `<div class="ns-mrole">${escapeHtml(meta.role)} · ${escapeHtml(meta.address || host)}</div>` +
       `<h5>Instructions</h5>` +
       (instructions ? `<pre>${escapeHtml(instructions)}</pre>` : `<div class="ns-mrole">Loaded when first contacted.</div>`) +
       `<h5>What it did this session</h5>` +
-      (acts.length ? acts.map((a) => `<div class="ns-mact">${escapeHtml(a)}</div>`).join("") : `<div class="ns-mrole">Nothing yet.</div>`);
+      (acts.length ? acts.map((a) => `<div class="ns-mact">${escapeHtml(a)}</div>`).join("") : `<div class="ns-mrole">Nothing yet.</div>`));
     modalCard.querySelector(".ns-modal-close").addEventListener("click", closeModal);
     modal.hidden = false;
   }
@@ -1139,7 +1142,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
   // The Model field is optional only when every agent already has a model. Otherwise it
   // is marked required, like the API key.
   if (!everyAgentHasModel) {
-    root.querySelector("#ns-model-label").innerHTML = 'Model <span aria-hidden="true">*</span>';
+    root.querySelector("#ns-model-label").innerHTML = trustedHtml('Model <span aria-hidden="true">*</span>');
     modelEl.placeholder = "Enter a model your provider supports";
     modelEl.required = true;
     modelEl.setAttribute("aria-required", "true");
@@ -1163,8 +1166,8 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
 
   const profileLabel = (p) => `${p.name || guessByokProfileName(p)}${p.model ? ` (${p.model})` : ""}`;
   const refreshProfileOptions = (selectedId = profileStore.selectedId) => {
-    profileEl.innerHTML = `<option value="">Custom / unsaved</option>` +
-      profileStore.profiles.map((p) => `<option value="${escapeHtml(p.id)}">${escapeHtml(profileLabel(p))}</option>`).join("");
+    profileEl.innerHTML = trustedHtml(`<option value="">Custom / unsaved</option>` +
+      profileStore.profiles.map((p) => `<option value="${escapeHtml(p.id)}">${escapeHtml(profileLabel(p))}</option>`).join(""));
     profileEl.value = profileStore.profiles.some((p) => p.id === selectedId) ? selectedId : "";
     deleteProfileBtn.disabled = !profileEl.value;
   };
@@ -1272,7 +1275,7 @@ export function mountApp(root, { engine, trace, manifest, connect = null }) {
       const models = (Array.isArray(body?.data) ? body.data : [])
         .map((item) => normalizeModelName(item?.id))
         .filter(Boolean);
-      modelOptionsEl.innerHTML = "";
+      modelOptionsEl.replaceChildren();
       for (const id of models) {
         const option = document.createElement("option");
         option.value = id;
@@ -1664,25 +1667,25 @@ function renderWidget(container, spec, onSubmit, turnId) {
   if (spec.description) html += `<div class="ns-w-desc">${escapeHtml(spec.description)}</div>`;
 
   if (kind === "action") {
-    card.innerHTML = html;
+    card.innerHTML = trustedHtml(html);
     const button = document.createElement("button");
     button.className = "ns-w-btn"; button.textContent = spec.label || "Review action";
     button.onclick = () => submit(button.textContent, {});
     card.append(button);
   } else if (["report", "table", "chart", "html"].includes(kind)) {
-    card.innerHTML = html;
+    card.innerHTML = trustedHtml(html);
     const body = document.createElement("div");
     renderRichComponent(body, spec);
     card.append(body);
   } else if (kind === "confirm") {
     html += `<div class="ns-w-actions"><button class="ns-w-btn" data-act="confirm">${escapeHtml(spec.confirmLabel || "Confirm")}</button><button class="ns-w-btn ghost" data-act="cancel">${escapeHtml(spec.cancelLabel || "Cancel")}</button></div>`;
-    card.innerHTML = html;
+    card.innerHTML = trustedHtml(html);
     card.querySelector('[data-act="confirm"]').addEventListener("click", () => submit(spec.confirmText || spec.confirmLabel || "Confirm", { action: "confirm" }));
     card.querySelector('[data-act="cancel"]').addEventListener("click", () => submit(spec.cancelText || "Not yet, hold off.", { action: "cancel" }));
   } else if (kind === "choice") {
     html += `<div class="ns-w-choices">` + (spec.options || []).map((o, idx) =>
       `<button class="ns-w-choice" data-idx="${idx}"><div class="ns-w-ctitle">${escapeHtml(o.title || o.value || "")}</div>${o.subtitle ? `<div class="ns-w-csub">${escapeHtml(o.subtitle)}</div>` : ""}${o.meta ? `<div class="ns-w-cmeta">${escapeHtml(o.meta)}</div>` : ""}</button>`).join("") + `</div>`;
-    card.innerHTML = html;
+    card.innerHTML = trustedHtml(html);
     card.querySelectorAll(".ns-w-choice").forEach((b) => b.addEventListener("click", () => {
       const o = (spec.options || [])[+b.dataset.idx];
       submit(`${spec.choosePrefix || "I'll go with"}: ${o.title || o.value}`, { value: o.value ?? o.title });
@@ -1690,14 +1693,14 @@ function renderWidget(container, spec, onSubmit, turnId) {
   } else if (kind === "info") {
     html += `<div class="ns-w-fields">` + Object.entries(spec.fields || {}).map(([k, v]) =>
       `<div class="ns-w-field"><span class="ns-w-fk">${escapeHtml(k)}</span><span class="ns-w-fv">${escapeHtml(String(v))}</span></div>`).join("") + `</div>`;
-    card.innerHTML = html;
+    card.innerHTML = trustedHtml(html);
   } else { // form
     const props = (spec.schema && spec.schema.properties) || {};
     const required = (spec.schema && spec.schema.required) || [];
     const entries = Object.entries(props);
     html += `<form class="ns-w-form">` + entries.map(([key, f], i) => renderField("f" + i, key, f, required.includes(key))).join("") +
       `<div class="ns-w-actions"><button type="submit" class="ns-w-btn">${escapeHtml(spec.submitLabel || "Submit")}</button></div></form>`;
-    card.innerHTML = html;
+    card.innerHTML = trustedHtml(html);
     entries.forEach(([key, field], i) => {
       const control = card.querySelector(`[data-field="f${i}"]`) || card.querySelector(`input[name="f${i}"]`);
       if (!control) return;
@@ -1749,7 +1752,7 @@ function renderNodes(el, net, activeAgents, activeOrigins = new Set()) {
 
   function box(cls, icon, label, { active = false, dot = false, title = "" } = {}) {
     return `<div class="ns-tbox ${cls}${active ? " active" : ""}"${title ? ` title="${escapeHtml(title)}"` : ""}>` +
-      `${icon ? `<span class="ns-ticon">${icon}</span>` : ""}<span>${escapeHtml(label)}</span>` +
+      `${icon ? `<span class="ns-ticon">${escapeHtml(icon)}</span>` : ""}<span>${escapeHtml(label)}</span>` +
       `${dot ? '<span class="ns-tdot"></span>' : ""}</div>`;
   }
 
@@ -1780,7 +1783,7 @@ function renderNodes(el, net, activeAgents, activeOrigins = new Set()) {
   const top = [];
   if (front) top.push(`<li>${node(front)}</li>`);
   for (const n of specByName.keys()) if (isAgent(n) && !rendered.has(n)) top.push(`<li>${node(n)}</li>`);  // orphans
-  el.innerHTML = `<ul class="ns-tree">${top.join("")}</ul>`;
+  el.innerHTML = trustedHtml(`<ul class="ns-tree">${top.join("")}</ul>`);
 }
 
 function rowLabel(ev) {
@@ -1801,10 +1804,10 @@ function rowLabel(ev) {
     case "remote_call": detail = `${escapeHtml(ev.brand || ev.network || ev.peerOrigin || "")} <span class="ns-meta">@ ${escapeHtml(ev.peerOrigin || "")} · via ${escapeHtml(ev.method || "")}</span>`; break;
     case "mcp_call": detail = `${escapeHtml(ev.method || "")} <span class="ns-meta">@ ${escapeHtml(ev.peerOrigin || "")}</span>`; break;
     case "tool_result": detail = `${escapeHtml(ev.tool || "")} <span class="ns-meta">${escapeHtml((ev.preview || "").slice(0, 80))}</span>`; break;
-    case "presentation_proposal": detail = `${escapeHtml(ev.agent || "")} <span class="ns-meta">${ev.presentation?.components?.length || 0} components</span>`; break;
+    case "presentation_proposal": detail = `${escapeHtml(ev.agent || "")} <span class="ns-meta">${Number(ev.presentation?.components?.length) || 0} components</span>`; break;
     default: detail = "";
   }
-  return `<span class="ns-tag">${tag}</span>${detail}`;
+  return `<span class="ns-tag">${escapeHtml(tag)}</span>${detail}`;
 }
 
 function detailJson(ev) {
@@ -1820,7 +1823,7 @@ function addRow(rows, ev, marker) {
   div.className = `ns-row k-${ev.kind}` + (ev.status === "error" ? " status-error" : "");
   if (ev.id) div.dataset.id = ev.id;
   const json = detailJson(ev);
-  div.innerHTML = `<div class="ns-line">${rowLabel(ev)}</div>` + (json ? `<pre style="display:none">${escapeHtml(json)}</pre>` : "");
+  div.innerHTML = trustedHtml(`<div class="ns-line">${rowLabel(ev)}</div>` + (json ? `<pre style="display:none">${escapeHtml(json)}</pre>` : ""));
   if (json) {
     div.addEventListener("click", () => {
       const pre = div.querySelector("pre");
@@ -1839,7 +1842,7 @@ function updateRow(rows, ev) {
   if (ev.status === "error") existing.classList.add("status-error");
   const ms = ev.durationMs != null ? ` <span class="ns-meta">· ${Math.round(ev.durationMs)}ms</span>` : "";
   const err = ev.error ? ` <span class="ns-meta" style="color:#dc2626">· ${escapeHtml(ev.error)}</span>` : "";
-  existing.querySelector(".ns-line").innerHTML = rowLabel(ev) + ms + err;
+  existing.querySelector(".ns-line").innerHTML = trustedHtml(rowLabel(ev) + ms + err);
   const json = detailJson(ev);
   if (json) {
     let pre = existing.querySelector("pre");
