@@ -1,0 +1,51 @@
+network-and-browser	﻿2026-11-27T15:23:24.8932253Z ##[group]Run node arbiter/scripts/worker-harness.mjs --port 8787 browser
+network-and-browser [36;1mnode arbiter/scripts/worker-harness.mjs --port 8787 browser[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser   AGENTIC_WEB: /home/runner/work/open-arbiter/open-arbiter/.agentic-web
+network-and-browser   BROWSER_OUT: /home/runner/work/_temp/oja-shots
+network-and-browser   CSP_DROP_STYLE_HASH: 1
+network-and-browser ##[endgroup]
+network-and-browser harness: worker at http://127.0.0.1:8787, state in /tmp/open-arbiter-harness-am5DTJ
+network-and-browser 
+network-and-browser === seed ===
+network-and-browser Iya Basira Foodstuff: ven_WaflIdKQXPj-uNzn (3 sealed listings)
+network-and-browser Chika Provisions: ven_DktraFmWET2ONajQ (2 sealed listings)
+network-and-browser Alhaji Musa Grains: ven_iUpzKCj5j2DQ8DAy (3 sealed listings)
+network-and-browser Vendor keys written to /tmp/open-arbiter-harness-am5DTJ/seed-keys.json
+network-and-browser 
+network-and-browser === browser ===
+network-and-browser fake LLM on http://127.0.0.1:8799
+network-and-browser Open http://127.0.0.1:8080/
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_get_market_state"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_negotiate"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"text"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_get_market_state"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_accept_offer"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"text"}
+network-and-browser Traceback (most recent call last):
+network-and-browser   File "/home/runner/work/open-arbiter/open-arbiter/sites/oja/tests/browser_check.py", line 174, in <module>
+network-and-browser page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://otari.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+network-and-browser console error: Applying inline style violates the following Content Security Policy directive 'style-src-elem 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+network-and-browser catalogue: 4 items; assistant: Assistant connected to this page.
+network-and-browser manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 3:38:43 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 3:38:43 PM Accept
+network-and-browser manual receipt: rct_e_ajw1evX97jDHDK | badge: Signature verified (dev key, not pinned)
+network-and-browser agent offers: SELLER
+network-and-browser agent: Done. Receipt rct_NzILgKWmj9T_ZTcp; the arbiter's signature was checked in your browser.
+network-and-browser <style> elements: 1; all allowed by hash: False
+network-and-browser     assert style_hashes_allowed(page), "a live <style> element is not allowed by the policy's hashes"
+network-and-browser            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+network-and-browser AssertionError: a live <style> element is not allowed by the policy's hashes
+network-and-browser browser: screenshots in /home/runner/work/_temp/oja-shots
+network-and-browser 
+network-and-browser harness results: {"seed":true,"browser":false}
+network-and-browser ##[error]Process completed with exit code 1.

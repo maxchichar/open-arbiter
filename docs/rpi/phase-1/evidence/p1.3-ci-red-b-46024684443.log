@@ -1,0 +1,11 @@
+unit	﻿2026-11-27T15:25:21.9080376Z ##[group]Run node scripts/secret-scan.mjs --history
+unit [36;1mnode scripts/secret-scan.mjs --history[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit secret scan (history): 1 finding(s) in 417 file version(s) across 36 commit(s):
+unit   docs/red-probe-fake-key.json (blob e46b4f3f857a, commit 445dab8): private JWK ("d")
+unit ##[error]Process completed with exit code 1.

@@ -1,0 +1,1670 @@
+network-and-browser	﻿2026-11-27T15:15:46.4435634Z Current runner version: '2.338.2'
+network-and-browser ##[group]Runner Image Provisioner
+network-and-browser Hosted Compute Agent
+network-and-browser Version: 20261111.635
+network-and-browser Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+network-and-browser Build Date: 2026-11-11T01:49:01Z
+network-and-browser Worker ID: {b4bf19f4-c383-4f15-ab13-fd5a284cf589}
+network-and-browser Region: us-west-2
+network-and-browser Cloud: AWS
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Operating System
+network-and-browser Ubuntu
+network-and-browser 24.04.5
+network-and-browser LTS
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Runner Image
+network-and-browser Image: ubuntu-24.04
+network-and-browser Version: 20261122.23.1
+network-and-browser Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261122.23/images/ubuntu/Ubuntu2404-Readme.md
+network-and-browser Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261122.23
+network-and-browser ##[endgroup]
+network-and-browser ##[group]GITHUB_TOKEN Permissions
+network-and-browser Contents: read
+network-and-browser Metadata: read
+network-and-browser ##[endgroup]
+network-and-browser Secret source: Actions
+network-and-browser Cache mode: write
+network-and-browser Prepare workflow directory
+network-and-browser Prepare all required actions
+network-and-browser Getting action download info
+network-and-browser Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+network-and-browser Download action repository 'actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+network-and-browser Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+network-and-browser Download action repository 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+network-and-browser Complete job name: network-and-browser
+network-and-browser	﻿2026-11-27T15:15:48.8452506Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+network-and-browser with:
+network-and-browser   persist-credentials: false
+network-and-browser   repository: maxchichar/open-arbiter
+network-and-browser   token: ***
+network-and-browser   ssh-strict: true
+network-and-browser   ssh-user: git
+network-and-browser   clean: true
+network-and-browser   sparse-checkout-cone-mode: true
+network-and-browser   fetch-depth: 1
+network-and-browser   fetch-tags: false
+network-and-browser   show-progress: true
+network-and-browser   lfs: false
+network-and-browser   submodules: false
+network-and-browser   set-safe-directory: true
+network-and-browser   allow-unsafe-pr-checkout: false
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[endgroup]
+network-and-browser Syncing repository: maxchichar/open-arbiter
+network-and-browser ##[group]Getting Git version info
+network-and-browser Working directory is '/home/runner/work/open-arbiter/open-arbiter'
+network-and-browser [command]/usr/bin/git version
+network-and-browser git version 2.56.1
+network-and-browser ##[endgroup]
+network-and-browser Temporarily overriding HOME='/home/runner/work/_temp/f3ca1885-e221-43bb-9e87-ef48e04969a8' before making global git config changes
+network-and-browser Adding repository directory to the temporary git global config as a safe directory
+network-and-browser [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter
+network-and-browser Deleting the contents of '/home/runner/work/open-arbiter/open-arbiter'
+network-and-browser ##[group]Determining repository object format
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Initializing the repository
+network-and-browser [command]/usr/bin/git init /home/runner/work/open-arbiter/open-arbiter
+network-and-browser hint: Using 'master' as the name for the initial branch. This default branch name
+network-and-browser hint: will change to "main" in Git 3.0. To configure the initial branch name
+network-and-browser hint: to use in all of your new repositories, which will suppress this warning,
+network-and-browser hint: call:
+network-and-browser hint:
+network-and-browser hint: 
+network-and-browser hint:
+network-and-browser hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+network-and-browser hint: 'development'. The just-created branch can be renamed via this command:
+network-and-browser hint:
+network-and-browser hint: 
+network-and-browser hint:
+network-and-browser hint: Disable this message with "git config set advice.defaultBranchName false"
+network-and-browser Initialized empty Git repository in /home/runner/work/open-arbiter/open-arbiter/.git/
+network-and-browser [command]/usr/bin/git remote add origin https://github.com/maxchichar/open-arbiter
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Disabling automatic garbage collection
+network-and-browser [command]/usr/bin/git config --local gc.auto 0
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Setting up auth
+network-and-browser Removing SSH command configuration
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+network-and-browser Removing HTTP extra header
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+network-and-browser Removing includeIf entries pointing to credentials config files
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+network-and-browser [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+network-and-browser [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path /home/runner/work/_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Fetching the repository
+network-and-browser [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +33c95036c9ef0bdda4818931e328fd9e72b1a12a:refs/remotes/origin/phase-1
+network-and-browser From https://github.com/maxchichar/open-arbiter
+network-and-browser  * [new ref]         33c95036c9ef0bdda4818931e328fd9e72b1a12a -> origin/phase-1
+network-and-browser [command]/usr/bin/git branch --list --remote origin/phase-1
+network-and-browser   origin/phase-1
+network-and-browser [command]/usr/bin/git rev-parse refs/remotes/origin/phase-1
+network-and-browser 33c95036c9ef0bdda4818931e328fd9e72b1a12a
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Determining the checkout info
+network-and-browser ##[endgroup]
+network-and-browser [command]/usr/bin/git sparse-checkout disable
+network-and-browser [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+network-and-browser ##[group]Checking out the ref
+network-and-browser [command]/usr/bin/git checkout --progress --force -B phase-1 refs/remotes/origin/phase-1
+network-and-browser Switched to a new branch 'phase-1'
+network-and-browser branch 'phase-1' set up to track 'origin/phase-1'.
+network-and-browser ##[endgroup]
+network-and-browser [command]/usr/bin/git log -1 --format=%H
+network-and-browser 33c95036c9ef0bdda4818931e328fd9e72b1a12a
+network-and-browser ##[group]Removing auth
+network-and-browser Removing SSH command configuration
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+network-and-browser Removing HTTP extra header
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+network-and-browser Removing includeIf entries pointing to credentials config files
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+network-and-browser includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path
+network-and-browser includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path
+network-and-browser includeif.gitdir:/github/workspace/.git.path
+network-and-browser includeif.gitdir:/github/workspace/.git/worktrees/*.path
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path
+network-and-browser /home/runner/work/_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-141d3d56\-cf41\-48da\-a3cd\-6aa9147efe97\.config
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path
+network-and-browser /home/runner/work/_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-141d3d56\-cf41\-48da\-a3cd\-6aa9147efe97\.config
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+network-and-browser /github/runner_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-141d3d56\-cf41\-48da\-a3cd\-6aa9147efe97\.config
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+network-and-browser /github/runner_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-141d3d56\-cf41\-48da\-a3cd\-6aa9147efe97\.config
+network-and-browser [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+network-and-browser Removing credentials config '/home/runner/work/_temp/git-credentials-141d3d56-cf41-48da-a3cd-6aa9147efe97.config'
+network-and-browser ##[endgroup]
+network-and-browser	﻿2026-11-27T15:15:54.0433230Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+network-and-browser with:
+network-and-browser   repository: cognizant-ai-labs/agentic-web
+network-and-browser   ref: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   path: .agentic-web
+network-and-browser   persist-credentials: false
+network-and-browser   token: ***
+network-and-browser   ssh-strict: true
+network-and-browser   ssh-user: git
+network-and-browser   clean: true
+network-and-browser   sparse-checkout-cone-mode: true
+network-and-browser   fetch-depth: 1
+network-and-browser   fetch-tags: false
+network-and-browser   show-progress: true
+network-and-browser   lfs: false
+network-and-browser   submodules: false
+network-and-browser   set-safe-directory: true
+network-and-browser   allow-unsafe-pr-checkout: false
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[endgroup]
+network-and-browser Syncing repository: cognizant-ai-labs/agentic-web
+network-and-browser ##[group]Getting Git version info
+network-and-browser Working directory is '/home/runner/work/open-arbiter/open-arbiter/.agentic-web'
+network-and-browser [command]/usr/bin/git version
+network-and-browser git version 2.56.1
+network-and-browser ##[endgroup]
+network-and-browser Temporarily overriding HOME='/home/runner/work/_temp/afe13620-7d19-4450-8410-01c42407f87a' before making global git config changes
+network-and-browser Adding repository directory to the temporary git global config as a safe directory
+network-and-browser [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter/.agentic-web
+network-and-browser ##[group]Determining repository object format
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Initializing the repository
+network-and-browser [command]/usr/bin/git init /home/runner/work/open-arbiter/open-arbiter/.agentic-web
+network-and-browser hint: Using 'master' as the name for the initial branch. This default branch name
+network-and-browser hint: will change to "main" in Git 3.0. To configure the initial branch name
+network-and-browser hint: to use in all of your new repositories, which will suppress this warning,
+network-and-browser hint: call:
+network-and-browser hint:
+network-and-browser hint: 
+network-and-browser hint:
+network-and-browser hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+network-and-browser hint: 'development'. The just-created branch can be renamed via this command:
+network-and-browser hint:
+network-and-browser hint: 
+network-and-browser hint:
+network-and-browser hint: Disable this message with "git config set advice.defaultBranchName false"
+network-and-browser Initialized empty Git repository in /home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git/
+network-and-browser [command]/usr/bin/git remote add origin https://github.com/cognizant-ai-labs/agentic-web
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Disabling automatic garbage collection
+network-and-browser [command]/usr/bin/git config --local gc.auto 0
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Setting up auth
+network-and-browser Removing SSH command configuration
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+network-and-browser Removing HTTP extra header
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+network-and-browser Removing includeIf entries pointing to credentials config files
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+network-and-browser [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+network-and-browser [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git.path /home/runner/work/_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.agentic-web/.git.path /github/runner_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.agentic-web/.git/worktrees/*.path /github/runner_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Fetching the repository
+network-and-browser [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser From https://github.com/cognizant-ai-labs/agentic-web
+network-and-browser  * branch            d67755e762545de983e38a395ec45d89b77c9311 -> FETCH_HEAD
+network-and-browser [command]/usr/bin/git rev-parse --verify --quiet d67755e762545de983e38a395ec45d89b77c9311^{object}
+network-and-browser d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Determining the checkout info
+network-and-browser ##[endgroup]
+network-and-browser [command]/usr/bin/git sparse-checkout disable
+network-and-browser [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+network-and-browser ##[group]Checking out the ref
+network-and-browser [command]/usr/bin/git checkout --progress --force d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser Note: switching to 'd67755e762545de983e38a395ec45d89b77c9311'.
+network-and-browser 
+network-and-browser You are in 'detached HEAD' state. You can look around, make experimental
+network-and-browser changes and commit them, and you can discard any commits you make in this
+network-and-browser state without impacting any branches by switching back to a branch.
+network-and-browser 
+network-and-browser If you want to create a new branch to retain commits you create, you may
+network-and-browser do so (now or later) by using -c with the switch command. Example:
+network-and-browser 
+network-and-browser   git switch -c <new-branch-name>
+network-and-browser 
+network-and-browser Or undo this operation with:
+network-and-browser 
+network-and-browser   git switch -
+network-and-browser 
+network-and-browser Turn off this advice by setting config variable advice.detachedHead to false
+network-and-browser 
+network-and-browser HEAD is now at d67755e Merge pull request #75 from cognizant-ai-labs/worktree-publisher-funded-docs
+network-and-browser ##[endgroup]
+network-and-browser [command]/usr/bin/git log -1 --format=%H
+network-and-browser d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[group]Removing auth
+network-and-browser Removing SSH command configuration
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+network-and-browser Removing HTTP extra header
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+network-and-browser Removing includeIf entries pointing to credentials config files
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+network-and-browser includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git.path
+network-and-browser includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git/worktrees/*.path
+network-and-browser includeif.gitdir:/github/workspace/.agentic-web/.git.path
+network-and-browser includeif.gitdir:/github/workspace/.agentic-web/.git/worktrees/*.path
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git.path
+network-and-browser /home/runner/work/_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d2d17a0e\-2624\-4fc1\-be32\-5517f41c5ed2\.config
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git/worktrees/*.path
+network-and-browser /home/runner/work/_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.agentic-web/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d2d17a0e\-2624\-4fc1\-be32\-5517f41c5ed2\.config
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.agentic-web/.git.path
+network-and-browser /github/runner_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.agentic-web/.git.path \/github\/runner_temp\/git\-credentials\-d2d17a0e\-2624\-4fc1\-be32\-5517f41c5ed2\.config
+network-and-browser [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.agentic-web/.git/worktrees/*.path
+network-and-browser /github/runner_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config
+network-and-browser [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.agentic-web/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d2d17a0e\-2624\-4fc1\-be32\-5517f41c5ed2\.config
+network-and-browser [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+network-and-browser Removing credentials config '/home/runner/work/_temp/git-credentials-d2d17a0e-2624-4fc1-be32-5517f41c5ed2.config'
+network-and-browser ##[endgroup]
+network-and-browser	﻿2026-11-27T15:15:54.8295289Z ##[group]Run test "$(git -C .agentic-web rev-parse HEAD)" = "$AGENTIC_WEB_PIN"
+network-and-browser [36;1mtest "$(git -C .agentic-web rev-parse HEAD)" = "$AGENTIC_WEB_PIN"[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[endgroup]
+network-and-browser	﻿2026-11-27T15:15:55.2415056Z ##[group]Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+network-and-browser with:
+network-and-browser   node-version: 24
+network-and-browser   cache: npm
+network-and-browser   check-latest: false
+network-and-browser   token: ***
+network-and-browser   package-manager-cache: true
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[endgroup]
+network-and-browser Found in cache @ /opt/hostedtoolcache/node/24.22.3/x64
+network-and-browser ##[group]Environment details
+network-and-browser node: v24.22.3
+network-and-browser npm: 11.19.1
+network-and-browser yarn: 1.22.22
+network-and-browser ##[endgroup]
+network-and-browser [command]/opt/hostedtoolcache/node/24.22.3/x64/bin/npm config get cache
+network-and-browser /home/runner/.npm
+network-and-browser npm cache is not found
+network-and-browser	﻿2026-11-27T15:16:00.4171713Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+network-and-browser with:
+network-and-browser   python-version: 3.12
+network-and-browser   check-latest: false
+network-and-browser   token: ***
+network-and-browser   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+network-and-browser   update-environment: true
+network-and-browser   allow-prereleases: false
+network-and-browser   freethreaded: false
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser ##[endgroup]
+network-and-browser ##[group]Installed versions
+network-and-browser Successfully set up CPython (3.12.16)
+network-and-browser ##[endgroup]
+network-and-browser	﻿2026-11-27T15:16:00.7056683Z ##[group]Run npm ci
+network-and-browser [36;1mnpm ci[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser ##[endgroup]
+network-and-browser npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+network-and-browser 
+network-and-browser > open-arbiter@1.0.0 prepare
+network-and-browser > git config core.hooksPath .githooks || true
+network-and-browser 
+network-and-browser 
+network-and-browser added 79 packages, and audited 80 packages in 4s
+network-and-browser 
+network-and-browser 17 packages are looking for funding
+network-and-browser   run `npm fund` for details
+network-and-browser 
+network-and-browser found 0 vulnerabilities
+network-and-browser npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+network-and-browser npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+network-and-browser npm warn install-scripts   workerd@1.20261119.1 (postinstall: node install.js)
+network-and-browser npm warn install-scripts
+network-and-browser npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+network-and-browser	﻿2026-11-27T15:16:04.9702999Z ##[group]Run node ../../.agentic-web/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json --check
+network-and-browser [36;1mnode ../../.agentic-web/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json --check[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser ##[endgroup]
+network-and-browser Network: oja_market
+network-and-browser Front agent: oja_steward
+network-and-browser Agents: 1
+network-and-browser   - oja_steward: 4601 instruction chars (+1612 CRUSE context added by the runtime); tools: []
+network-and-browser Website tools from actions.agentTools: website_get_market_state, website_negotiate, website_accept_offer, website_verify_receipt
+network-and-browser   On this site's page, an agent gets the ones the page registers as local-only. Called from another site, it gets the ones bridge/bridge-actions.js shares with that site.
+network-and-browser Added to every agent by the runtime: render_cruse
+network-and-browser Bridge: bridge/action-bridge.html (shares the actions in bridge/bridge-actions.js with the callers they list)
+network-and-browser OK: these files are up to date:
+network-and-browser   - oja_market.network.json
+network-and-browser   - agent-mcp.json
+network-and-browser   - .well-known/nsdeploy.json
+network-and-browser   - .well-known/nsdeploy-agent.json
+network-and-browser   - bridge/action-bridge.html
+network-and-browser   - bridge/agent-manifest.json
+network-and-browser	﻿2026-11-27T15:16:05.0206075Z ##[group]Run node --test tests/linking/linking.test.mjs
+network-and-browser [36;1mnode --test tests/linking/linking.test.mjs[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser ##[endgroup]
+network-and-browser ✔ L1 fixture caller -> guesthouse: one card, then the partner's files and bridge, on the caller's model (513.658268ms)
+network-and-browser ✔ L2 fixture caller -> guesthouse: the visitor's model is used by both sites (7.427471ms)
+network-and-browser ✔ L3 fixture caller -> guesthouse: a decline contacts no one (8.2021ms)
+network-and-browser ✔ L5 fixture caller -> guesthouse: the partner is not offered a call back (7.032493ms)
+network-and-browser ℹ The partner's network does not call http://localhost:8082/marrow_point_visitor_desk, so the test adds that call.
+network-and-browser ✔ L6 fixture caller -> guesthouse: a second call is skipped and the partner runs once (6.178712ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 fixture caller -> guesthouse: a partner missing from allowed_peers is refused (5.273844ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 fixture caller -> guesthouse: a partner that fails validation never runs (4.66341ms)
+network-and-browser ﹣ L11 fixture caller -> guesthouse: the partner reads what its site shares, in a frame on its own origin (3.118824ms) # The partner's site does not share website_search_rooms with http://localhost:8082, so its agents never get it (L1 and L4 check that).
+network-and-browser ✔ L4 guesthouse -> tour site: one card, then the partner's files and bridge, on the caller's model (10.260122ms)
+network-and-browser ℹ Both sites name alibaba/qwen3.8-flash, so the partner's network is served naming gpt-4o-mini, to show which site chose the partner's model.
+network-and-browser ✔ L2 guesthouse -> tour site: the visitor's model is used by both sites (5.221752ms)
+network-and-browser ✔ L3 guesthouse -> tour site: a decline contacts no one (4.841522ms)
+network-and-browser ✔ L5 guesthouse -> tour site: the partner is not offered a call back (12.55712ms)
+network-and-browser ✔ L6 guesthouse -> tour site: a second call is skipped and the partner runs once (5.873795ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 guesthouse -> tour site: a partner missing from allowed_peers is refused (5.192181ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 guesthouse -> tour site: a partner that fails validation never runs (7.740958ms)
+network-and-browser ✔ L11 guesthouse -> tour site: the partner reads what its site shares, in a frame on its own origin (65.857079ms)
+network-and-browser ✔ L4 tour site -> guesthouse: one card, then the partner's files and bridge, on the caller's model (5.88566ms)
+network-and-browser ℹ Both sites name alibaba/qwen3.8-flash, so the partner's network is served naming gpt-4o-mini, to show which site chose the partner's model.
+network-and-browser ✔ L2 tour site -> guesthouse: the visitor's model is used by both sites (6.557372ms)
+network-and-browser ✔ L3 tour site -> guesthouse: a decline contacts no one (3.23304ms)
+network-and-browser ✔ L5 tour site -> guesthouse: the partner is not offered a call back (5.167792ms)
+network-and-browser ✔ L6 tour site -> guesthouse: a second call is skipped and the partner runs once (6.220944ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 tour site -> guesthouse: a partner missing from allowed_peers is refused (3.45063ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 tour site -> guesthouse: a partner that fails validation never runs (4.273413ms)
+network-and-browser ✔ L11 tour site -> guesthouse: the partner reads what its site shares, in a frame on its own origin (10.913717ms)
+network-and-browser ✔ L4 guesthouse -> pizza site: one card, then the partner's files and bridge, on the caller's model (7.075746ms)
+network-and-browser ℹ Both sites name alibaba/qwen3.8-flash, so the partner's network is served naming gpt-4o-mini, to show which site chose the partner's model.
+network-and-browser ✔ L2 guesthouse -> pizza site: the visitor's model is used by both sites (5.697623ms)
+network-and-browser ✔ L3 guesthouse -> pizza site: a decline contacts no one (3.991894ms)
+network-and-browser ✔ L5 guesthouse -> pizza site: the partner is not offered a call back (5.177071ms)
+network-and-browser ✔ L6 guesthouse -> pizza site: a second call is skipped and the partner runs once (5.728866ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 guesthouse -> pizza site: a partner missing from allowed_peers is refused (4.152262ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 guesthouse -> pizza site: a partner that fails validation never runs (4.021993ms)
+network-and-browser ﹣ L11 guesthouse -> pizza site: the partner reads what its site shares, in a frame on its own origin (1.852767ms) # The partner's only read also reads its page's HTML, which needs a browser. The Chrome check runs it.
+network-and-browser ✔ L4 pizza site -> guesthouse: one card, then the partner's files and bridge, on the caller's model (6.355977ms)
+network-and-browser ℹ Both sites name alibaba/qwen3.8-flash, so the partner's network is served naming gpt-4o-mini, to show which site chose the partner's model.
+network-and-browser ✔ L2 pizza site -> guesthouse: the visitor's model is used by both sites (5.847161ms)
+network-and-browser ✔ L3 pizza site -> guesthouse: a decline contacts no one (3.447267ms)
+network-and-browser ✔ L5 pizza site -> guesthouse: the partner is not offered a call back (6.523309ms)
+network-and-browser ✔ L6 pizza site -> guesthouse: a second call is skipped and the partner runs once (4.701723ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 pizza site -> guesthouse: a partner missing from allowed_peers is refused (3.685888ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 pizza site -> guesthouse: a partner that fails validation never runs (5.126848ms)
+network-and-browser ✔ L11 pizza site -> guesthouse: the partner reads what its site shares, in a frame on its own origin (7.349917ms)
+network-and-browser ✔ L4 tour site -> pizza site: one card, then the partner's files and bridge, on the caller's model (3.653433ms)
+network-and-browser ℹ Both sites name alibaba/qwen3.8-flash, so the partner's network is served naming gpt-4o-mini, to show which site chose the partner's model.
+network-and-browser ✔ L2 tour site -> pizza site: the visitor's model is used by both sites (6.692055ms)
+network-and-browser ✔ L3 tour site -> pizza site: a decline contacts no one (3.25666ms)
+network-and-browser ✔ L5 tour site -> pizza site: the partner is not offered a call back (4.512472ms)
+network-and-browser ✔ L6 tour site -> pizza site: a second call is skipped and the partner runs once (4.872736ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 tour site -> pizza site: a partner missing from allowed_peers is refused (3.638491ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 tour site -> pizza site: a partner that fails validation never runs (4.454754ms)
+network-and-browser ﹣ L11 tour site -> pizza site: the partner reads what its site shares, in a frame on its own origin (2.116841ms) # The partner's only read also reads its page's HTML, which needs a browser. The Chrome check runs it.
+network-and-browser ✔ L4 pizza site -> tour site: one card, then the partner's files and bridge, on the caller's model (6.721585ms)
+network-and-browser ℹ Both sites name alibaba/qwen3.8-flash, so the partner's network is served naming gpt-4o-mini, to show which site chose the partner's model.
+network-and-browser ✔ L2 pizza site -> tour site: the visitor's model is used by both sites (4.6076ms)
+network-and-browser ✔ L3 pizza site -> tour site: a decline contacts no one (2.775149ms)
+network-and-browser ✔ L5 pizza site -> tour site: the partner is not offered a call back (4.820101ms)
+network-and-browser ✔ L6 pizza site -> tour site: a second call is skipped and the partner runs once (7.528507ms)
+network-and-browser ℹ Consent cards shown: 2
+network-and-browser ✔ L7 pizza site -> tour site: a partner missing from allowed_peers is refused (3.96828ms)
+network-and-browser ℹ Consent cards shown: 1
+network-and-browser ✔ L9 pizza site -> tour site: a partner that fails validation never runs (5.99282ms)
+network-and-browser ✔ L11 pizza site -> tour site: the partner reads what its site shares, in a frame on its own origin (9.175401ms)
+network-and-browser ✔ L10 fixture caller -> tour site -> guesthouse: each hop asks first, all on the caller's model (5.421637ms)
+network-and-browser ✔ L10 fixture caller -> tour site -> guesthouse: the tour site's own allowed_peers refuses the second hop (3.613622ms)
+network-and-browser ✔ L8 the guesthouse keeps the skill's runtime and rules, and builds clean (56.340838ms)
+network-and-browser ✔ L8 the tour site keeps the skill's runtime and rules, and builds clean (50.773841ms)
+network-and-browser ✔ L8 the pizza site keeps the skill's runtime and rules, and builds clean (46.981197ms)
+network-and-browser ✔ L8 the caller test site keeps the template's rules and builds clean (41.440199ms)
+network-and-browser ✔ L8 the partner test site keeps the template's rules and builds clean (40.500861ms)
+network-and-browser ℹ tests 63
+network-and-browser ℹ suites 0
+network-and-browser ℹ pass 60
+network-and-browser ℹ fail 0
+network-and-browser ℹ cancelled 0
+network-and-browser ℹ skipped 3
+network-and-browser ℹ todo 0
+network-and-browser ℹ duration_ms 1238.420011
+network-and-browser	﻿2026-11-27T15:16:06.2966197Z ##[group]Run python -m pip install --require-hashes -r sites/oja/tests/requirements.txt
+network-and-browser [36;1mpython -m pip install --require-hashes -r sites/oja/tests/requirements.txt[0m
+network-and-browser [36;1mpython -m playwright install --with-deps chromium[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser ##[endgroup]
+network-and-browser Collecting playwright==1.65.2 (from -r sites/oja/tests/requirements.txt (line 3))
+network-and-browser   Downloading playwright-1.65.2-py3-none-manylinux1_x86_64.whl (53.5 MB)
+network-and-browser      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.5/53.5 MB 137.0 MB/s  0:00:00
+network-and-browser Collecting greenlet==3.5.6 (from -r sites/oja/tests/requirements.txt (line 5))
+network-and-browser   Downloading greenlet-3.5.6-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (621 kB)
+network-and-browser      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 621.4/621.4 kB 136.1 MB/s  0:00:00
+network-and-browser Installing collected packages: greenlet, playwright
+network-and-browser 
+network-and-browser Successfully installed greenlet-3.5.6 playwright-1.65.2
+network-and-browser Installing dependencies...
+network-and-browser Switching to root user to install dependencies...
+network-and-browser Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [152 B]
+network-and-browser Hit:2 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble InRelease
+network-and-browser Get:3 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+network-and-browser Get:4 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+network-and-browser Get:5 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+network-and-browser Get:6 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1492 kB]
+network-and-browser Get:11 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+network-and-browser Get:7 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [321 kB]
+network-and-browser Get:8 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1716 kB]
+network-and-browser Get:9 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1949 kB]
+network-and-browser Get:10 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [448 kB]
+network-and-browser Get:12 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1231 kB]
+network-and-browser Get:13 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security/main Translation-en [243 kB]
+network-and-browser Get:14 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1233 kB]
+network-and-browser Get:15 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [249 kB]
+network-and-browser Get:16 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1842 kB]
+network-and-browser Get:17 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [429 kB]
+network-and-browser Get:18 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [880 kB]
+network-and-browser Get:19 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [804 kB]
+network-and-browser Fetched 13.2 MB in 1s (12.2 MB/s)
+network-and-browser Reading package lists...
+network-and-browser Reading package lists...
+network-and-browser Building dependency tree...
+network-and-browser Reading state information...
+network-and-browser libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+network-and-browser libatk-bridge2.0-0t64 set to manually installed.
+network-and-browser libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+network-and-browser libatk1.0-0t64 set to manually installed.
+network-and-browser libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+network-and-browser libatspi2.0-0t64 set to manually installed.
+network-and-browser libcairo2 is already the newest version (1.18.0-3build1).
+network-and-browser libcairo2 set to manually installed.
+network-and-browser libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+network-and-browser libcups2t64 set to manually installed.
+network-and-browser libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+network-and-browser libdbus-1-3 set to manually installed.
+network-and-browser libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+network-and-browser libdrm2 set to manually installed.
+network-and-browser libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.5).
+network-and-browser libgbm1 set to manually installed.
+network-and-browser libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.10).
+network-and-browser libglib2.0-0t64 set to manually installed.
+network-and-browser libnspr4 is already the newest version (2:4.35-1.1build1).
+network-and-browser libnspr4 set to manually installed.
+network-and-browser libnss3 is already the newest version (2:3.98-1ubuntu0.3).
+network-and-browser libnss3 set to manually installed.
+network-and-browser libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+network-and-browser libpango-1.0-0 set to manually installed.
+network-and-browser libx11-6 is already the newest version (2:1.8.7-1ubuntu0.1).
+network-and-browser libx11-6 set to manually installed.
+network-and-browser libxcb1 is already the newest version (1.15-1ubuntu2).
+network-and-browser libxcb1 set to manually installed.
+network-and-browser libxcomposite1 is already the newest version (1:0.4.5-1build3).
+network-and-browser libxcomposite1 set to manually installed.
+network-and-browser libxdamage1 is already the newest version (1:1.1.6-1build1).
+network-and-browser libxdamage1 set to manually installed.
+network-and-browser libxext6 is already the newest version (2:1.3.4-1build2).
+network-and-browser libxext6 set to manually installed.
+network-and-browser libxfixes3 is already the newest version (1:6.0.0-2build1).
+network-and-browser libxfixes3 set to manually installed.
+network-and-browser libxkbcommon0 is already the newest version (1.6.0-1build1).
+network-and-browser libxkbcommon0 set to manually installed.
+network-and-browser libxrandr2 is already the newest version (2:1.5.2-2build1).
+network-and-browser libxrandr2 set to manually installed.
+network-and-browser xvfb is already the newest version (2:21.1.12-1ubuntu1.9).
+network-and-browser fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+network-and-browser libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+network-and-browser libfontconfig1 set to manually installed.
+network-and-browser libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.2).
+network-and-browser libfreetype6 set to manually installed.
+network-and-browser fonts-liberation is already the newest version (1:2.1.5-3).
+network-and-browser fonts-liberation set to manually installed.
+network-and-browser The following additional packages will be installed:
+network-and-browser   libasound2-data xfonts-encodings xfonts-utils
+network-and-browser Suggested packages:
+network-and-browser   alsa-utils libasound2-plugins
+network-and-browser Recommended packages:
+network-and-browser   fonts-ipafont-mincho fonts-tlwg-loma alsa-ucm-conf alsa-topology-conf
+network-and-browser The following NEW packages will be installed:
+network-and-browser   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+network-and-browser   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+network-and-browser   xfonts-utils
+network-and-browser The following packages will be upgraded:
+network-and-browser   libasound2-data libasound2t64
+network-and-browser 2 upgraded, 9 newly installed, 0 to remove and 40 not upgraded.
+network-and-browser Need to get 21.5 MB of archives.
+network-and-browser After this operation, 79.6 MB of additional disk space will be used.
+network-and-browser Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [152 B]
+network-and-browser Get:2 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+network-and-browser Get:3 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+network-and-browser Get:4 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+network-and-browser Get:5 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+network-and-browser Get:6 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+network-and-browser Get:7 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libasound2t64 amd64 1.2.11-1ubuntu0.5 [400 kB]
+network-and-browser Get:8 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 libasound2-data all 1.2.11-1ubuntu0.5 [21.6 kB]
+network-and-browser Get:9 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+network-and-browser Get:10 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+network-and-browser Get:11 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+network-and-browser Get:12 http://us-west-2.ec2.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+network-and-browser Fetched 21.5 MB in 3s (7252 kB/s)
+network-and-browser Selecting previously unselected package fonts-ipafont-gothic.
+network-and-browser (Reading database ... 
+network-and-browser (Reading database ... 5%
+network-and-browser (Reading database ... 10%
+network-and-browser (Reading database ... 15%
+network-and-browser (Reading database ... 20%
+network-and-browser (Reading database ... 25%
+network-and-browser (Reading database ... 30%
+network-and-browser (Reading database ... 35%
+network-and-browser (Reading database ... 40%
+network-and-browser (Reading database ... 45%
+network-and-browser (Reading database ... 50%
+network-and-browser (Reading database ... 55%
+network-and-browser (Reading database ... 60%
+network-and-browser (Reading database ... 65%
+network-and-browser (Reading database ... 70%
+network-and-browser (Reading database ... 75%
+network-and-browser (Reading database ... 80%
+network-and-browser (Reading database ... 85%
+network-and-browser (Reading database ... 90%
+network-and-browser (Reading database ... 95%
+network-and-browser (Reading database ... 100%
+network-and-browser (Reading database ... 216824 files and directories currently installed.)
+network-and-browser Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+network-and-browser Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+network-and-browser Selecting previously unselected package fonts-freefont-ttf.
+network-and-browser Preparing to unpack .../01-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+network-and-browser Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+network-and-browser Selecting previously unselected package fonts-tlwg-loma-otf.
+network-and-browser Preparing to unpack .../02-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+network-and-browser Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+network-and-browser Selecting previously unselected package fonts-unifont.
+network-and-browser Preparing to unpack .../03-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+network-and-browser Unpacking fonts-unifont (1:15.1.01-1build1) ...
+network-and-browser Selecting previously unselected package fonts-wqy-zenhei.
+network-and-browser Preparing to unpack .../04-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+network-and-browser Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+network-and-browser Preparing to unpack .../05-libasound2t64_1.2.11-1ubuntu0.5_amd64.deb ...
+network-and-browser Unpacking libasound2t64:amd64 (1.2.11-1ubuntu0.5) over (1.2.11-1ubuntu0.3) ...
+network-and-browser Preparing to unpack .../06-libasound2-data_1.2.11-1ubuntu0.5_all.deb ...
+network-and-browser Unpacking libasound2-data (1.2.11-1ubuntu0.5) over (1.2.11-1ubuntu0.3) ...
+network-and-browser Selecting previously unselected package xfonts-encodings.
+network-and-browser Preparing to unpack .../07-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+network-and-browser Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+network-and-browser Selecting previously unselected package xfonts-utils.
+network-and-browser Preparing to unpack .../08-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+network-and-browser Unpacking xfonts-utils (1:7.7+6build3) ...
+network-and-browser Selecting previously unselected package xfonts-cyrillic.
+network-and-browser Preparing to unpack .../09-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+network-and-browser Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+network-and-browser Selecting previously unselected package xfonts-scalable.
+network-and-browser Preparing to unpack .../10-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+network-and-browser Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+network-and-browser Setting up fonts-wqy-zenhei (0.9.45-8) ...
+network-and-browser Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+network-and-browser Setting up libasound2-data (1.2.11-1ubuntu0.5) ...
+network-and-browser Setting up libasound2t64:amd64 (1.2.11-1ubuntu0.5) ...
+network-and-browser Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+network-and-browser Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+network-and-browser Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+network-and-browser update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+network-and-browser Setting up fonts-unifont (1:15.1.01-1build1) ...
+network-and-browser Setting up xfonts-utils (1:7.7+6build3) ...
+network-and-browser Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+network-and-browser Setting up xfonts-scalable (1:1.0.3-1.3) ...
+network-and-browser Processing triggers for libc-bin (2.39-0ubuntu8.12) ...
+network-and-browser Processing triggers for man-db (2.12.0-4build2) ...
+network-and-browser Not building database; man-db/auto-update is not 'true'.
+network-and-browser Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+network-and-browser 
+network-and-browser Running kernel seems to be up-to-date.
+network-and-browser 
+network-and-browser No services need to be restarted.
+network-and-browser 
+network-and-browser No containers need to be restarted.
+network-and-browser 
+network-and-browser No user sessions are running outdated binaries.
+network-and-browser 
+network-and-browser No VM guests are running outdated hypervisor (qemu) binaries on this host.
+network-and-browser Downloading Chrome for Testing 159.0.8154.6 (playwright chromium v1255) from https://cdn.playwright.dev/builds/cft/159.0.8154.6/linux64/chrome-linux64.zip
+network-and-browser |                                                                                |   0% of 199.3 MiB
+network-and-browser |■■■■■■■■                                                                        |  10% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■                                                                |  20% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 199.3 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 199.3 MiB
+network-and-browser Chrome for Testing 159.0.8154.6 (playwright chromium v1255) downloaded to /home/runner/.cache/ms-playwright/chromium-1255
+network-and-browser Downloading FFmpeg (playwright ffmpeg v1013) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1013/ffmpeg-linux.zip
+network-and-browser |                                                                                |   0% of 2.2 MiB
+network-and-browser |■■■■■■■■                                                                        |  10% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■                                                                |  20% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.2 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.2 MiB
+network-and-browser FFmpeg (playwright ffmpeg v1013) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1013
+network-and-browser Downloading Chrome Headless Shell 159.0.8154.6 (playwright chromium-headless-shell v1255) from https://cdn.playwright.dev/builds/cft/159.0.8154.6/linux64/chrome-headless-shell-linux64.zip
+network-and-browser |                                                                                |   0% of 125.7 MiB
+network-and-browser |■■■■■■■■                                                                        |  10% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■                                                                |  20% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 125.7 MiB
+network-and-browser |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 125.7 MiB
+network-and-browser Chrome Headless Shell 159.0.8154.6 (playwright chromium-headless-shell v1255) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1255
+network-and-browser	﻿2026-11-27T15:16:47.7126640Z ##[group]Run node arbiter/scripts/worker-harness.mjs --port 8787 browser
+network-and-browser [36;1mnode arbiter/scripts/worker-harness.mjs --port 8787 browser[0m
+network-and-browser shell: /usr/bin/bash -e {0}
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser   AGENTIC_WEB: /home/runner/work/open-arbiter/open-arbiter/.agentic-web
+network-and-browser   BROWSER_OUT: /home/runner/work/_temp/oja-shots
+network-and-browser ##[endgroup]
+network-and-browser harness: worker at http://127.0.0.1:8787, state in /tmp/open-arbiter-harness-hKS75s
+network-and-browser 
+network-and-browser === seed ===
+network-and-browser Iya Basira Foodstuff: ven_KhZpIirTwEubs8Yh (3 sealed listings)
+network-and-browser Chika Provisions: ven_XyCns9aFBPpA0Kdy (2 sealed listings)
+network-and-browser Alhaji Musa Grains: ven_FK1OG-8ZD5sKYd0n (3 sealed listings)
+network-and-browser Vendor keys written to /tmp/open-arbiter-harness-hKS75s/seed-keys.json
+network-and-browser 
+network-and-browser === browser ===
+network-and-browser fake LLM on http://127.0.0.1:8799
+network-and-browser Open http://127.0.0.1:8080/
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_get_market_state"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_negotiate"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"text"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_get_market_state"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"website_accept_offer"}
+network-and-browser {"tools":["website_get_market_state","website_negotiate","website_accept_offer","website_verify_receipt","render_cruse"],"decision":"text"}
+network-and-browser page CSP (from _headers, + test-only connect-src ['http://127.0.0.1:8799'] ): default-src 'none'; script-src 'self'; style-src-elem 'self' 'sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='; style-src-attr 'unsafe-inline'; img-src 'self'; connect-src 'self' http://localhost:8787 https://api.otari.ai https://eu.api.otari.ai https://generativelanguage.googleapis.com https://api.groq.com https://openrouter.ai https://otari.ai https://api.openai.com https://api.anthropic.com http://127.0.0.1:8799; worker-src 'self'; frame-src 'none'; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'
+network-and-browser catalogue: 4 items; assistant: Assistant connected to this page.
+network-and-browser manual offers: Alhaji Musa Grains · ₦94,400 save ₦5,600 list ₦100,000 · delivers within 2 d · open until 3:32:07 PM Accept | Iya Basira Foodstuff · ₦96,000 save ₦12,000 list ₦108,000 · delivers within 1 d · open until 3:32:07 PM Accept
+network-and-browser manual receipt: rct_sJvDF7-TAAV1QPL9 | badge: Signature verified (dev key, not pinned)
+network-and-browser agent offers: SELLER
+network-and-browser agent: Done. Receipt rct_LmP_y9fCH3F08bQa; the arbiter's signature was checked in your browser.
+network-and-browser <style> elements: 1; all allowed by hash: True
+network-and-browser CSP violations on index (after the full flow): 0
+network-and-browser CSP violations on index (phone): 0
+network-and-browser CSP violations on vendor: 0
+network-and-browser blocked provider, before sending: ⚠ This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+network-and-browser blocked provider, violations (expected): ['connect-src blocked https://llm.blocked.example/agent-manifest.json at http://127.0.0.1:8080/runtime/engine.js:44', 'connect-src blocked https://llm.blocked.example/v1/models at http://127.0.0.1:8080/runtime/ui.js:1266', 'connect-src blocked https://llm.blocked.example/v1/chat/completions at http://127.0.0.1:8080/runtime/llm.js:126']
+network-and-browser blocked provider, after sending: This site's security policy blocks https://llm.blocked.example, so the assistant cannot use it. Use one of these providers instead: Otari, Otari EU, Google AI Studio, Groq, OpenRouter, OpenAI, Anthropic.
+network-and-browser otari: CSP violations so far: []
+network-and-browser otari: authorize https://otari.ai/api/v1/oauth/apps/authorize?client_id=http%3A%2F%2F127.0.0.1%3A8080&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2F&response_type=code&state=76AMmKqVvwSQiEOcMKMJYw&code_challenge=pkFGQIobwaLEHycdGW3R6UpMIlJkI4Q1LMibdkEhGxE&code_challenge_method=S256&limit=5&expiration=30-days
+network-and-browser otari: token exchange {'grant_type': ['authorization_code'], 'client_id': ['http://127.0.0.1:8080'], 'redirect_uri': ['http://127.0.0.1:8080/'], 'code': ['test-code'], 'code_verifier': ['BgvujYBV8-x0HGxjyu2dmKZJHUNYhjcH6fVGxMpJrdw']}
+network-and-browser otari: returned with CSP: http://127.0.0.1:8080/?code=test-code&state=76AMmKqVvwSQiEOcMKMJYw&iss=https%3A%2F%2Fotari.ai
+network-and-browser otari: in use: In use: Otari · alibaba/qwen3.8-flash · key ending …_key | refused: []
+network-and-browser CSP violations on index (Connect with Otari): 0
+network-and-browser CSP violations in total: 0
+network-and-browser BROWSER CHECK OK
+network-and-browser browser: screenshots in /home/runner/work/_temp/oja-shots
+network-and-browser 
+network-and-browser harness results: {"seed":true,"browser":true}
+network-and-browser	﻿2026-11-27T15:17:09.9461825Z ##[group]Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+network-and-browser with:
+network-and-browser   name: oja-screenshots
+network-and-browser   path: /home/runner/work/_temp/oja-shots
+network-and-browser   retention-days: 7
+network-and-browser   if-no-files-found: ignore
+network-and-browser   compression-level: 6
+network-and-browser   overwrite: false
+network-and-browser   include-hidden-files: false
+network-and-browser   archive: true
+network-and-browser env:
+network-and-browser   CI: 1
+network-and-browser   WRANGLER_SEND_METRICS: false
+network-and-browser   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+network-and-browser   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+network-and-browser   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+network-and-browser   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+network-and-browser ##[endgroup]
+network-and-browser With the provided path, there will be 9 files uploaded
+network-and-browser Artifact name is valid!
+network-and-browser Root directory input is valid!
+network-and-browser Uploading artifact: oja-screenshots.zip
+network-and-browser Beginning upload of artifact content to blob storage
+network-and-browser Uploaded bytes 984857
+network-and-browser Finished uploading artifact content to blob storage!
+network-and-browser SHA256 digest of uploaded artifact is 0fedcdd7c99f699e73a33206a936c0b2fd387eaeb4293b3d9a639e432b4c084a
+network-and-browser Finalizing artifact upload
+network-and-browser Artifact oja-screenshots successfully finalized. Artifact ID 15210167230
+network-and-browser Artifact oja-screenshots has been successfully uploaded! Final size is 984857 bytes. Artifact ID is 15210167230
+network-and-browser Artifact download URL: https://github.com/maxchichar/open-arbiter/actions/runs/46023310754/artifacts/15210167230
+network-and-browser	﻿2026-11-27T15:17:12.3777336Z Post job cleanup.
+network-and-browser	﻿2026-11-27T15:17:12.4717587Z Post job cleanup.
+network-and-browser [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/open-arbiter/open-arbiter --files-from manifest.txt --use-compress-program zstdmt
+network-and-browser Failed to save: Unable to reserve cache with key node-cache-Linux-x64-npm-cc862720ee62ce6592773fcac44b8dd221cb2fcad071a2886d6bcdc99addae9b, another job may be creating this cache.
+network-and-browser	﻿2026-11-27T15:17:12.9823694Z Post job cleanup.
+network-and-browser [command]/usr/bin/git version
+network-and-browser git version 2.56.1
+network-and-browser Temporarily overriding HOME='/home/runner/work/_temp/64511757-08c9-4f03-8d17-dad3b5bada50' before making global git config changes
+network-and-browser Adding repository directory to the temporary git global config as a safe directory
+network-and-browser [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter/.agentic-web
+network-and-browser Removing SSH command configuration
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+network-and-browser Removing HTTP extra header
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+network-and-browser Removing includeIf entries pointing to credentials config files
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+network-and-browser [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+network-and-browser	﻿2026-11-27T15:17:13.1309386Z Post job cleanup.
+network-and-browser [command]/usr/bin/git version
+network-and-browser git version 2.56.1
+network-and-browser Temporarily overriding HOME='/home/runner/work/_temp/f7b25f82-6f89-41bd-8dc4-052620365991' before making global git config changes
+network-and-browser Adding repository directory to the temporary git global config as a safe directory
+network-and-browser [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter
+network-and-browser Removing SSH command configuration
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+network-and-browser Removing HTTP extra header
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+network-and-browser [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+network-and-browser Removing includeIf entries pointing to credentials config files
+network-and-browser [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+network-and-browser [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+network-and-browser	﻿2026-11-27T15:17:13.2853559Z Cleaning up orphan processes
+unit	﻿2026-11-27T15:15:45.6142994Z Current runner version: '2.338.2'
+unit ##[group]Runner Image Provisioner
+unit Hosted Compute Agent
+unit Version: 20261111.635
+unit Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+unit Build Date: 2026-11-11T01:49:01Z
+unit Worker ID: {b44690a8-5db6-42eb-ac3d-fa8fef719c77}
+unit Region: centralus
+unit Cloud: Azure
+unit ##[endgroup]
+unit ##[group]Operating System
+unit Ubuntu
+unit 24.04.5
+unit LTS
+unit ##[endgroup]
+unit ##[group]Runner Image
+unit Image: ubuntu-24.04
+unit Version: 20261122.23.1
+unit Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261122.23/images/ubuntu/Ubuntu2404-Readme.md
+unit Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261122.23
+unit ##[endgroup]
+unit ##[group]GITHUB_TOKEN Permissions
+unit Contents: read
+unit Metadata: read
+unit ##[endgroup]
+unit Secret source: Actions
+unit Cache mode: write
+unit Prepare workflow directory
+unit Prepare all required actions
+unit Getting action download info
+unit Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+unit Download action repository 'actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+unit Complete job name: unit
+unit	﻿2026-11-27T15:15:46.2812985Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+unit with:
+unit   fetch-depth: 0
+unit   persist-credentials: false
+unit   repository: maxchichar/open-arbiter
+unit   token: ***
+unit   ssh-strict: true
+unit   ssh-user: git
+unit   clean: true
+unit   sparse-checkout-cone-mode: true
+unit   fetch-tags: false
+unit   show-progress: true
+unit   lfs: false
+unit   submodules: false
+unit   set-safe-directory: true
+unit   allow-unsafe-pr-checkout: false
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit Syncing repository: maxchichar/open-arbiter
+unit ##[group]Getting Git version info
+unit Working directory is '/home/runner/work/open-arbiter/open-arbiter'
+unit [command]/usr/bin/git version
+unit git version 2.56.1
+unit ##[endgroup]
+unit Temporarily overriding HOME='/home/runner/work/_temp/edb22e32-adcf-4afb-b726-fb64b7655135' before making global git config changes
+unit Adding repository directory to the temporary git global config as a safe directory
+unit [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter
+unit Deleting the contents of '/home/runner/work/open-arbiter/open-arbiter'
+unit ##[group]Determining repository object format
+unit ##[endgroup]
+unit ##[group]Initializing the repository
+unit [command]/usr/bin/git init /home/runner/work/open-arbiter/open-arbiter
+unit hint: Using 'master' as the name for the initial branch. This default branch name
+unit hint: will change to "main" in Git 3.0. To configure the initial branch name
+unit hint: to use in all of your new repositories, which will suppress this warning,
+unit hint: call:
+unit hint:
+unit hint: 
+unit hint:
+unit hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+unit hint: 'development'. The just-created branch can be renamed via this command:
+unit hint:
+unit hint: 
+unit hint:
+unit hint: Disable this message with "git config set advice.defaultBranchName false"
+unit Initialized empty Git repository in /home/runner/work/open-arbiter/open-arbiter/.git/
+unit [command]/usr/bin/git remote add origin https://github.com/maxchichar/open-arbiter
+unit ##[endgroup]
+unit ##[group]Disabling automatic garbage collection
+unit [command]/usr/bin/git config --local gc.auto 0
+unit ##[endgroup]
+unit ##[group]Setting up auth
+unit Removing SSH command configuration
+unit [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+unit [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+unit Removing HTTP extra header
+unit [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+unit [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+unit Removing includeIf entries pointing to credentials config files
+unit [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+unit [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+unit [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+unit [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path /home/runner/work/_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit ##[endgroup]
+unit ##[group]Fetching the repository
+unit [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+unit From https://github.com/maxchichar/open-arbiter
+unit  * [new branch]      arbiter-hardening -> origin/arbiter-hardening
+unit  * [new branch]      main              -> origin/main
+unit  * [new branch]      phase-1           -> origin/phase-1
+unit  * [new tag]         v0.0              -> v0.0
+unit [command]/usr/bin/git branch --list --remote origin/phase-1
+unit   origin/phase-1
+unit [command]/usr/bin/git rev-parse refs/remotes/origin/phase-1
+unit 33c95036c9ef0bdda4818931e328fd9e72b1a12a
+unit ##[endgroup]
+unit ##[group]Determining the checkout info
+unit ##[endgroup]
+unit [command]/usr/bin/git sparse-checkout disable
+unit [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+unit ##[group]Checking out the ref
+unit [command]/usr/bin/git checkout --progress --force -B phase-1 refs/remotes/origin/phase-1
+unit Switched to a new branch 'phase-1'
+unit branch 'phase-1' set up to track 'origin/phase-1'.
+unit ##[endgroup]
+unit [command]/usr/bin/git log -1 --format=%H
+unit 33c95036c9ef0bdda4818931e328fd9e72b1a12a
+unit ##[group]Removing auth
+unit Removing SSH command configuration
+unit [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+unit [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+unit Removing HTTP extra header
+unit [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+unit [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+unit Removing includeIf entries pointing to credentials config files
+unit [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+unit includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path
+unit includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path
+unit includeif.gitdir:/github/workspace/.git.path
+unit includeif.gitdir:/github/workspace/.git/worktrees/*.path
+unit [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path
+unit /home/runner/work/_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-38165156\-8e04\-4e79\-a61b\-5be31b82858b\.config
+unit [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path
+unit /home/runner/work/_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-38165156\-8e04\-4e79\-a61b\-5be31b82858b\.config
+unit [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+unit /github/runner_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-38165156\-8e04\-4e79\-a61b\-5be31b82858b\.config
+unit [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+unit /github/runner_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config
+unit [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-38165156\-8e04\-4e79\-a61b\-5be31b82858b\.config
+unit [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+unit Removing credentials config '/home/runner/work/_temp/git-credentials-38165156-8e04-4e79-a61b-5be31b82858b.config'
+unit ##[endgroup]
+unit	﻿2026-11-27T15:15:47.4323417Z ##[group]Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+unit with:
+unit   node-version: 24
+unit   cache: npm
+unit   check-latest: false
+unit   token: ***
+unit   package-manager-cache: true
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit Found in cache @ /opt/hostedtoolcache/node/24.22.3/x64
+unit ##[group]Environment details
+unit node: v24.22.3
+unit npm: 11.19.1
+unit yarn: 1.22.22
+unit ##[endgroup]
+unit [command]/opt/hostedtoolcache/node/24.22.3/x64/bin/npm config get cache
+unit /home/runner/.npm
+unit npm cache is not found
+unit	﻿2026-11-27T15:15:48.0787598Z ##[group]Run npm ci
+unit [36;1mnpm ci[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+unit 
+unit > open-arbiter@1.0.0 prepare
+unit > git config core.hooksPath .githooks || true
+unit 
+unit 
+unit added 79 packages, and audited 80 packages in 5s
+unit 
+unit 17 packages are looking for funding
+unit   run `npm fund` for details
+unit 
+unit found 0 vulnerabilities
+unit npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+unit npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+unit npm warn install-scripts   workerd@1.20261119.1 (postinstall: node install.js)
+unit npm warn install-scripts
+unit npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+unit	﻿2026-11-27T15:15:52.7327217Z ##[group]Run npm test
+unit [36;1mnpm test[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit 
+unit > open-arbiter@1.0.0 test
+unit > node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+unit 
+unit ✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (42.04181ms)
+unit ✔ fault at "decrement stock": nothing of the accept is committed, and a later accept works (13.320758ms)
+unit ✔ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (7.692551ms)
+unit ✔ fault at "insert receipt": nothing of the accept is committed, and a later accept works (8.971452ms)
+unit ✔ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (7.542616ms)
+unit ✔ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (8.638ms)
+unit ✔ concurrent accepts of the same offer: exactly one receipt (9.412614ms)
+unit ✔ concurrent accepts of different offers on one mandate: exactly one receipt (7.947353ms)
+unit ✔ the schema refuses negative stock (CHECK stock_nonneg) (4.032064ms)
+unit ✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (8.897681ms)
+unit ✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (3.211773ms)
+unit ✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (9.857492ms)
+unit ✔ R6: a legacy SETTLED-without-receipt mandate is not settled by a later accept (batch-level) (3.483816ms)
+unit ✔ R6: the accept records which attempt settled the mandate (3.076349ms)
+unit ✔ batch commits every statement together (14.656894ms)
+unit ✔ batch rolls back everything when one statement fails (2.080014ms)
+unit ✔ injected fault aborts a batch at the chosen statement (1.342676ms)
+unit ✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (78.605413ms)
+unit ✔ 5 concurrent identical terms: one succeeds, four get identical_terms (11.518246ms)
+unit ✔ a refused mandate writes no row and no event (2.991683ms)
+unit ✔ identical terms under the cap give identical_terms; other buyers are unaffected (2.469218ms)
+unit ✔ concurrent writes of every kind keep one linear chain (180.177738ms)
+unit ✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (5.345186ms)
+unit ✔ chain-head conflicts are retried with a fresh head (13.878245ms)
+unit ✔ when retries run out: 503 busy, and the business write is not committed (385.804942ms)
+unit ✔ createVendor: a failed event insert rolls back the business write (6.933787ms)
+unit ✔ upsertListing: a failed event insert rolls back the business write (3.56936ms)
+unit ✔ createMandate: a failed event insert rolls back the business write (2.526614ms)
+unit ✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (3.562149ms)
+unit ✔ [tree] every workflow passes the guards, and ci.yml runs every required check (2.440285ms)
+unit ✔ the minimal good workflow passes (0.134832ms)
+unit ✔ AC-3.4: production, remote migrations, credentials and deploys are refused (0.411558ms)
+unit ✔ AC-3.7: hardening rules (0.256224ms)
+unit ✔ ci.yml requirements: each missing check is named (0.378379ms)
+unit ✔ AC-3.5 M3: a mechanism version change may not ship as split traffic (1.477839ms)
+unit ✔ AC-3.5 M3 CLI: base = HEAD compares with HEAD~1 and passes (36.856063ms)
+unit ✔ test:m2 without tags (a shallow clone) fails loudly instead of checking nothing (181.626544ms)
+unit ✔ secret scan --history finds a key that was committed and later removed, without printing it (115.365031ms)
+unit ✔ reviewed blobs: only the exact reviewed .env.example blob passes; a different .env.example is refused (198.469175ms)
+unit ✔ Discord bot tokens and NVIDIA API keys are detected; placeholders are not (0.317787ms)
+unit ✔ the detector finds DEV however it is written, and ignores comments (0.705199ms)
+unit ✔ arbiter/wrangler.toml never defines DEV (0.567322ms)
+unit ✔ midpoint of the zone of agreement (0.951189ms)
+unit ✔ budget above list price is capped at list price (0.11289ms)
+unit ✔ no overlap, too slow or no stock gives no agreement and reveals nothing (0.561714ms)
+unit ✔ offers ranked by price, then delivery, then vendor id (0.198007ms)
+unit ✔ vendor filter is respected (0.121262ms)
+unit ✔ listing validation (0.236255ms)
+unit ✔ terms key ignores budget and vendor order (0.088483ms)
+unit ✔ canonical json sorts keys at every level (0.161452ms)
+unit ✔ catalog never exposes floors (11.743934ms)
+unit ✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (8.92725ms)
+unit ✔ cannot accept twice, with a wrong token, or after expiry (4.600819ms)
+unit ✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (4.744544ms)
+unit ✔ out-of-stock at acceptance voids the offer and reopens the mandate (4.922592ms)
+unit ✔ tampering with the audit log is detected (1.969186ms)
+unit ✔ no environment, an unknown one or the empty top level is refused (0.91931ms)
+unit ✔ staging deploys with --env staging (0.629175ms)
+unit ✔ production needs --confirm-production (owner approval A3 is still required; this only stops slips) (0.191157ms)
+unit ✔ unknown flags are refused rather than passed to wrangler (0.141673ms)
+unit ✔ an environment whose ids are still placeholders is refused, except for a dry run (0.158538ms)
+unit ✔ the CLI exits 2 without an environment, before starting wrangler (778.431518ms)
+unit ✔ the checked-in wrangler.toml still has placeholder ids (resources are created at approval A1/A3) (8.872307ms)
+unit ✔ a client-made secret: only its hash is sent, and the secret then works as the buyer token (20.98379ms)
+unit ✔ a retry with the same secret and terms returns the same mandate: no new row, no new event (5.413309ms)
+unit ✔ the same secret with different terms or a different budget is refused, and writes nothing (4.973508ms)
+unit ✔ the daily cap still holds, and a retry of an existing mandate is not counted against it (6.019849ms)
+unit ✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (3.514517ms)
+unit ✔ concurrent retries with one secret create exactly one mandate (4.676943ms)
+unit ✔ a malformed hash is refused (2.389648ms)
+unit ✔ over HTTP: 201 when created, 200 when replayed, never a token in the body (25.319109ms)
+unit ✔ piped stdout gets a private P-256 JWK (37.43047ms)
+unit ✔ --out outside the repo writes a new file, mode 0600, and refuses to overwrite (81.278252ms)
+unit ✔ --out inside the repo is refused and nothing is written (125.044ms)
+unit ✔ stdout redirected to a file inside the repo is refused (Linux) (30.558176ms)
+unit ✔ unknown arguments are refused (41.974408ms)
+unit ✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (1.483668ms)
+unit ✔ AC-F1-6: mechanism identity, and each offer names its step (0.929255ms)
+unit ✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.141613ms)
+unit ✔ AC-F1-2: a zone with no grid point gives no offer (0.124157ms)
+unit ✔ tie between two grid points goes to the buyer (lower) (0.171548ms)
+unit ✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (20.342326ms)
+unit ✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (138.853938ms)
+unit ✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (2.75005ms)
+unit ✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (25.709025ms)
+unit ✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (29.622451ms)
+unit ✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (4.320958ms)
+unit ✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (2.316474ms)
+unit ✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (2.645252ms)
+unit ✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.371508ms)
+unit ✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (45.369417ms)
+unit ✔ [tree] migration files are numbered 0000…, in order, with no gaps (1.155044ms)
+unit ✔ [tree] the Worker requires exactly the migrations in its tree (0.75252ms)
+unit ✔ [tree] migrations/lock.json pins every migration's SHA-256: an applied migration is never edited (0.879431ms)
+unit ✔ empty database: every migration applies and is recorded (1.655105ms)
+unit ✔ AC-2.1: 0000_baseline alone gives exactly v0.0's schema (sqlite_master name, type, sql) (1.566753ms)
+unit ✔ v0.0-seeded database: migrations apply; no row lost; chain, receipt and accept still work (20.656007ms)
+unit ✔ 0000_baseline refuses a database made before CHECK stock_nonneg; nothing is recorded (1.414513ms)
+unit ✔ 0000_baseline refuses a database whose audit chain forked (the unique index cannot be built) (0.713511ms)
+unit ✔ [tree] HEAD inserts name their columns, so an added column never breaks a running Worker (M2) (0.277046ms)
+unit ✔ AC-2.6: a parent-table rebuild under PRAGMA defer_foreign_keys keeps every child row (17.051664ms)
+unit ✔ a clean v0.0 database, before and after migrating: no findings (3.446515ms)
+unit ✔ SETTLED mandate without a receipt is reported (1.157468ms)
+unit ✔ ACCEPTED offer without a receipt is reported (1.027112ms)
+unit ✔ receipt whose audit_hash names no event is reported (0.974624ms)
+unit ✔ missing unique indexes are reported (1.012891ms)
+unit ✔ a database without CHECK stock_nonneg is reported (1.266532ms)
+unit ✔ CLI: exit 1 and the findings on a bad database, exit 0 on a clean one (286.990208ms)
+unit ✔ pubkey.mjs prints only the public key, with the kid the arbiter signs under (49.012111ms)
+unit ✔ a failing command: non-zero exit, output saved with its exit code (69.35619ms)
+unit ✔ a failing node --test run exits non-zero (144.305243ms)
+unit ✔ a passing command exits 0 (62.168813ms)
+unit ✔ a killed command is a failure (59.022182ms)
+unit ✔ a missing command is a failure (36.96764ms)
+unit ✔ secret-shaped output is redacted in the file, exit code unchanged (61.130293ms)
+unit ✔ usage errors exit 2 (30.131155ms)
+unit ✔ a Cloudflare account id in an API path is replaced (55.658305ms)
+unit Open Arbiter: database migrations not applied (missing: 0000_baseline.sql, 0001_settle_attempt.sql); refusing to write.
+unit ✔ no d1_migrations table (a database made from the old schema.sql): writes refused (11.069201ms)
+unit Open Arbiter: database migrations not applied (missing: 0001_settle_attempt.sql); refusing to write.
+unit ✔ a required migration missing (database at an older level): writes refused, nothing written (1.991916ms)
+unit Open Arbiter: database migrations not applied (missing: 0000_baseline.sql); refusing to write.
+unit ✔ a level recorded out of order still needs every required name (1.423007ms)
+unit ✔ all required migrations applied: writes work; newer migrations than this Worker knows are fine (1.863659ms)
+unit ✔ the guard reads the migration level, not sqlite_master (1.382797ms)
+unit ✔ [tree] REQUIRED_MIGRATIONS is the tree's migrations (0.527442ms)
+unit ✔ schema check: one d1_migrations query per Worker instance, not one per write (27.032523ms)
+unit Open Arbiter: database migrations not applied (missing: 0001_settle_attempt.sql); refusing to write.
+unit Open Arbiter: database migrations not applied (missing: 0001_settle_attempt.sql); refusing to write.
+unit ✔ schema check cache is per database: an outdated binding is still refused (5.769784ms)
+unit ✔ an unexpected database error in the check is not reported as an outdated schema (1.463407ms)
+unit secret scan: 3 file(s), no findings
+unit secret scan: 3 file(s), no findings
+unit ✔ the detector finds secret shapes and ignores dev values (2.603539ms)
+unit ✔ redact removes every value and keeps the rest (0.355664ms)
+unit ✔ no tracked file is a secret file or holds a secret value (59.011611ms)
+unit ✔ pre-commit hook: blocks a staged fake key, a forbidden file, and a staged secret fixed only in the work tree (749.188992ms)
+unit ✔ pre-commit hook: a clean commit goes through (160.338994ms)
+unit ✔ the hook is versioned, executable, and npm install enables it (0.673982ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (38.884719ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (9.835699ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (4.889922ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (4.154729ms)
+unit ✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (8.543559ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ a configured signing key works without DEV and is never stored (4.437764ms)
+unit ✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (1.214654ms)
+unit ✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (5.48754ms)
+unit ✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (0.980603ms)
+unit ✔ staging, production and the local top level never share a database, KV namespace or name (1.579542ms)
+unit ✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (0.575053ms)
+unit ✔ ArbiterClient.accept, response lost (hang): unknown, sent once (196.689157ms)
+unit ✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (160.998354ms)
+unit ✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (6.574978ms)
+unit ✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (8.873104ms)
+unit ✔ through the runtime: a lost accept response is a receipt with status unknown, run once (159.170218ms)
+unit ✔ accept answered by a platform 502 page after the arbiter settled: unknown, sent once, re-accept blocked (66.02034ms)
+unit ✔ mandate create answered by a platform 502 page after the arbiter made it: unknown, secret kept, asking again recovers it (11.878492ms)
+unit ✔ accept answered by a platform 500 JSON without the arbiter's shape after the arbiter settled: unknown, sent once, re-accept blocked (8.512292ms)
+unit ✔ mandate create answered by a platform 500 JSON without the arbiter's shape after the arbiter made it: unknown, secret kept, asking again recovers it (9.01708ms)
+unit ✔ accept answered by a arbiter catch-all internal 500 after the arbiter settled: unknown, sent once, re-accept blocked (6.295293ms)
+unit ✔ mandate create answered by a arbiter catch-all internal 500 after the arbiter made it: unknown, secret kept, asking again recovers it (7.857989ms)
+unit ✔ a definite arbiter refusal on a binding call stays definite (busy 503) (7.249696ms)
+unit ✔ no shipped copy makes a banned claim (3.638504ms)
+unit ✔ every mention of the midpoint also mentions the price step (1.002926ms)
+unit ✔ README and the page state the bounded leak and the AI-provider caveat (1.464024ms)
+unit ✔ README explains Connect with Otari and why otari.ai is in connect-src (P1.0) (0.240631ms)
+unit ✔ every HTML page gets the same page CSP from _headers (1.13199ms)
+unit ✔ the page CSP is strict for scripts and locked down elsewhere (1.680724ms)
+unit ✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (0.39997ms)
+unit ✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.217436ms)
+unit ✔ the coded-tool worker keeps the skill's own CSP (0.124828ms)
+unit ✔ Oja's own HTML has no inline script, event handler or style attribute (0.523536ms)
+unit ✔ environments.json names exactly staging and production and passes validation (7.987188ms)
+unit ✔ validation: a kid in both environments is refused (3.699995ms)
+unit ✔ validation: a non-https, loopback or credentialed arbiter URL is refused (4.472576ms)
+unit ✔ validation: private fields, extra fields or a duplicate kid are refused (2.643249ms)
+unit ✔ validation: each kid must be its key's thumbprint (3.168232ms)
+unit ✔ an environment with no arbiter URL or no keys does not build (fail closed) (1.550608ms)
+unit ✔ staging build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (18.99577ms)
+unit ✔ production build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (18.353059ms)
+unit ✔ the build leaves out tests, build-only files and local secrets (13.436687ms)
+unit ✔ the build's own tripwire catches a tampered output (27.587475ms)
+unit ✔ negotiate, accept and verify through the page; budget and tokens never in state (72.189189ms)
+unit ✔ page checks refuse bad input before anything is sent (3.681989ms)
+unit ✔ repeat terms are refused with the arbiter's reason (8.218211ms)
+unit ✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (1.559131ms)
+unit ✔ one lost answer (network-error): the client retries with the same secret and gets the same mandate (60.628249ms)
+unit ✔ one lost answer (hang): the client retries with the same secret and gets the same mandate (159.185672ms)
+unit ✔ only the hash of the secret is sent; the secret is not in the page state (3.99574ms)
+unit ✔ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (3.913786ms)
+unit ✔ a new budget for the same terms is a new secret, and is refused as identical terms (4.347579ms)
+unit ✔ AC-F5-1: ?arbiter= is ignored on a non-loopback page (1.521014ms)
+unit ✔ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (0.286891ms)
+unit ✔ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (46.281195ms)
+unit ✔ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (7.210121ms)
+unit ✔ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (6.487592ms)
+unit ✔ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (5.229332ms)
+unit ✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (5.416653ms)
+unit ✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (0.737838ms)
+unit ✔ the tripwire itself: a public URL with no keys is refused (0.163696ms)
+unit ✔ the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter) (1.027253ms)
+unit ✔ model routers plus sign-in endpoints are exactly the CSP's other origins (0.341954ms)
+unit ✔ every runtime provider URL is allowed (0.41975ms)
+unit ✔ a custom provider is blocked on the published site, with its origin named (0.191687ms)
+unit ✔ empty, invalid and same-origin values are not reported; local models are fine on a dev page (0.173821ms)
+unit ✔ the message names the blocked origin and every allowed provider (0.183466ms)
+unit ✔ only connect-src blocks of a model URL count, not the arbiter or this page (0.17958ms)
+unit ✔ a key sign-in is never reported as a blocked AI provider (0.106881ms)
+unit ✔ needsKey matches the runtime's needsByok rule (0.629986ms)
+unit ✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (0.441122ms)
+unit ℹ tests 203
+unit ℹ suites 0
+unit ℹ pass 203
+unit ℹ fail 0
+unit ℹ cancelled 0
+unit ℹ skipped 0
+unit ℹ todo 0
+unit ℹ duration_ms 2974.723405
+unit	﻿2026-11-27T15:15:55.8285577Z ##[group]Run node scripts/secret-scan.mjs --history
+unit [36;1mnode scripts/secret-scan.mjs --history[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit secret scan (history): 27 commit(s), 407 file version(s), no findings
+unit	﻿2026-11-27T15:15:55.9412963Z ##[group]Run node scripts/ci-guards.mjs workflows
+unit [36;1mnode scripts/ci-guards.mjs workflows[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit ci-guards workflows: OK
+unit	﻿2026-11-27T15:15:55.9789586Z ##[group]Run node scripts/ci-guards.mjs m3
+unit [36;1mnode scripts/ci-guards.mjs m3[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit m3: MECHANISM.version 3.0.0 at f92f0aab7efc, 3.0.0 at HEAD
+unit ci-guards m3: OK
+unit	﻿2026-11-27T15:15:56.0291780Z ##[group]Run npm run test:m2
+unit [36;1mnpm run test:m2[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit 
+unit > open-arbiter@1.0.0 test:m2
+unit > node --test arbiter/test/m2/*.test.mjs
+unit 
+unit ✔ HEAD's migrations: v0.0's own tests pass against the migrated database (781.021352ms)
+unit ✔ negative: a migration that drops a column v0.0 reads is caught (640.748625ms)
+unit ✔ negative: an 'additive' column on a table v0.0 inserts positionally is caught (566.26325ms)
+unit ✔ default: every release tag is checked (759.528158ms)
+unit ✔ an unknown ref is a usage error, not a pass (36.948489ms)
+unit ℹ tests 5
+unit ℹ suites 0
+unit ℹ pass 5
+unit ℹ fail 0
+unit ℹ cancelled 0
+unit ℹ skipped 0
+unit ℹ todo 0
+unit ℹ duration_ms 2829.896366
+unit	﻿2026-11-27T15:15:58.9779147Z Post job cleanup.
+unit [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/open-arbiter/open-arbiter --files-from manifest.txt --use-compress-program zstdmt
+unit Sent 45219840 of 80062250 (56.5%), 43.1 MBs/sec
+unit Sent 80062250 of 80062250 (100.0%), 40.3 MBs/sec
+unit Cache saved with the key: node-cache-Linux-x64-npm-cc862720ee62ce6592773fcac44b8dd221cb2fcad071a2886d6bcdc99addae9b
+unit	﻿2026-11-27T15:16:01.4902894Z Post job cleanup.
+unit [command]/usr/bin/git version
+unit git version 2.56.1
+unit Temporarily overriding HOME='/home/runner/work/_temp/f1adac19-8cc1-461a-949b-f1641f283884' before making global git config changes
+unit Adding repository directory to the temporary git global config as a safe directory
+unit [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter
+unit Removing SSH command configuration
+unit [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+unit [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+unit Removing HTTP extra header
+unit [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+unit [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+unit Removing includeIf entries pointing to credentials config files
+unit [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+unit [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+unit	﻿2026-11-27T15:16:01.6533172Z Cleaning up orphan processes
+worker	﻿2026-11-27T15:15:45.9556398Z Current runner version: '2.338.2'
+worker ##[group]Runner Image Provisioner
+worker Hosted Compute Agent
+worker Version: 20261111.635
+worker Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+worker Build Date: 2026-11-11T01:49:01Z
+worker Worker ID: {a0c4021d-7801-45f3-8879-cfb75b55b62d}
+worker Region: westus2
+worker Cloud: Azure
+worker ##[endgroup]
+worker ##[group]Operating System
+worker Ubuntu
+worker 24.04.5
+worker LTS
+worker ##[endgroup]
+worker ##[group]Runner Image
+worker Image: ubuntu-24.04
+worker Version: 20261122.23.1
+worker Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261122.23/images/ubuntu/Ubuntu2404-Readme.md
+worker Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261122.23
+worker ##[endgroup]
+worker ##[group]GITHUB_TOKEN Permissions
+worker Contents: read
+worker Metadata: read
+worker ##[endgroup]
+worker Secret source: Actions
+worker Cache mode: write
+worker Prepare workflow directory
+worker Prepare all required actions
+worker Getting action download info
+worker Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+worker Download action repository 'actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+worker Complete job name: worker
+worker	﻿2026-11-27T15:15:46.7533799Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+worker with:
+worker   persist-credentials: false
+worker   repository: maxchichar/open-arbiter
+worker   token: ***
+worker   ssh-strict: true
+worker   ssh-user: git
+worker   clean: true
+worker   sparse-checkout-cone-mode: true
+worker   fetch-depth: 1
+worker   fetch-tags: false
+worker   show-progress: true
+worker   lfs: false
+worker   submodules: false
+worker   set-safe-directory: true
+worker   allow-unsafe-pr-checkout: false
+worker env:
+worker   CI: 1
+worker   WRANGLER_SEND_METRICS: false
+worker   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+worker ##[endgroup]
+worker Syncing repository: maxchichar/open-arbiter
+worker ##[group]Getting Git version info
+worker Working directory is '/home/runner/work/open-arbiter/open-arbiter'
+worker [command]/usr/bin/git version
+worker git version 2.56.1
+worker ##[endgroup]
+worker Temporarily overriding HOME='/home/runner/work/_temp/1be11e0b-1cd3-4d06-a5f2-053315b238e7' before making global git config changes
+worker Adding repository directory to the temporary git global config as a safe directory
+worker [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter
+worker Deleting the contents of '/home/runner/work/open-arbiter/open-arbiter'
+worker ##[group]Determining repository object format
+worker ##[endgroup]
+worker ##[group]Initializing the repository
+worker [command]/usr/bin/git init /home/runner/work/open-arbiter/open-arbiter
+worker hint: Using 'master' as the name for the initial branch. This default branch name
+worker hint: will change to "main" in Git 3.0. To configure the initial branch name
+worker hint: to use in all of your new repositories, which will suppress this warning,
+worker hint: call:
+worker hint:
+worker hint: 
+worker hint:
+worker hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+worker hint: 'development'. The just-created branch can be renamed via this command:
+worker hint:
+worker hint: 
+worker hint:
+worker hint: Disable this message with "git config set advice.defaultBranchName false"
+worker Initialized empty Git repository in /home/runner/work/open-arbiter/open-arbiter/.git/
+worker [command]/usr/bin/git remote add origin https://github.com/maxchichar/open-arbiter
+worker ##[endgroup]
+worker ##[group]Disabling automatic garbage collection
+worker [command]/usr/bin/git config --local gc.auto 0
+worker ##[endgroup]
+worker ##[group]Setting up auth
+worker Removing SSH command configuration
+worker [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+worker [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+worker Removing HTTP extra header
+worker [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+worker [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+worker Removing includeIf entries pointing to credentials config files
+worker [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+worker [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+worker [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+worker [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path /home/runner/work/_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker ##[endgroup]
+worker ##[group]Fetching the repository
+worker [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +33c95036c9ef0bdda4818931e328fd9e72b1a12a:refs/remotes/origin/phase-1
+worker From https://github.com/maxchichar/open-arbiter
+worker  * [new ref]         33c95036c9ef0bdda4818931e328fd9e72b1a12a -> origin/phase-1
+worker [command]/usr/bin/git branch --list --remote origin/phase-1
+worker   origin/phase-1
+worker [command]/usr/bin/git rev-parse refs/remotes/origin/phase-1
+worker 33c95036c9ef0bdda4818931e328fd9e72b1a12a
+worker ##[endgroup]
+worker ##[group]Determining the checkout info
+worker ##[endgroup]
+worker [command]/usr/bin/git sparse-checkout disable
+worker [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+worker ##[group]Checking out the ref
+worker [command]/usr/bin/git checkout --progress --force -B phase-1 refs/remotes/origin/phase-1
+worker Switched to a new branch 'phase-1'
+worker branch 'phase-1' set up to track 'origin/phase-1'.
+worker ##[endgroup]
+worker [command]/usr/bin/git log -1 --format=%H
+worker 33c95036c9ef0bdda4818931e328fd9e72b1a12a
+worker ##[group]Removing auth
+worker Removing SSH command configuration
+worker [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+worker [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+worker Removing HTTP extra header
+worker [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+worker [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+worker Removing includeIf entries pointing to credentials config files
+worker [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+worker includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path
+worker includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path
+worker includeif.gitdir:/github/workspace/.git.path
+worker includeif.gitdir:/github/workspace/.git/worktrees/*.path
+worker [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path
+worker /home/runner/work/_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-441939db\-d5fd\-448b\-8f92\-5441d39241f3\.config
+worker [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path
+worker /home/runner/work/_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/open-arbiter/open-arbiter/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-441939db\-d5fd\-448b\-8f92\-5441d39241f3\.config
+worker [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+worker /github/runner_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-441939db\-d5fd\-448b\-8f92\-5441d39241f3\.config
+worker [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+worker /github/runner_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config
+worker [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-441939db\-d5fd\-448b\-8f92\-5441d39241f3\.config
+worker [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+worker Removing credentials config '/home/runner/work/_temp/git-credentials-441939db-d5fd-448b-8f92-5441d39241f3.config'
+worker ##[endgroup]
+worker	﻿2026-11-27T15:15:48.0635608Z ##[group]Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+worker with:
+worker   node-version: 24
+worker   cache: npm
+worker   check-latest: false
+worker   token: ***
+worker   package-manager-cache: true
+worker env:
+worker   CI: 1
+worker   WRANGLER_SEND_METRICS: false
+worker   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+worker ##[endgroup]
+worker Found in cache @ /opt/hostedtoolcache/node/24.22.3/x64
+worker ##[group]Environment details
+worker node: v24.22.3
+worker npm: 11.19.1
+worker yarn: 1.22.22
+worker ##[endgroup]
+worker [command]/opt/hostedtoolcache/node/24.22.3/x64/bin/npm config get cache
+worker /home/runner/.npm
+worker npm cache is not found
+worker	﻿2026-11-27T15:15:51.9730678Z ##[group]Run npm ci
+worker [36;1mnpm ci[0m
+worker shell: /usr/bin/bash -e {0}
+worker env:
+worker   CI: 1
+worker   WRANGLER_SEND_METRICS: false
+worker   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+worker ##[endgroup]
+worker npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+worker 
+worker > open-arbiter@1.0.0 prepare
+worker > git config core.hooksPath .githooks || true
+worker 
+worker 
+worker added 79 packages, and audited 80 packages in 6s
+worker 
+worker 17 packages are looking for funding
+worker   run `npm fund` for details
+worker 
+worker found 0 vulnerabilities
+worker npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+worker npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+worker npm warn install-scripts   workerd@1.20261119.1 (postinstall: node install.js)
+worker npm warn install-scripts
+worker npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+worker	﻿2026-11-27T15:15:58.4185267Z ##[group]Run npm run test:worker
+worker [36;1mnpm run test:worker[0m
+worker shell: /usr/bin/bash -e {0}
+worker env:
+worker   CI: 1
+worker   WRANGLER_SEND_METRICS: false
+worker   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+worker ##[endgroup]
+worker 
+worker > open-arbiter@1.0.0 test:worker
+worker > node arbiter/scripts/worker-harness.mjs
+worker 
+worker harness: worker at http://127.0.0.1:37209, state in /tmp/open-arbiter-harness-J74vUx
+worker 
+worker === seed ===
+worker Iya Basira Foodstuff: ven_fyHQCBeX5GNAKv-6 (3 sealed listings)
+worker Chika Provisions: ven_3amnDyv-Ql55rf07 (2 sealed listings)
+worker Alhaji Musa Grains: ven_BzkxkYQ5-q7WjDIz (3 sealed listings)
+worker Vendor keys written to /tmp/open-arbiter-harness-J74vUx/seed-keys.json
+worker 
+worker === e2e ===
+worker catalog: 3 rice listings, no floors exposed
+worker REST offers: Iya Basira Foodstuff ₦169,600 (list ₦184,000, 24h); Chika Provisions ₦172,800 (list ₦178,000, 6h)
+worker receipt rct_wOQsBvokwALGYB1o signed by key fc0f6154bbd91b18; verifies, tampered copy fails
+worker same terms, new budget -> 409 identical_terms
+worker MCP offers: Alhaji Musa Grains ₦141,600; Iya Basira Foodstuff ₦144,000
+worker MCP low bid -> agreement=false: "No seller could meet these terms. Neither side's limits are revealed."
+worker audit chain intact: 19 events
+worker E2E OK
+worker 
+worker === concurrency ===
+worker PASS chain intact before: {"ok":true,"events":19,"head":"ad90f3eabcbc4baf9c4b618ffb4b1999e6040c039054d4b2e5ec4e73415f3d0a"}
+worker PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+worker PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+worker PASS vendor registered: 201
+worker PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+worker PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"cf31b709ae3708dde03efac41183a444e211c2f7e54c98e926d118122c070e9c"}
+worker PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+worker PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"461c696156a75fb22a0323860f77fd09bcc7b6b0eee5ee5a660a3d00ed352ee9"}
+worker PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+worker PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+worker PASS P0.10 concurrent creates with one secret make one mandate: ids 1, statuses {"200":5,"201":1}
+worker PASS P0.10 repeat is 200 with the same mandate; the secret works as the token: repeat 200, read 200
+worker CONCURRENCY OK
+worker 
+worker harness results: {"seed":true,"e2e":true,"concurrency":true}
+worker	﻿2026-11-27T15:16:04.6970549Z ##[group]Run npm run test:migrations-d1
+worker [36;1mnpm run test:migrations-d1[0m
+worker shell: /usr/bin/bash -e {0}
+worker env:
+worker   CI: 1
+worker   WRANGLER_SEND_METRICS: false
+worker   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+worker ##[endgroup]
+worker 
+worker > open-arbiter@1.0.0 test:migrations-d1
+worker > node arbiter/scripts/migrations-d1-check.mjs
+worker 
+worker PASS 1. empty database: all migrations apply; sqlite_master equals node:sqlite's
+worker      2 migrations, 11 schema objects identical
+worker PASS 2. v0.0-seeded database: migrations apply, no row lost
+worker      rows {"vendors":2,"listings":4,"mandates":4,"offers":4,"receipts":1,"events":15,"signing_keys":0}
+worker PASS 3. database made before CHECK stock_nonneg: 0000_baseline fails and is not recorded
+worker      refused with CHECK constraint failed
+worker PASS 4. AC-2.6 rebuild on local D1: child rows kept; an orphaning rebuild refused
+worker      mandates 4, offers 4 kept; orphaning rebuild refused
+worker PASS 5. premigrate-check through wrangler on a local D1
+worker      premigrate-check: no findings
+worker MIGRATIONS-D1 OK
+worker	﻿2026-11-27T15:16:56.6805624Z Post job cleanup.
+worker [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/open-arbiter/open-arbiter --files-from manifest.txt --use-compress-program zstdmt
+worker Failed to save: Unable to reserve cache with key node-cache-Linux-x64-npm-cc862720ee62ce6592773fcac44b8dd221cb2fcad071a2886d6bcdc99addae9b, another job may be creating this cache.
+worker	﻿2026-11-27T15:16:57.1937002Z Post job cleanup.
+worker [command]/usr/bin/git version
+worker git version 2.56.1
+worker Temporarily overriding HOME='/home/runner/work/_temp/1f6b0079-2329-489d-a1b4-cf711626d4b2' before making global git config changes
+worker Adding repository directory to the temporary git global config as a safe directory
+worker [command]/usr/bin/git config --global --add safe.directory /home/runner/work/open-arbiter/open-arbiter
+worker Removing SSH command configuration
+worker [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+worker [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+worker Removing HTTP extra header
+worker [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+worker [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+worker Removing includeIf entries pointing to credentials config files
+worker [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+worker [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+worker	﻿2026-11-27T15:16:57.3734193Z Cleaning up orphan processes

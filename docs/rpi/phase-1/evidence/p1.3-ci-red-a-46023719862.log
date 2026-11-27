@@ -1,0 +1,267 @@
+unit	﻿2026-11-27T15:18:42.5026890Z ##[group]Run npm test
+unit [36;1mnpm test[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit 
+unit > open-arbiter@1.0.0 test
+unit > node --no-warnings --test arbiter/test/*.test.mjs sites/oja/tests/*.test.mjs
+unit 
+unit ✔ fault at "settle mandate": nothing of the accept is committed, and a later accept works (127.020165ms)
+unit ✔ fault at "decrement stock": nothing of the accept is committed, and a later accept works (17.805903ms)
+unit ✔ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (12.390827ms)
+unit ✔ fault at "insert receipt": nothing of the accept is committed, and a later accept works (8.905817ms)
+unit ✔ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (8.97617ms)
+unit ✔ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (10.114625ms)
+unit ✔ concurrent accepts of the same offer: exactly one receipt (12.31763ms)
+unit ✔ concurrent accepts of different offers on one mandate: exactly one receipt (9.631483ms)
+unit ✔ the schema refuses negative stock (CHECK stock_nonneg) (5.223926ms)
+unit ✔ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (8.932667ms)
+unit ✔ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (5.328884ms)
+unit ✔ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (10.920233ms)
+unit ✔ R6: a legacy SETTLED-without-receipt mandate is not settled by a later accept (batch-level) (6.933229ms)
+unit ✔ R6: the accept records which attempt settled the mandate (5.816769ms)
+unit ✔ batch commits every statement together (93.906427ms)
+unit ✔ batch rolls back everything when one statement fails (2.507905ms)
+unit ✔ injected fault aborts a batch at the chosen statement (2.134567ms)
+unit ✔ 25 concurrent mandates, distinct terms: at most 3 succeed, the rest are rate limited (269.618646ms)
+unit ✔ 5 concurrent identical terms: one succeeds, four get identical_terms (16.318144ms)
+unit ✔ a refused mandate writes no row and no event (4.257253ms)
+unit ✔ identical terms under the cap give identical_terms; other buyers are unaffected (2.765386ms)
+unit ✔ concurrent writes of every kind keep one linear chain (216.456156ms)
+unit ✔ concurrent resolves of one mandate: one set of offers, one event, same outcome (13.034329ms)
+unit ✔ chain-head conflicts are retried with a fresh head (24.48462ms)
+unit ✔ when retries run out: 503 busy, and the business write is not committed (609.355947ms)
+unit ✔ createVendor: a failed event insert rolls back the business write (6.16065ms)
+unit ✔ upsertListing: a failed event insert rolls back the business write (3.3004ms)
+unit ✔ createMandate: a failed event insert rolls back the business write (3.321795ms)
+unit ✔ resolveMandate: a failed event insert leaves the mandate OPEN with no offers (6.138013ms)
+unit ✔ [tree] every workflow passes the guards, and ci.yml runs every required check (3.667651ms)
+unit ✔ the minimal good workflow passes (0.271327ms)
+unit ✔ AC-3.4: production, remote migrations, credentials and deploys are refused (0.796568ms)
+unit ✔ AC-3.7: hardening rules (0.467694ms)
+unit ✔ ci.yml requirements: each missing check is named (0.468545ms)
+unit ✔ AC-3.5 M3: a mechanism version change may not ship as split traffic (1.699896ms)
+unit ✔ AC-3.5 M3 CLI: base = HEAD compares with HEAD~1 and passes (51.175138ms)
+unit ✔ test:m2 without tags (a shallow clone) fails loudly instead of checking nothing (181.798629ms)
+unit ✔ secret scan --history finds a key that was committed and later removed, without printing it (127.83495ms)
+unit ✔ reviewed blobs: only the exact reviewed .env.example blob passes; a different .env.example is refused (145.576939ms)
+unit ✔ Discord bot tokens and NVIDIA API keys are detected; placeholders are not (0.339505ms)
+unit ✔ the detector finds DEV however it is written, and ignores comments (1.239035ms)
+unit ✔ arbiter/wrangler.toml never defines DEV (0.907174ms)
+unit ✔ midpoint of the zone of agreement (2.329261ms)
+unit ✔ budget above list price is capped at list price (0.265336ms)
+unit ✔ no overlap, too slow or no stock gives no agreement and reveals nothing (1.318173ms)
+unit ✔ offers ranked by price, then delivery, then vendor id (0.499704ms)
+unit ✔ vendor filter is respected (0.328303ms)
+unit ✔ listing validation (0.544787ms)
+unit ✔ terms key ignores budget and vendor order (0.268521ms)
+unit ✔ canonical json sorts keys at every level (1.674599ms)
+unit ✔ catalog never exposes floors (25.48568ms)
+unit ✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (17.774624ms)
+unit ✔ cannot accept twice, with a wrong token, or after expiry (10.16531ms)
+unit ✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (8.465505ms)
+unit ✔ out-of-stock at acceptance voids the offer and reopens the mandate (6.104204ms)
+unit ✔ tampering with the audit log is detected (2.957856ms)
+unit ✔ no environment, an unknown one or the empty top level is refused (1.841149ms)
+unit ✔ staging deploys with --env staging (1.114953ms)
+unit ✔ production needs --confirm-production (owner approval A3 is still required; this only stops slips) (0.290824ms)
+unit ✔ unknown flags are refused rather than passed to wrangler (0.244757ms)
+unit ✔ an environment whose ids are still placeholders is refused, except for a dry run (0.316161ms)
+unit ✔ the CLI exits 2 without an environment, before starting wrangler (1165.030779ms)
+unit ✔ the checked-in wrangler.toml still has placeholder ids (resources are created at approval A1/A3) (11.13988ms)
+unit ✔ a client-made secret: only its hash is sent, and the secret then works as the buyer token (16.720728ms)
+unit ✔ a retry with the same secret and terms returns the same mandate: no new row, no new event (5.856993ms)
+unit ✔ the same secret with different terms or a different budget is refused, and writes nothing (5.823521ms)
+unit ✔ the daily cap still holds, and a retry of an existing mandate is not counted against it (9.689503ms)
+unit ✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (3.595413ms)
+unit ✔ concurrent retries with one secret create exactly one mandate (4.855224ms)
+unit ✔ a malformed hash is refused (2.391864ms)
+unit ✔ over HTTP: 201 when created, 200 when replayed, never a token in the body (44.899086ms)
+unit ✔ piped stdout gets a private P-256 JWK (53.699312ms)
+unit ✔ --out outside the repo writes a new file, mode 0600, and refuses to overwrite (92.874031ms)
+unit ✔ --out inside the repo is refused and nothing is written (129.877071ms)
+unit ✔ stdout redirected to a file inside the repo is refused (Linux) (44.849157ms)
+unit ✔ unknown arguments are refused (53.032068ms)
+unit ✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (2.150128ms)
+unit ✔ AC-F1-6: mechanism identity, and each offer names its step (1.359074ms)
+unit ✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.216103ms)
+unit ✔ AC-F1-2: a zone with no grid point gives no offer (0.202712ms)
+unit ✔ tie between two grid points goes to the buyer (lower) (0.226911ms)
+unit ✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (24.068109ms)
+unit ✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (170.986206ms)
+unit ✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (7.136226ms)
+unit ✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (49.463796ms)
+unit ✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (38.163372ms)
+unit ✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (7.084412ms)
+unit ✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (5.562421ms)
+unit ✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (0.597307ms)
+unit ✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.513511ms)
+unit ✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (68.904478ms)
+unit ✔ [tree] migration files are numbered 0000…, in order, with no gaps (2.045998ms)
+unit ✔ [tree] the Worker requires exactly the migrations in its tree (1.036977ms)
+unit ✔ [tree] migrations/lock.json pins every migration's SHA-256: an applied migration is never edited (1.068548ms)
+unit ✔ empty database: every migration applies and is recorded (2.427402ms)
+unit ✔ AC-2.1: 0000_baseline alone gives exactly v0.0's schema (sqlite_master name, type, sql) (2.244923ms)
+unit ✔ v0.0-seeded database: migrations apply; no row lost; chain, receipt and accept still work (34.673041ms)
+unit ✔ 0000_baseline refuses a database made before CHECK stock_nonneg; nothing is recorded (2.15769ms)
+unit ✔ 0000_baseline refuses a database whose audit chain forked (the unique index cannot be built) (1.249935ms)
+unit ✔ [tree] HEAD inserts name their columns, so an added column never breaks a running Worker (M2) (0.571616ms)
+unit ✔ AC-2.6: a parent-table rebuild under PRAGMA defer_foreign_keys keeps every child row (30.996175ms)
+unit ✔ a clean v0.0 database, before and after migrating: no findings (4.030244ms)
+unit ✔ SETTLED mandate without a receipt is reported (1.988093ms)
+unit ✔ ACCEPTED offer without a receipt is reported (1.410357ms)
+unit ✔ receipt whose audit_hash names no event is reported (1.186842ms)
+unit ✔ missing unique indexes are reported (1.277791ms)
+unit ✔ a database without CHECK stock_nonneg is reported (1.235802ms)
+unit ✔ CLI: exit 1 and the findings on a bad database, exit 0 on a clean one (274.690411ms)
+unit ✔ pubkey.mjs prints only the public key, with the kid the arbiter signs under (73.223006ms)
+unit ✔ a failing command: non-zero exit, output saved with its exit code (85.12415ms)
+unit ✔ a failing node --test run exits non-zero (152.461792ms)
+unit ✔ a passing command exits 0 (73.922305ms)
+unit ✔ a killed command is a failure (79.446348ms)
+unit ✔ a missing command is a failure (48.330713ms)
+unit ✔ secret-shaped output is redacted in the file, exit code unchanged (78.537745ms)
+unit ✔ usage errors exit 2 (36.754448ms)
+unit ✔ a Cloudflare account id in an API path is replaced (111.625926ms)
+unit Open Arbiter: database migrations not applied (missing: 0000_baseline.sql, 0001_settle_attempt.sql); refusing to write.
+unit ✔ no d1_migrations table (a database made from the old schema.sql): writes refused (20.253847ms)
+unit Open Arbiter: database migrations not applied (missing: 0001_settle_attempt.sql); refusing to write.
+unit ✔ a required migration missing (database at an older level): writes refused, nothing written (4.43742ms)
+unit Open Arbiter: database migrations not applied (missing: 0000_baseline.sql); refusing to write.
+unit ✔ a level recorded out of order still needs every required name (4.094029ms)
+unit ✔ all required migrations applied: writes work; newer migrations than this Worker knows are fine (4.573113ms)
+unit ✔ the guard reads the migration level, not sqlite_master (3.532599ms)
+unit ✔ [tree] REQUIRED_MIGRATIONS is the tree's migrations (1.112738ms)
+unit ✔ schema check: one d1_migrations query per Worker instance, not one per write (44.256358ms)
+unit Open Arbiter: database migrations not applied (missing: 0001_settle_attempt.sql); refusing to write.
+unit Open Arbiter: database migrations not applied (missing: 0001_settle_attempt.sql); refusing to write.
+unit ✔ schema check cache is per database: an outdated binding is still refused (10.130135ms)
+unit ✔ an unexpected database error in the check is not reported as an outdated schema (2.587174ms)
+unit secret scan: 3 file(s), no findings
+unit secret scan: 3 file(s), no findings
+unit ✔ the detector finds secret shapes and ignores dev values (3.935442ms)
+unit ✔ redact removes every value and keeps the rest (0.587077ms)
+unit ✔ no tracked file is a secret file or holds a secret value (113.144828ms)
+unit ✔ pre-commit hook: blocks a staged fake key, a forbidden file, and a staged secret fixed only in the work tree (301.635524ms)
+unit ✔ pre-commit hook: a clean commit goes through (154.722655ms)
+unit ✔ the hook is versioned, executable, and npm install enables it (0.747186ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=undefined: key endpoints fail closed and nothing changes (78.343544ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=0: key endpoints fail closed and nothing changes (15.722193ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=true: key endpoints fail closed and nothing changes (10.359934ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ no signing key and DEV=yes: key endpoints fail closed and nothing changes (7.945714ms)
+unit ✔ DEV=1 keeps the local behaviour: a key is generated, stored and used (15.224894ms)
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit Open Arbiter: ARBITER_SIGNING_JWK is not set and DEV is not "1"; refusing to sign.
+unit ✔ a configured signing key works without DEV and is never stored (8.863638ms)
+unit ✔ core: Arbiter without a key or allowGeneratedKey refuses to sign (2.696347ms)
+unit ✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (10.179677ms)
+unit ✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (1.539426ms)
+unit ✔ staging, production and the local top level never share a database, KV namespace or name (2.42486ms)
+unit ✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (0.838116ms)
+unit ✖ red probe: deliberately failing (2.031374ms)
+unit ✔ ArbiterClient.accept, response lost (hang): unknown, sent once (301.761402ms)
+unit ✔ Market.acceptOffer, response lost (hang): throws unknown, blocks re-accept until a read (167.166739ms)
+unit ✔ ArbiterClient.accept, response lost (network-error): unknown, sent once (12.384233ms)
+unit ✔ Market.acceptOffer, response lost (network-error): throws unknown, blocks re-accept until a read (11.678801ms)
+unit ✔ through the runtime: a lost accept response is a receipt with status unknown, run once (159.126102ms)
+unit ✔ accept answered by a platform 502 page after the arbiter settled: unknown, sent once, re-accept blocked (81.9115ms)
+unit ✔ mandate create answered by a platform 502 page after the arbiter made it: unknown, secret kept, asking again recovers it (16.141414ms)
+unit ✔ accept answered by a platform 500 JSON without the arbiter's shape after the arbiter settled: unknown, sent once, re-accept blocked (8.049076ms)
+unit ✔ mandate create answered by a platform 500 JSON without the arbiter's shape after the arbiter made it: unknown, secret kept, asking again recovers it (7.505691ms)
+unit ✔ accept answered by a arbiter catch-all internal 500 after the arbiter settled: unknown, sent once, re-accept blocked (7.066902ms)
+unit ✔ mandate create answered by a arbiter catch-all internal 500 after the arbiter made it: unknown, secret kept, asking again recovers it (7.308924ms)
+unit ✔ a definite arbiter refusal on a binding call stays definite (busy 503) (9.503153ms)
+unit ✔ no shipped copy makes a banned claim (5.056516ms)
+unit ✔ every mention of the midpoint also mentions the price step (1.352757ms)
+unit ✔ README and the page state the bounded leak and the AI-provider caveat (1.221813ms)
+unit ✔ README explains Connect with Otari and why otari.ai is in connect-src (P1.0) (0.31075ms)
+unit ✔ every HTML page gets the same page CSP from _headers (1.74017ms)
+unit ✔ the page CSP is strict for scripts and locked down elsewhere (2.988703ms)
+unit ✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (0.713804ms)
+unit ✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.363009ms)
+unit ✔ the coded-tool worker keeps the skill's own CSP (0.302576ms)
+unit ✔ Oja's own HTML has no inline script, event handler or style attribute (1.008083ms)
+unit ✔ environments.json names exactly staging and production and passes validation (11.716407ms)
+unit ✔ validation: a kid in both environments is refused (4.104688ms)
+unit ✔ validation: a non-https, loopback or credentialed arbiter URL is refused (7.89588ms)
+unit ✔ validation: private fields, extra fields or a duplicate kid are refused (3.478088ms)
+unit ✔ validation: each kid must be its key's thumbprint (3.503484ms)
+unit ✔ an environment with no arbiter URL or no keys does not build (fail closed) (1.919155ms)
+unit ✔ staging build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (19.80659ms)
+unit ✔ production build: config.js, manifest and every connect-src carry that environment's arbiter and keys only (16.270458ms)
+unit ✔ the build leaves out tests, build-only files and local secrets (12.642057ms)
+unit ✔ the build's own tripwire catches a tampered output (20.908159ms)
+unit ✔ negotiate, accept and verify through the page; budget and tokens never in state (98.088247ms)
+unit ✔ page checks refuse bad input before anything is sent (6.646947ms)
+unit ✔ repeat terms are refused with the arbiter's reason (14.819001ms)
+unit ✔ actions use only schema keywords the runtime supports, and binding ones are irreversible (4.676716ms)
+unit ✔ one lost answer (network-error): the client retries with the same secret and gets the same mandate (112.54167ms)
+unit ✔ one lost answer (hang): the client retries with the same secret and gets the same mandate (163.285183ms)
+unit ✔ only the hash of the secret is sent; the secret is not in the page state (12.719501ms)
+unit ✔ every answer lost: reported as unknown; asking again with the same terms recovers the same mandate (13.513785ms)
+unit ✔ a new budget for the same terms is a new secret, and is refused as identical terms (13.124678ms)
+unit ✔ AC-F5-1: ?arbiter= is ignored on a non-loopback page (2.237641ms)
+unit ✔ AC-F5-1: ?arbiter= is honoured on loopback pages, http(s) only (0.504813ms)
+unit ✔ AC-F6-1: a receipt from a hostile arbiter (its own key, its own JWKS) is NOT verified (77.289765ms)
+unit ✔ AC-F6-2: pinned key verifies with no JWKS fetch; selection by kid survives rotation (13.386384ms)
+unit ✔ AC-F6-2: a pinned key with another receipt's kid does not verify (no fallback to other keys) (13.97478ms)
+unit ✔ AC-F6-2: no pinned key and a non-loopback arbiter → not verified, no JWKS fetch (10.129213ms)
+unit ✔ AC-F6-2: no pinned key and a loopback dev arbiter → JWKS used, labelled dev-jwks (14.102165ms)
+unit ✔ AC-F6-3: config.js ARBITER_KEYS equals the manifest's open_arbiter pin; a public arbiter needs a pinned key (1.354781ms)
+unit ✔ the tripwire itself: a public URL with no keys is refused (0.297706ms)
+unit ✔ the guard's sign-in endpoints are the runtime's (Connect with Otari, Connect with OpenRouter) (4.653455ms)
+unit ✔ model routers plus sign-in endpoints are exactly the CSP's other origins (0.688847ms)
+unit ✔ every runtime provider URL is allowed (0.421968ms)
+unit ✔ a custom provider is blocked on the published site, with its origin named (0.415196ms)
+unit ✔ empty, invalid and same-origin values are not reported; local models are fine on a dev page (0.379288ms)
+unit ✔ the message names the blocked origin and every allowed provider (0.403474ms)
+unit ✔ only connect-src blocks of a model URL count, not the arbiter or this page (0.442196ms)
+unit ✔ a key sign-in is never reported as a blocked AI provider (0.318585ms)
+unit ✔ needsKey matches the runtime's needsByok rule (0.922664ms)
+unit ✔ the runtime's rule is still the one needsKey mirrors (tripwire for runtime upgrades) (0.707692ms)
+unit ℹ tests 204
+unit ℹ suites 0
+unit ℹ pass 203
+unit ℹ fail 1
+unit ℹ cancelled 0
+unit ℹ skipped 0
+unit ℹ todo 0
+unit ℹ duration_ms 4097.678642
+unit 
+unit ✖ failing tests:
+unit 
+unit test at arbiter/test/zz-red-probe.test.mjs:4:1
+unit ✖ red probe: deliberately failing (2.031374ms)
+unit   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+unit   
+unit   1 !== 2
+unit   
+unit       at TestContext.<anonymous> (file:///home/runner/work/open-arbiter/open-arbiter/arbiter/test/zz-red-probe.test.mjs:4:56)
+unit       at Test.runInAsyncScope (node:async_hooks:227:14)
+unit       at Test.run (node:internal/test_runner/test:1402:25)
+unit       at Test.start (node:internal/test_runner/test:1262:17)
+unit       at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+unit     generatedMessage: true,
+unit     code: 'ERR_ASSERTION',
+unit     actual: 1,
+unit     expected: 2,
+unit     operator: 'strictEqual',
+unit     diff: 'simple'
+unit   }
+unit ##[error]Process completed with exit code 1.

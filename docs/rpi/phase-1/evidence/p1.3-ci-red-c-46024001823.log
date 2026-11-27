@@ -1,0 +1,123 @@
+unit	﻿2026-11-27T15:20:39.6494285Z ##[group]Run npm run test:m2
+unit [36;1mnpm run test:m2[0m
+unit shell: /usr/bin/bash -e {0}
+unit env:
+unit   CI: 1
+unit   WRANGLER_SEND_METRICS: false
+unit   AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+unit ##[endgroup]
+unit 
+unit > open-arbiter@1.0.0 test:m2
+unit > node --test arbiter/test/m2/*.test.mjs
+unit 
+unit ✖ HEAD's migrations: v0.0's own tests pass against the migrated database (604.127028ms)
+unit ✔ negative: a migration that drops a column v0.0 reads is caught (604.801202ms)
+unit ✖ negative: an 'additive' column on a table v0.0 inserts positionally is caught (41.934829ms)
+unit ✖ default: every release tag is checked (581.891161ms)
+unit ✔ an unknown ref is a usage error, not a pass (35.812287ms)
+unit ℹ tests 5
+unit ℹ suites 0
+unit ℹ pass 2
+unit ℹ fail 3
+unit ℹ cancelled 0
+unit ℹ skipped 0
+unit ℹ todo 0
+unit ℹ duration_ms 1915.896545
+unit 
+unit ✖ failing tests:
+unit 
+unit test at arbiter/test/m2/m2-check.test.mjs:14:1
+unit ✖ HEAD's migrations: v0.0's own tests pass against the migrated database (604.127028ms)
+unit   AssertionError [ERR_ASSERTION]: v0.0: FAIL (ℹ tests 81, ℹ pass 36, ℹ fail 45; migrations: 0000_baseline.sql, 0001_settle_attempt.sql, 0002_red_probe_vendor_contact.sql)
+unit     ✖ fault at "settle mandate": nothing of the accept is committed, and a later accept works (11.853537ms)
+unit     ✖ fault at "decrement stock": nothing of the accept is committed, and a later accept works (4.702196ms)
+unit     ✖ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (2.62603ms)
+unit     ✖ fault at "insert receipt": nothing of the accept is committed, and a later accept works (1.768216ms)
+unit     ✖ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (2.169231ms)
+unit     ✖ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (3.402969ms)
+unit     ✖ concurrent accepts of the same offer: exactly one receipt (3.49167ms)
+unit     ✖ concurrent accepts of different offers on one mandate: exactly one receipt (2.364047ms)
+unit     ✖ the schema refuses negative stock (CHECK stock_nonneg) (2.45671ms)
+unit     ✖ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (2.79651ms)
+unit     ✖ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (2.01089ms)
+unit     ✖ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (1.651626ms)
+unit     ✖ batch commits every statement together (1.437312ms)
+unit     ✖ batch rolls back everything when one statement fails (1.410999ms)
+unit     ✖ injected fault aborts a batch at the chosen statement (0.758099ms)
+unit     full output: /tmp/m2-v0.0-krKuPV/m2-test-output.txt
+unit   
+unit   
+unit   1 !== 0
+unit   
+unit       at TestContext.<anonymous> (file:///home/runner/work/open-arbiter/open-arbiter/arbiter/test/m2/m2-check.test.mjs:16:10)
+unit       at Test.runInAsyncScope (node:async_hooks:227:14)
+unit       at Test.run (node:internal/test_runner/test:1402:25)
+unit       at Test.start (node:internal/test_runner/test:1262:17)
+unit       at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+unit     generatedMessage: false,
+unit     code: 'ERR_ASSERTION',
+unit     actual: 1,
+unit     expected: 0,
+unit     operator: 'strictEqual',
+unit     diff: 'simple'
+unit   }
+unit 
+unit test at arbiter/test/m2/m2-check.test.mjs:26:1
+unit ✖ negative: an 'additive' column on a table v0.0 inserts positionally is caught (41.934829ms)
+unit   AssertionError [ERR_ASSERTION]: The input did not match the regular expression /v0\.0: FAIL/. Input:
+unit   
+unit   ''
+unit   
+unit       at TestContext.<anonymous> (file:///home/runner/work/open-arbiter/open-arbiter/arbiter/test/m2/m2-check.test.mjs:29:10)
+unit       at Test.runInAsyncScope (node:async_hooks:227:14)
+unit       at Test.run (node:internal/test_runner/test:1402:25)
+unit       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+unit       at Test.postRun (node:internal/test_runner/test:1542:19)
+unit       at Test.run (node:internal/test_runner/test:1467:12)
+unit       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+unit     generatedMessage: true,
+unit     code: 'ERR_ASSERTION',
+unit     actual: '',
+unit     expected: /v0\.0: FAIL/,
+unit     operator: 'match',
+unit     diff: 'simple'
+unit   }
+unit 
+unit test at arbiter/test/m2/m2-check.test.mjs:32:1
+unit ✖ default: every release tag is checked (581.891161ms)
+unit   AssertionError [ERR_ASSERTION]: v0.0: FAIL (ℹ tests 81, ℹ pass 36, ℹ fail 45; migrations: 0000_baseline.sql, 0001_settle_attempt.sql, 0002_red_probe_vendor_contact.sql)
+unit     ✖ fault at "settle mandate": nothing of the accept is committed, and a later accept works (15.020257ms)
+unit     ✖ fault at "decrement stock": nothing of the accept is committed, and a later accept works (3.929029ms)
+unit     ✖ fault at "accept/void offers": nothing of the accept is committed, and a later accept works (2.140021ms)
+unit     ✖ fault at "insert receipt": nothing of the accept is committed, and a later accept works (1.637689ms)
+unit     ✖ fault at "event OFFER_ACCEPTED": nothing of the accept is committed, and a later accept works (3.276433ms)
+unit     ✖ fault at "event RECEIPT_ISSUED": nothing of the accept is committed, and a later accept works (1.58161ms)
+unit     ✖ concurrent accepts of the same offer: exactly one receipt (2.681243ms)
+unit     ✖ concurrent accepts of different offers on one mandate: exactly one receipt (1.467069ms)
+unit     ✖ the schema refuses negative stock (CHECK stock_nonneg) (1.83228ms)
+unit     ✖ out of stock at acceptance: 409 out_of_stock, offer VOID, mandate RESOLVED, nothing else changed (1.576949ms)
+unit     ✖ a mandate that is neither RESOLVED nor SETTLED cannot be settled through a stale offer (1.381128ms)
+unit     ✖ the receipt names the committed OFFER_ACCEPTED event, even after a chain retry (2.368672ms)
+unit     ✖ batch commits every statement together (1.484727ms)
+unit     ✖ batch rolls back everything when one statement fails (1.250742ms)
+unit     ✖ injected fault aborts a batch at the chosen statement (0.696352ms)
+unit     full output: /tmp/m2-v0.0-19SMgl/m2-test-output.txt
+unit   
+unit   
+unit   1 !== 0
+unit   
+unit       at TestContext.<anonymous> (file:///home/runner/work/open-arbiter/open-arbiter/arbiter/test/m2/m2-check.test.mjs:34:10)
+unit       at Test.runInAsyncScope (node:async_hooks:227:14)
+unit       at Test.run (node:internal/test_runner/test:1402:25)
+unit       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+unit       at Test.postRun (node:internal/test_runner/test:1542:19)
+unit       at Test.run (node:internal/test_runner/test:1467:12)
+unit       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+unit     generatedMessage: false,
+unit     code: 'ERR_ASSERTION',
+unit     actual: 1,
+unit     expected: 0,
+unit     operator: 'strictEqual',
+unit     diff: 'simple'
+unit   }
+unit ##[error]Process completed with exit code 1.
