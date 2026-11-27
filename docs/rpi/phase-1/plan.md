@@ -217,6 +217,7 @@ Read-only review of `agentic-web` `d67755e..origin/main` (60 commits on 2026-11-
 | AC-8.2 | Oversell on hosted D1 gives 409 `out_of_stock` and nothing written | Saved |
 | AC-8.3 | Measured: CPU per endpoint; rows read and written per negotiation and accept; queries per accept under contention (≤ 50 Free); cron CPU (P1.12) | Evidence table; any value above 50% of a limit is a finding for the owner |
 | AC-8.4 | The admin incremental verification is ok after all runs | Saved |
+| AC-8.5 | **What Workers Logs stores** (owner, 2026-11-27). On staging, invocation logs are off (P1.5). Make one request carrying a planted test token (`Authorization: Bearer bt_PLANTED…`) and a test IP-style header (`x-forwarded-for: 198.51.100.x`). Then read that request's records in Workers Logs (dashboard or query) and record every field stored. **If any record holds the header or the IP:** invocation logs stay off permanently, and the runbook says why. **If not:** record the evidence and leave turning them back on to the owner. | Saved records (planted values only); runbook line |
 
 ### P1.9: rollback drill (staging)
 

@@ -1,0 +1,493 @@
+✔ no environment, an unknown one or the empty top level is refused (1.761242ms)
+✔ staging deploys with --env staging (0.892979ms)
+✔ production needs --confirm-production (owner approval A3 is still required; this only stops slips) (0.279889ms)
+✔ unknown flags are refused rather than passed to wrangler (0.300138ms)
+✔ an environment whose ids are still placeholders is refused, except for a dry run (0.266153ms)
+✔ the CLI exits 2 without an environment, before starting wrangler (1029.72421ms)
+✔ the checked-in wrangler.toml still has placeholder ids (resources are created at approval A1/A3) (14.522885ms)
+✖ a deploy passes the git commit as GIT_SHA and as the version tag (2.147102ms)
+✖ healthy: 200 with versions, db, key (kid only), migrations and schema (74.447975ms)
+✖ the log line carries the Worker version, the mechanism and the git commit (8.907963ms)
+✖ local dev (DEV=1, no secret): 200, the key is the dev key and nothing is written (5.116119ms)
+✖ misconfigured: 503 key_missing, with the checks and a request id (9.318289ms)
+✖ misconfigured: 503 key_invalid, with the checks and a request id (16.198295ms)
+✖ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (17.422351ms)
+✖ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (8.063855ms)
+✖ misconfigured: 503 schema_outdated, with the checks and a request id (6.171035ms)
+✖ misconfigured: 503 migrations_pending, with the checks and a request id (7.386725ms)
+✖ misconfigured: 503 db_unavailable, with the checks and a request id (6.721586ms)
+{
+  ts: '2026-11-27T21:39:55.919Z',
+  level: 'error',
+  request_id: '13e8b2057cf81bbd2020e0fba4b1b68f',
+  env: 'staging',
+  version: '3.0.0',
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'internal',
+  duration_ms: 1,
+  error_class: 'SyntaxError',
+  error_fingerprint: '404f595b3650'
+}
+✖ an unparseable signing key makes other routes refuse as misconfigured, not crash as internal (7.601952ms)
+✖ a request writes one JSON line: route template, never the raw path or query (66.217604ms)
+✖ route templates for every endpoint; anything else is 'unmatched' (8.879368ms)
+✔ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (4.817153ms)
+✔ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (7.839441ms)
+✔ a cf-ray header that is not a plain ray id is not trusted as the request id (4.322568ms)
+✔ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (22.234375ms)
+✔ the same failure gives the same fingerprint (26.395968ms)
+✔ a misconfiguration is logged with a fixed reason, and nothing else is written (9.822974ms)
+✔ MCP calls log the JSON-RPC method and the tool, and a tool's error code (7.495821ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (13.100755ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (2.086176ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (3.787005ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (1.280353ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.136741ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (0.751993ms)
+✔ the top level logs as ENVIRONMENT = "local" (0.775267ms)
+✔ the runbook says how to read the logs (0.543658ms)
+✖ the top level binds version metadata as CF_VERSION_METADATA (2.006306ms)
+✖ [env.staging] binds version metadata as CF_VERSION_METADATA (1.049356ms)
+✖ [env.production] binds version metadata as CF_VERSION_METADATA (0.767182ms)
+✖ the seller console shows the arbiter's /health in a status line (3.46742ms)
+✖ the runbook's first check after a deploy is /health (0.904221ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 22
+ℹ fail 19
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2350.403444
+
+✖ failing tests:
+
+test at arbiter/test/deploy-script.test.mjs:53:1
+✖ a deploy passes the git commit as GIT_SHA and as the version tag (2.147102ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'deploy',
+      '--env',
+      'staging',
+  -   '--var',
+  -   'GIT_SHA:6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1',
+  -   '--tag',
+  -   '6fe6ff5b07fe'
+    ]
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/deploy-script.test.mjs:55:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'deploy', '--env', 'staging' ],
+    expected: [ 'deploy', '--env', 'staging', '--var', 'GIT_SHA:6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1', '--tag', '6fe6ff5b07fe' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:35:1
+✖ healthy: 200 with versions, db, key (kid only), migrations and schema (74.447975ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:38:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:55:1
+✖ the log line carries the Worker version, the mechanism and the git commit (8.907963ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + '3.0.0'
+  - {
+  -   git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1',
+  -   mechanism: '3.0.0',
+  -   worker: '0b9e1f6c-1111-4222-8333-944455556666'
+  - }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:58:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '3.0.0',
+    expected: { worker: '0b9e1f6c-1111-4222-8333-944455556666', mechanism: '3.0.0', git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:62:1
+✖ local dev (DEV=1, no secret): 200, the key is the dev key and nothing is written (5.116119ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:65:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 key_missing, with the checks and a request id (9.318289ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 key_invalid, with the checks and a request id (16.198295ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  500 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 500,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (17.422351ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (8.063855ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 schema_outdated, with the checks and a request id (6.171035ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 migrations_pending, with the checks and a request id (7.386725ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:82:3
+✖ misconfigured: 503 db_unavailable, with the checks and a request id (6.721586ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 503
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:85:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 503,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/health.test.mjs:99:1
+✖ an unparseable signing key makes other routes refuse as misconfigured, not crash as internal (7.601952ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'internal'
+  - 'misconfigured'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/health.test.mjs:103:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'internal',
+    expected: 'misconfigured',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:36:1
+✖ a request writes one JSON line: route template, never the raw path or query (66.217604ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '0',
+  +   '1',
+  +   '2',
+  +   '3',
+  +   '4'
+  -   'git',
+  -   'mechanism',
+  -   'worker'
+    ]
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:45:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '0', '1', '2', '3', '4' ],
+    expected: [ 'git', 'mechanism', 'worker' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:49:1
+✖ route templates for every endpoint; anything else is 'unmatched' (8.879368ms)
+  AssertionError [ERR_ASSERTION]: GET /health
+  + actual - expected
+  
+  + 'unmatched'
+  - '/health'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:61:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'unmatched',
+    expected: '/health',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:93:3
+✖ the top level binds version metadata as CF_VERSION_METADATA (2.006306ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'CF_VERSION_METADATA'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:94:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'CF_VERSION_METADATA',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:93:3
+✖ [env.staging] binds version metadata as CF_VERSION_METADATA (1.049356ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'CF_VERSION_METADATA'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:94:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'CF_VERSION_METADATA',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:93:3
+✖ [env.production] binds version metadata as CF_VERSION_METADATA (0.767182ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'CF_VERSION_METADATA'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:94:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'CF_VERSION_METADATA',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/vendor-health.test.mjs:8:1
+✖ the seller console shows the arbiter's /health in a status line (3.46742ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /id="arbiter-health"[^>]*role="status"|role="status"[^>]*id="arbiter-health"/. Input:
+  
+  '<!doctype html>\n' +
+    '<html lang="en">\n' +
+    '<head>\n' +
+    '  <meta charset="utf-8">\n' +
+    '  <meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+    '  <title>Oja for sellers: seal your prices</title>\n' +
+    '  <link rel="icon" href="favicon.svg" type="image/svg+xml">\n' +
+    '  <link rel="stylesheet" href="styles.css">\n' +
+    '  <script type="module" src="js/vendor.js"></script>\n' +
+    '</head>\n' +
+    '<body>\n' +
+    '  <header class="top"><div class="wrap bar"><a class="brand" href="./"><span class="mark" aria-hidden="true">◆</span> Oja</a><nav><a href="./">Market</a></nav></div></header>\n' +
+    '  <main class="wrap">\n' +
+    '    <section class="hero compact">\n' +
+    '      <h1>Seal your prices. <span>Sell while you sleep.</span></h1>\n' +
+    `      <p class="lead">Set a public list price and a private lowest price for each item. Buyers' agents negotiate through the arbiter; your lowest price stays with the arbiter and is never shown to buyers or their assistants. An agreed price only shows which price step (₦100, ₦200, ₦400 … per unit, between 1.25% and 2.5% of your list price) your lowest price falls in. Your lowest price cannot fall inside the partial step just under your list price; if it does, the arbiter tells you the highest it accepts.</p>\n` +
+    '    </section>\n' +
+    '    <section class="two">\n' +
+    '      <form id="login" class="card">\n' +
+    '        <h2>Your seller key</h2>\n' +
+    '        <label>Seller key <input id="key" type="password" autocomplete="off" required placeholder="vk_…"></label>\n' +
+    '        <p class="muted small">Kept in this tab only, and sent only to the arbiter at <code id="host"></code>.</p>\n' +
+    '        <button type="submit">Open my listings</button>\n' +
+    '        <p id="who" class="flash" role="status"></p>\n' +
+    '      </form>\n' +
+    '      <form id="listing" class="card" hidden>\n' +
+    '        <h2>Add or update an item</h2>\n' +
+    '        <div class="row">\n' +
+    '          <label>Item id <input id="sku" required pattern="[a-z0-9][a-z0-9_\\-]{0,63}" placeholder="rice-50kg"></label>\n' +
+    '          <label>Unit <input id="unit" value="bag" required></label>\n' +
+    '        </div>\n' +
+    '        <label>Name <input id="title" required placeholder="Local parboiled rice, 50 kg bag"></label>\n' +
+    '        <div class="row">\n' +
+    '          <label>List price per unit (₦) <input id="ask" type="number" min="1" required></label>\n' +
+    '          <label>Lowest price per unit (₦, sealed) <input id="floor" type="number" min="1" required></label>\n' +
+    '        </div>\n' +
+    '        <div class="row">\n' +
+    '          <label>Delivery time (hours) <input id="hours" type="number" min="0" max="2160" value="24" required></label>\n' +
+    '          <label>In stock <input id="stock" type="number" min="0" value="10" required></label>\n' +
+    '        </div>\n' +
+    '        <button type="submit">Seal this listing</button>\n' +
+    '        <p id="saved" class="flash" role="status"></p>\n' +
+    '      </form>\n' +
+    '    </section>\n' +
+    '    <section id="mine" hidden>\n' +
+    '      <h2>Your sealed listings</h2>\n' +
+    '      <table><thead><tr><th>Item</th><th class="num">List</th><th class="num">Lowest (only you see this)</th><th class="num">Delivery</th><th class="num">Stock</th></tr></thead><tbody id="rows"></tbody></table>\n' +
+    '    </section>\n' +
+    '  </main>\n' +
+    '</body>\n' +
+    '</html>\n'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/vendor-health.test.mjs:9:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: `<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>Oja for sellers: seal your prices</title>\n  <link rel="icon" href="favicon.svg" type="image/svg+xml">\n  <link rel="stylesheet" href="styles.css">\n  <script type="module" src="js/vendor.js"></script>\n</head>\n<body>\n  <header class="top"><div class="wrap bar"><a class="brand" href="./"><span class="mark" aria-hidden="true">◆</span> Oja</a><nav><a href="./">Market</a></nav></div></header>\n  <main class="wrap">\n    <section class="hero compact">\n      <h1>Seal your prices. <span>Sell while you sleep.</span></h1>\n      <p class="lead">Set a public list price and a private lowest price for each item. Buyers' agents negotiate through the arbiter; your lowest price stays with the arbiter and is never shown to buyers or their assistants. An agreed price only shows which price step (₦100, ₦200, ₦400 … per unit, between 1.25% and 2.5% of your list price) your lowest price falls in. Your lowest price cannot fall inside the partial step just under your list price; if it does, the arbiter tells you the highest it accepts.</p>\n    </section>\n    <section class="two">\n      <form id="login" class="card">\n        <h2>Your seller key</h2>\n        <label>Seller key <input id="key" type="password" autocomplete="off" required placeholder="vk_…"></label>\n        <p class="muted small">Kept in this tab only, and sent only to the arbiter at <code id="host"></code>.</p>\n        <button type="submit">Open my listings</button>\n        <p id="who" class="flash" role="status"></p>\n      </form>\n      <form id="listing" class="card" hidden>\n        <h2>Add or update an item</h2>\n        <div class="row">\n          <label>Item id <input id="sku" required pattern="[a-z0-9][a-z0-9_\\-]{0,63}" placeholder="rice-50kg"></label>\n          <label>Unit <input id="unit" value="bag" required></label>\n        </div>\n        <label>Name <input id="title" required placeholder="Local parboiled rice, 50 kg bag"></label>\n        <div class="row">\n          <label>List price per unit (₦) <input id="ask" type="number" min="1" required></label>\n          <label>Lowest price per unit (₦, sealed) <input id="floor" type="number" min="1" required></label>\n        </div>\n        <div class="row">\n          <label>Delivery time (hours) <input id="hours" type="number" min="0" max="2160" value="24" required></label>\n          <label>In stock <input id="stock" type="number" min="0" value="10" required></label>\n        </div>\n        <button type="submit">Seal this listing</button>\n        <p id="saved" class="flash" role="status"></p>\n      </form>\n    </section>\n    <section id="mine" hidden>\n      <h2>Your sealed listings</h2>\n      <table><thead><tr><th>Item</th><th class="num">List</th><th class="num">Lowest (only you see this)</th><th class="num">Delivery</th><th class="num">Stock</th></tr></thead><tbody id="rows"></tbody></table>\n    </section>\n  </main>\n</body>\n</html>\n`,
+    expected: /id="arbiter-health"[^>]*role="status"|role="status"[^>]*id="arbiter-health"/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/vendor-health.test.mjs:15:1
+✖ the runbook's first check after a deploy is /health (0.904221ms)
+  AssertionError [ERR_ASSERTION]: docs/runbooks/deploy.md has no '## After a deploy' section
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/vendor-health.test.mjs:18:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+exit: 1

@@ -48,3 +48,13 @@ test("the checked-in wrangler.toml still has placeholder ids (resources are crea
   assert.equal(typeof p.hasPlaceholderIds("staging"), "boolean");
   assert.equal(typeof p.hasPlaceholderIds("production"), "boolean");
 });
+
+// P1.6: every deploy records its git commit, as the GIT_SHA var (/health, log lines) and the version tag.
+test("a deploy passes the git commit as GIT_SHA and as the version tag", () => {
+  const sha = "6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1";
+  assert.deepEqual(deployArgs(["staging"], ids(REAL), { sha, dirty: false }),
+    ["deploy", "--env", "staging", "--var", `GIT_SHA:${sha}`, "--tag", sha.slice(0, 12)]);
+  assert.deepEqual(deployArgs(["staging"], ids(REAL), { sha, dirty: true }).slice(3),
+    ["--var", `GIT_SHA:${sha}-dirty`, "--tag", `${sha.slice(0, 12)}-dirty`], "a dirty tree is marked, not hidden");
+  assert.throws(() => deployArgs(["staging"], ids(REAL), { sha: "not-a-sha", dirty: false }), /git commit/);
+});

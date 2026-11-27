@@ -191,6 +191,9 @@ with sync_playwright() as p:
     # 7. The seller console, whose script moved out of the HTML for the CSP.
     page.goto(f"{ORIGIN}/vendor.html")
     expect(page.locator("#host")).to_have_text("localhost:8787", timeout=10000)
+    # P1.6: the seller console checks the arbiter's /health first.
+    expect(page.locator("#arbiter-health")).to_contain_text("Arbiter healthy", timeout=10000)
+    print("vendor page health line:", page.locator("#arbiter-health").inner_text())
     page.screenshot(path=f"{OUT}/7-vendor.png", full_page=False)
     violations += collect_csp(page, "vendor")
 

@@ -86,3 +86,11 @@ test("the runbook says how to read the logs", () => {
   for (const env of ENVS) assert.ok(section.includes(`wrangler tail --env ${env} --format json`), env);
   assert.match(section, /request_id/);
 });
+
+// P1.6: /health and the log lines name the Worker version. The binding is not inherited by
+// [env.X] (checked with wrangler 4.166.0's config reader), so each environment declares it.
+for (const env of [undefined, ...ENVS]) {
+  test(`${env ? `[env.${env}]` : "the top level"} binds version metadata as CF_VERSION_METADATA`, () => {
+    assert.equal(read(env).version_metadata?.binding, "CF_VERSION_METADATA");
+  });
+}

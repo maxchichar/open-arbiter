@@ -41,13 +41,15 @@ test("a request writes one JSON line: route template, never the raw path or quer
   assert.deepEqual({ method: l.method, route: l.route, status: l.status, code: l.code, env: l.env, level: l.level },
     { method: "POST", route: "/v1/mandates/:id/resolve", status: 404, code: "not_found", env: "test", level: "info" });
   assert.ok(!renderCalls(calls)[0].includes("man_abcdefghijklmnop") && !renderCalls(calls)[0].includes("secret=x"));
-  assert.equal(typeof l.version, "string");
+  // P1.6: the Worker version (version-metadata binding), the mechanism and the git commit.
+  assert.deepEqual(Object.keys(l.version).sort(), ["git", "mechanism", "worker"]);
+  assert.equal(l.version.worker, "local", "no version-metadata binding in this env");
 });
 
 test("route templates for every endpoint; anything else is 'unmatched'", async () => {
   const e = env();
   const cases = [
-    ["GET", "/", "/"], ["GET", "/.well-known/jwks.json", "/.well-known/jwks.json"], ["POST", "/mcp", "/mcp"],
+    ["GET", "/", "/"], ["GET", "/health", "/health"], ["GET", "/.well-known/jwks.json", "/.well-known/jwks.json"], ["POST", "/mcp", "/mcp"],
     ["GET", "/v1/catalog?sku=x", "/v1/catalog"], ["GET", "/v1/receipts/rct_abc", "/v1/receipts/:id"],
     ["POST", "/v1/receipts/verify", "/v1/receipts/verify"], ["GET", "/v1/audit/verify", "/v1/audit/verify"],
     ["POST", "/v1/vendors", "/v1/vendors"], ["GET", "/v1/listings", "/v1/listings"], ["POST", "/v1/mandates", "/v1/mandates"],
