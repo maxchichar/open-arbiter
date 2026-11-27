@@ -1,0 +1,37 @@
+npm notice run open-arbiter@1.0.0 test:worker
+npm notice run node arbiter/scripts/worker-harness.mjs
+harness: worker at http://127.0.0.1:44219, state in /tmp/open-arbiter-harness-S8tgnH
+
+=== seed ===
+Iya Basira Foodstuff: ven_BYz4fARQXBTyC8qf (3 sealed listings)
+Chika Provisions: ven_x6f8dXvGLzH0eYY- (2 sealed listings)
+Alhaji Musa Grains: ven_OmfM6RQkfccsv-y8 (3 sealed listings)
+Vendor keys written to /tmp/open-arbiter-harness-S8tgnH/seed-keys.json
+
+=== e2e ===
+catalog: 3 rice listings, no floors exposed
+REST offers: Iya Basira Foodstuff ₦169,600 (list ₦184,000, 24h); Chika Provisions ₦172,800 (list ₦178,000, 6h)
+receipt rct_ypcFdb0TPbRqPhF0 signed by key 18b1e940b2f9524f; verifies, tampered copy fails
+same terms, new budget -> 409 identical_terms
+MCP offers: Alhaji Musa Grains ₦141,600; Iya Basira Foodstuff ₦144,000
+MCP low bid -> agreement=false: "No seller could meet these terms. Neither side's limits are revealed."
+audit chain intact: 19 events
+E2E OK
+
+=== concurrency ===
+PASS chain intact before: {"ok":true,"events":19,"head":"c8c7b15b1de9111640a9ab618c7718fa91b00ec6bc572d2e91e72dd0603fbc87"}
+PASS F2 daily cap holds under concurrency: most 201s in a round: 3 (cap 3); rounds [{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22},{"201":3,"429":22}]
+PASS F2 identical terms give one 201 and 409s: statuses {"201":1,"409":4}
+PASS vendor registered: 201
+PASS F3 concurrent writes succeed: statuses {"200":10,"201":10}
+PASS F3 audit chain intact after concurrent writes: {"ok":true,"events":65,"head":"5b3458c6bdd4d6a07d2692fd5982ddbbd19de890f4dde4125827d70a1d8bb087"}
+PASS F4 concurrent accepts settle once: offers 2, statuses {"200":1,"409":1}
+PASS F4 audit chain intact after accepts: {"ok":true,"events":73,"head":"e8723987a32418af811951a78550d1808e652b004ae5e9f0758a1793c3139ec9"}
+PASS F4 oversell refused as out_of_stock: 409 out_of_stock
+PASS F4 after out_of_stock: mandate RESOLVED, offer VOID, stock unchanged, no receipt: state RESOLVED, offer VOID, stock 2, receipt null
+PASS P0.10 concurrent creates with one secret make one mandate: ids 1, statuses {"200":5,"201":1}
+PASS P0.10 repeat is 200 with the same mandate; the secret works as the token: repeat 200, read 200
+CONCURRENCY OK
+
+harness results: {"seed":true,"e2e":true,"concurrency":true}
+exit: 0
