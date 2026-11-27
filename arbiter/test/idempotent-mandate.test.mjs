@@ -63,16 +63,17 @@ test("the same secret with different terms or a different budget is refused, and
 test("the daily cap still holds, and a retry of an existing mandate is not counted against it", async () => {
   const { db, arb } = await setup();
   const made = [];
-  for (const h of [48, 47, 46]) {
+  const { MANDATE_CAP_DEFAULT: CAP } = await import("../src/core.js");
+  for (let h = 48; h > 48 - CAP; h--) {
     const s = await secret();
     made.push({ s, m: await arb.createMandate({ ...TERMS, deliver_within_hours: h, buyer_token_hash: s.hash }, { buyerKey: "b" }), h });
   }
-  const last = made[2];
+  const last = made.at(-1);
   const again = await arb.createMandate({ ...TERMS, deliver_within_hours: last.h, buyer_token_hash: last.s.hash }, { buyerKey: "b" });
   assert.equal(again.mandate_id, last.m.mandate_id, "a retry at the cap returns the existing mandate, not 429");
   const fresh = await secret();
-  await assert.rejects(arb.createMandate({ ...TERMS, deliver_within_hours: 45, buyer_token_hash: fresh.hash }, { buyerKey: "b" }), { code: "rate_limited" });
-  assert.equal(await count(db, "mandates"), 3);
+  await assert.rejects(arb.createMandate({ ...TERMS, deliver_within_hours: 48 - CAP, buyer_token_hash: fresh.hash }, { buyerKey: "b" }), { code: "rate_limited" });
+  assert.equal(await count(db, "mandates"), CAP);
 });
 
 test("identical terms under a different secret are still refused (no re-bidding with a new budget)", async () => {

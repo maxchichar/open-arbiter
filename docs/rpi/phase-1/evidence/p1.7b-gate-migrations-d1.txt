@@ -1,0 +1,14 @@
+npm notice run open-arbiter@1.0.0 test:migrations-d1
+npm notice run node arbiter/scripts/migrations-d1-check.mjs
+PASS 1. empty database: all migrations apply; sqlite_master equals node:sqlite's
+     3 migrations, 13 schema objects identical
+PASS 2. v0.0-seeded database: migrations apply, no row lost
+     rows {"vendors":2,"listings":4,"mandates":4,"offers":4,"receipts":1,"events":15,"signing_keys":0}
+PASS 3. database made before CHECK stock_nonneg: 0000_baseline fails and is not recorded
+     refused with CHECK constraint failed
+PASS 4. AC-2.6 rebuild on local D1: child rows kept; an orphaning rebuild refused
+     mandates 4, offers 4 kept; orphaning rebuild refused
+PASS 5. premigrate-check through wrangler on a local D1
+     premigrate-check: no findings
+MIGRATIONS-D1 OK
+exit: 0

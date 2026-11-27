@@ -27,14 +27,17 @@ const before = await call("GET", "/v1/audit/verify", { token: admin });
 check("chain intact before", before.data.ok === true, JSON.stringify(before.data));
 
 let ipLimited = false;
-// F2: rounds of 25 concurrent mandates, same buyer, a fresh sku per round, distinct terms.
+// The cap this arbiter enforces (GET / publishes it), and more concurrent attempts than that.
+const CAP = (await call("GET", "/")).data.limits.negotiations_per_item_per_day;
+const N = CAP + 5;
+// F2: rounds of CAP + 5 concurrent mandates, same buyer, a fresh sku per round, distinct terms.
 // Cap is 3 per item per day. The race window is narrow, so one burst is not a reliable
 // reproduction; every round must hold.
 {
   const rounds = [];
   for (let r = 0; r < 8; r++) {
     const sku = `probe-${tag}-cap${r}`;
-    const rs = await Promise.all(Array.from({ length: 25 }, (_, i) => call("POST", "/v1/mandates", {
+    const rs = await Promise.all(Array.from({ length: N }, (_, i) => call("POST", "/v1/mandates", {
       body: { sku, quantity: i + 1, max_total_cents: 1_000_000, deliver_within_hours: 48 },
     })));
     // A 429 here must be the anti-probing cap, not the per-IP request limit (P1.7).
@@ -42,8 +45,8 @@ let ipLimited = false;
     rounds.push(tally(rs));
   }
   const worst = Math.max(...rounds.map((t) => t[201] || 0));
-  const clean = !ipLimited && rounds.every((t) => (t[201] || 0) + (t[429] || 0) === 25);
-  check("F2 daily cap holds under concurrency", worst <= 3 && clean, `most 201s in a round: ${worst} (cap 3); rounds ${JSON.stringify(rounds)}`);
+  const clean = !ipLimited && rounds.every((t) => (t[201] || 0) + (t[429] || 0) === N);
+  check("F2 daily cap holds under concurrency", worst <= CAP && clean, `most 201s in a round: ${worst} (cap ${CAP}); rounds ${JSON.stringify(rounds)}`);
 }
 
 // F2b: 5 concurrent identical terms -> one 201, rest 409, never 500.

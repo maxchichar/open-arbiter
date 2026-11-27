@@ -11,6 +11,7 @@
 import { ArbiterError } from "./errors.js";
 import { sha256Hex } from "./crypto.js";
 import { DEPLOYED_ENVS } from "./health.js";
+import { MANDATE_CAP_DEFAULT } from "./core.js";
 
 export const IP_LIMIT_DEFAULT = 100; // requests per IP per 60 s, unless IP_LIMIT_PER_60S says otherwise
 export const IP_PERIOD_S = 60; // the binding allows 10 or 60
@@ -37,6 +38,13 @@ export async function ipHash(req, env) {
 export function ipLimit(env) {
   const n = Number(env?.IP_LIMIT_PER_60S);
   return Number.isSafeInteger(n) && n >= 1 && n <= 1_000_000 ? n : IP_LIMIT_DEFAULT;
+}
+
+/** The daily negotiation cap per item per address: MANDATES_PER_ITEM_PER_DAY (1-1000), else 20. */
+export function mandateCap(env) {
+  const v = env?.MANDATES_PER_ITEM_PER_DAY;
+  const n = typeof v === "string" && /^\d{1,4}$/.test(v) ? Number(v) : NaN;
+  return n >= 1 && n <= 1000 ? n : MANDATE_CAP_DEFAULT;
 }
 
 /** A fixed window per key. Refuses when count + delta would pass the limit. */

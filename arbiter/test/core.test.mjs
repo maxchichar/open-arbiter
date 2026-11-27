@@ -134,11 +134,12 @@ test("anti-probing: same terms with a new budget are refused, and attempts are c
   const base = { sku: "rice-50kg", quantity: 1, deliver_within_hours: 48 };
   await arb.createMandate({ ...base, max_total_cents: 7_000_000 }, { buyerKey: "prober" });
   await assert.rejects(arb.createMandate({ ...base, max_total_cents: 7_500_000 }, { buyerKey: "prober" }), { code: "identical_terms" });
-  await arb.createMandate({ ...base, deliver_within_hours: 47, max_total_cents: 7_500_000 }, { buyerKey: "prober" });
-  await arb.createMandate({ ...base, deliver_within_hours: 46, max_total_cents: 7_600_000 }, { buyerKey: "prober" });
-  await assert.rejects(arb.createMandate({ ...base, deliver_within_hours: 45, max_total_cents: 7_700_000 }, { buyerKey: "prober" }), { code: "rate_limited" });
+  // The daily cap (MANDATE_CAP_DEFAULT): new deadlines are new terms, until the cap.
+  const { MANDATE_CAP_DEFAULT: CAP } = await import("../src/core.js");
+  for (let i = 1; i < CAP; i++) await arb.createMandate({ ...base, deliver_within_hours: 48 - i, max_total_cents: 7_500_000 + i }, { buyerKey: "prober" });
+  await assert.rejects(arb.createMandate({ ...base, deliver_within_hours: 48 - CAP, max_total_cents: 7_700_000 }, { buyerKey: "prober" }), { code: "rate_limited" });
   tick(86_401);
-  await arb.createMandate({ ...base, deliver_within_hours: 45, max_total_cents: 7_700_000 }, { buyerKey: "prober" });
+  await arb.createMandate({ ...base, deliver_within_hours: 48 - CAP, max_total_cents: 7_700_000 }, { buyerKey: "prober" });
   // another buyer is unaffected
   await arb.createMandate({ ...base, max_total_cents: 7_000_000 }, { buyerKey: "someone-else" });
 });

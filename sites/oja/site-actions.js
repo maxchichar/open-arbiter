@@ -27,7 +27,7 @@ class SiteActions {
   static negotiate() {
     return {
       name: "negotiate",
-      description: "Seal the visitor's bid with the arbiter and get ranked offers. Needs: an sku from website_get_market_state, a quantity, the most the visitor will pay in TOTAL for that quantity in naira (ask if they gave a per-unit figure or none; never choose it for them), and a delivery deadline in hours. The browser asks the visitor to confirm before anything is sent. Each set of terms (sku, quantity, deadline, sellers) can be negotiated once; asking again with only a higher maximum is refused, and each item allows 3 negotiations per day. Returns offers, or agreement false when no seller can meet the terms.",
+      description: "Seal the visitor's bid with the arbiter and get ranked offers. Needs: an sku from website_get_market_state, a quantity, the most the visitor will pay in TOTAL for that quantity in naira (ask if they gave a per-unit figure or none; never choose it for them), and a delivery deadline in hours. The browser asks the visitor to confirm before anything is sent. Each set of terms (sku, quantity, deadline, sellers) can be negotiated once; asking again with only a higher maximum is refused, and each item allows a limited number of negotiations per day (20 by default). Returns offers, or agreement false when no seller can meet the terms.",
       effect: "irreversible",
       inputSchema: {
         type: "object", additionalProperties: false,

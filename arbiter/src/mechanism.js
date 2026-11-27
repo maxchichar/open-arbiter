@@ -42,7 +42,6 @@ export const LIMITS = Object.freeze({
   maxCents: 1_000_000_000, // 10M in major units; guards integer overflow and typos
   maxDeliveryHours: 24 * 90,
   offerTtlSeconds: 15 * 60,
-  mandatesPerBuyerPerSkuPerDay: 3,
 });
 
 const isInt = (v) => Number.isSafeInteger(v);

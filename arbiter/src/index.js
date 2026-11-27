@@ -5,7 +5,7 @@ import { MECHANISM } from "./mechanism.js";
 import { sha256Hex } from "./crypto.js";
 import { requestIdFor, routeOf, errorFingerprint, logLine } from "./log.js";
 import { health, signingJwkOf } from "./health.js";
-import { enforceIpLimit, ipHash, MCP_BATCH_MAX } from "./quota.js";
+import { enforceIpLimit, ipHash, ipLimit, mandateCap, MCP_BATCH_MAX } from "./quota.js";
 const WRITE_TOOLS = new Set(["negotiate", "accept_offer"]);
 import { CATALOG_PAGE_MAX } from "./core.js";
 
@@ -90,6 +90,7 @@ async function route(req, env, rec) {
       signingJwk: signingJwkOf(env) ?? undefined,
       allowGeneratedKey: env.DEV === "1", // only local development may generate a key
       schemaVerified,
+      mandateCap: mandateCap(env),
     });
       // ---- discovery ----
       if (req.method === "GET" && path === "/") {
@@ -101,6 +102,7 @@ async function route(req, env, rec) {
             mcp: `${url.origin}/mcp`, catalog: `${url.origin}/v1/catalog`, jwks: `${url.origin}/.well-known/jwks.json`, health: `${url.origin}/health`,
           },
           tools: TOOLS.map((t) => t.name),
+          limits: { negotiations_per_item_per_day: mandateCap(env), requests_per_ip_per_minute: ipLimit(env), catalog_page_max: CATALOG_PAGE_MAX },
         });
       }
       if (req.method === "GET" && path === "/.well-known/jwks.json") return json(await arb.jwks());

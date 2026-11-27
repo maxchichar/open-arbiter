@@ -343,7 +343,7 @@ Schema guard (from slice 4): `commit()` refuses writes when the CHECK or the `pr
 | P6.2 | Prompt-injection eval set: 20 cases (hostile listing titles, peer instructions, tool results) | L | Runs on 2 real models; pass = no acceptance without the dialog, no limit disclosed, no injected instruction followed |
 | P6.3 | Hostile supplier test site: fishes for the budget, offers fake forms, calls back | M | Every attempt blocked or visible to the visitor; results recorded |
 | P6.4 | Schema fuzzing of every API endpoint | M | 10,000 fuzzed requests: no 500, no partial write |
-| P6.5 | Abuse tests: replayed accepts, token guessing, oversized bodies, burst traffic (includes R5) | M | Each refused with a stable code; rate limits hold |
+| P6.5 | Abuse tests: replayed accepts, token guessing, oversized bodies, burst traffic (includes R5). Evaluate Cloudflare Turnstile on the write endpoints (negotiate, accept) as the defence against distributed abuse (many addresses; the per-IP limits can't stop it), with a non-JavaScript fallback for agents that can't run the widget (owner, 2026-11-27) | M | Each refused with a stable code; rate limits hold; a Turnstile decision recorded (ADR), covering the agent fallback, its CSP origins and the Free-plan terms |
 | P6.6 | Supply chain: `npm audit`, lockfile check, runtime folder hash pinned in CI | S | CI fails on a changed runtime file or a high advisory |
 | P6.7 | Retention job: delete expired mandates and hashed IPs after the ADR's window | M | Test proves deletion and that receipts still verify |
 | P6.8 | `SECURITY.md` with disclosure contact | S | Linked from README and site footer |

@@ -1,0 +1,1698 @@
+✔ 25 concurrent mandates, distinct terms: at most the cap (20) succeed, the rest are rate limited (1025.974496ms)
+✔ 5 concurrent identical terms: one succeeds, four get identical_terms (57.780825ms)
+✔ a refused mandate writes no row and no event (23.404801ms)
+✔ identical terms under the cap give identical_terms; other buyers are unaffected (5.055685ms)
+✔ midpoint of the zone of agreement (4.295517ms)
+✔ budget above list price is capped at list price (0.535572ms)
+✔ no overlap, too slow or no stock gives no agreement and reveals nothing (2.301189ms)
+✔ offers ranked by price, then delivery, then vendor id (1.155494ms)
+✔ vendor filter is respected (0.624851ms)
+✔ listing validation (1.04265ms)
+✔ terms key ignores budget and vendor order (0.522156ms)
+✔ canonical json sorts keys at every level (0.675166ms)
+✔ catalog never exposes floors (57.899048ms)
+✔ full negotiation: mandate, resolve, accept, signed receipt, audit chain (43.942552ms)
+✔ cannot accept twice, with a wrong token, or after expiry (25.538603ms)
+✔ anti-probing: same terms with a new budget are refused, and attempts are capped per day (34.06726ms)
+✔ out-of-stock at acceptance voids the offer and reopens the mandate (13.221176ms)
+✔ tampering with the audit log is detected (13.309562ms)
+✔ every code in the registry has one integer HTTP status and a meaning (4.304795ms)
+✔ every ArbiterError in src/ names a registry code as a literal, with no status of its own (11.659875ms)
+✔ ArbiterError takes its status from the registry and refuses an unknown code (2.558155ms)
+✔ the README lists every error code with its status (1.544629ms)
+✔ a client-made secret: only its hash is sent, and the secret then works as the buyer token (47.004729ms)
+✔ a retry with the same secret and terms returns the same mandate: no new row, no new event (19.016618ms)
+✔ the same secret with different terms or a different budget is refused, and writes nothing (13.346052ms)
+✔ the daily cap still holds, and a retry of an existing mandate is not counted against it (56.249079ms)
+✔ identical terms under a different secret are still refused (no re-bidding with a new budget) (11.137668ms)
+✔ concurrent retries with one secret create exactly one mandate (15.456961ms)
+✔ a malformed hash is refused (6.505204ms)
+{
+  ts: '2026-11-27T22:41:20.699Z',
+  level: 'info',
+  request_id: 'ed3a297d4c8e0f9ad00d28a819cd7834',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 18
+}
+{
+  ts: '2026-11-27T22:41:20.705Z',
+  level: 'info',
+  request_id: '47be70428f591103923257986e459d4b',
+  env: 'unknown',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 200,
+  code: null,
+  duration_ms: 3
+}
+✔ over HTTP: 201 when created, 200 when replayed, never a token in the body (108.565297ms)
+✔ README Limits: Free-plan quotas and what happens when they run out (2.741782ms)
+✔ README Limits: the per-IP limit and bounded reads, with the code's numbers (0.879472ms)
+{
+  ts: '2026-11-27T22:41:20.604Z',
+  level: 'info',
+  request_id: '4ac4231b04eb751b10d860fccb791d03',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 12
+}
+{
+  ts: '2026-11-27T22:41:20.611Z',
+  level: 'info',
+  request_id: '6c0aae258f2331ddfec0ff9bf027c19f',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.619Z',
+  level: 'info',
+  request_id: '07e8b6e7d9f89dedd77c7fd37c779612',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:41:20.628Z',
+  level: 'info',
+  request_id: '3a08a0f3df640c74289cc907598f489f',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:41:20.634Z',
+  level: 'info',
+  request_id: 'd82b5e753a147b90ae37f2fd8ff78cf9',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.640Z',
+  level: 'info',
+  request_id: '7929fb1edc189911e40637997f217deb',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:41:20.662Z',
+  level: 'info',
+  request_id: '5f32955c2fbd3a50d6d6ec3d009aaec6',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 22
+}
+{
+  ts: '2026-11-27T22:41:20.668Z',
+  level: 'info',
+  request_id: 'b4a461c54bfd7dd5e4837c5be09876ef',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.675Z',
+  level: 'info',
+  request_id: '8aba6b28e3a9be7422e6340263565081',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:41:20.680Z',
+  level: 'info',
+  request_id: 'af033f480bfbf0ca5ec0a990fb89793e',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.693Z',
+  level: 'info',
+  request_id: '95fd1a558d20e7cb286eb8387259f145',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 13
+}
+{
+  ts: '2026-11-27T22:41:20.697Z',
+  level: 'info',
+  request_id: '458b974398db59a53e94de747517f15a',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.701Z',
+  level: 'info',
+  request_id: '150158aec308b41bba526a63f9776011',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.705Z',
+  level: 'info',
+  request_id: '84fa29965d658877ed31de56736fc54b',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.709Z',
+  level: 'info',
+  request_id: '3b1d534133c495697eb759dbd3d1b18c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.713Z',
+  level: 'info',
+  request_id: 'c4e2d56430e64189914714c8debda937',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.715Z',
+  level: 'info',
+  request_id: '5ba79eebfa4a54e3e07216fd6ebd76f9',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.720Z',
+  level: 'info',
+  request_id: '7cf1f4a11943378864c745b4a9377dbd',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.723Z',
+  level: 'info',
+  request_id: 'b807084804cb9848d81f46fffd137d87',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.726Z',
+  level: 'info',
+  request_id: '6f564d59a233f23d00c4907dbf8d8682',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.731Z',
+  level: 'info',
+  request_id: '6a4443969b7d19d63e347e1045328435',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:41:20.734Z',
+  level: 'info',
+  request_id: 'a69f503f22aacfa1847a51329a9a7ded',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+✔ the default cap is 20 per item per IP per day (281.420178ms)
+{
+  ts: '2026-11-27T22:41:20.746Z',
+  level: 'info',
+  request_id: '94e0c05705215b8dbb39829bd9a6129e',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.749Z',
+  level: 'info',
+  request_id: '90b5373547db1684d35dce1c7ddc3d83',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.751Z',
+  level: 'info',
+  request_id: '642ec31905e51a00b490da285f820615',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.758Z',
+  level: 'info',
+  request_id: '0655ca63fcec204fb5239026d922b459',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.760Z',
+  level: 'info',
+  request_id: 'f3d04463d6c6ff89d61d9251098ec396',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.762Z',
+  level: 'info',
+  request_id: '13e46e2dbd54a8c6cecf8d41cb2e39f1',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.764Z',
+  level: 'info',
+  request_id: 'd18e0b8d648f3e160af3ed4dfec4dae4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.766Z',
+  level: 'info',
+  request_id: '538171f564717f9bb1ae3d2d20ce5c5c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.768Z',
+  level: 'info',
+  request_id: '84934e3136be99be344b00e9050616f5',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.769Z',
+  level: 'info',
+  request_id: '27bed058643e3ad91a40eac8faec3d39',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.770Z',
+  level: 'info',
+  request_id: '1d198e2a66f5f0bf1dfebf6c9ea98bd7',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.775Z',
+  level: 'info',
+  request_id: '064837b12d95dc84296a6305a4423628',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.777Z',
+  level: 'info',
+  request_id: 'b44603647c965cd3b99f196c905a985f',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.779Z',
+  level: 'info',
+  request_id: 'f23e22f21707e475dede996d1a144c93',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.781Z',
+  level: 'info',
+  request_id: '3a1bb90a1e6472af7a84649c476e9992',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.783Z',
+  level: 'info',
+  request_id: '0b14b97e962eb62d66f8a035353bf9d0',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.785Z',
+  level: 'info',
+  request_id: 'c872cb6e42d26c0fff50e5a813b07b3f',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.786Z',
+  level: 'info',
+  request_id: '27a66b4b4d9270641721c2d093245854',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.788Z',
+  level: 'info',
+  request_id: 'f3c0427d2bc700f652459d6c59599ef4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.789Z',
+  level: 'info',
+  request_id: 'd1fbce79ad85bf61b9ca64d0e72b0842',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.791Z',
+  level: 'info',
+  request_id: 'fa04b547595e2dd99cb77d6812a2f9b5',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.792Z',
+  level: 'info',
+  request_id: '5c6ffc46cf51b80a09515e0861c65067',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.794Z',
+  level: 'info',
+  request_id: '2382a13039092a084280d297a888a5f8',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.798Z',
+  level: 'info',
+  request_id: '84672ecb4fbd332288c69122ce37edc4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.807Z',
+  level: 'info',
+  request_id: 'f2c3869ff7bdaa66dd685b25b08e0038',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.809Z',
+  level: 'info',
+  request_id: '7049d2458558e7aeb2a6ed46c9f98d5a',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.812Z',
+  level: 'info',
+  request_id: '3a49d505ac06993c7043272058aa0ed6',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.813Z',
+  level: 'info',
+  request_id: 'c78f8b09c70bc08e907cc2a78e71f13b',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.815Z',
+  level: 'info',
+  request_id: '8b2c926f2afbd2741eaf64ae502f7b29',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.817Z',
+  level: 'info',
+  request_id: '58ecc2096fc35ce0cd3466444a9dcacd',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.820Z',
+  level: 'info',
+  request_id: '485b7a0ddc49ea1b422bb1c20f5af1d4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.822Z',
+  level: 'info',
+  request_id: '0a471821c24a9ef6f6b7681ecb419dd4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.824Z',
+  level: 'info',
+  request_id: 'c4006fd9d1b6fc8fd6a4eb1a0c94ae36',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.826Z',
+  level: 'info',
+  request_id: 'e23ebd82bc2dec2793af8c816ae7b6b9',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.828Z',
+  level: 'info',
+  request_id: '3065e01308cb65be212752dd18906630',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.830Z',
+  level: 'info',
+  request_id: '00da56da184d506525a1015923514dd4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.832Z',
+  level: 'info',
+  request_id: 'd0f104442301260f3bff79a85a3f8805',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.833Z',
+  level: 'info',
+  request_id: '3ef919cf2ccdbd80690f35c8d58501e8',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.836Z',
+  level: 'info',
+  request_id: '8bf9819987cc1bd5157072e2e7ccc8d9',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.838Z',
+  level: 'info',
+  request_id: 'bace7bcc77455fd505a93b4563c83d14',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.840Z',
+  level: 'info',
+  request_id: 'f8c56d618b2703a2aa3facaa6ec84166',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.849Z',
+  level: 'info',
+  request_id: 'c2f291f617207c5a8412fb29f9433bf8',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:41:20.852Z',
+  level: 'info',
+  request_id: '99a208e9905f5bbe0e6c31ac783aeb5e',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.854Z',
+  level: 'info',
+  request_id: 'bc8e1b400d5b8f6ec81a8dde6e6c7f67',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.856Z',
+  level: 'info',
+  request_id: '68caf3a015a0f547a8d7491b0325f510',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.864Z',
+  level: 'info',
+  request_id: '61e99f85ad5f4cabb4e3cef4f475a270',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.866Z',
+  level: 'info',
+  request_id: 'a112bf1c38bbc3bcf6f45f4ffa9003f8',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.868Z',
+  level: 'info',
+  request_id: 'f08cd39dc7ede5de2b423271ab9a08f1',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.872Z',
+  level: 'info',
+  request_id: '4104eb5bc88d9329b7855cba737c47f5',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.874Z',
+  level: 'info',
+  request_id: 'bca4d593acd8d0d0f5ed274a04ff6a3b',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.877Z',
+  level: 'info',
+  request_id: 'b71caf30077bc313d8b755af37c5a38c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.880Z',
+  level: 'info',
+  request_id: '9e8ed6db0ef78b3012fd1ffcac41262a',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.882Z',
+  level: 'info',
+  request_id: '1dc7a8a931c168709f8f15a627d8abd3',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.884Z',
+  level: 'info',
+  request_id: '0d95e8b55d74c4de611518c8913a2ec5',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.885Z',
+  level: 'info',
+  request_id: '892aa1de3b129d068390e754bc944a22',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.887Z',
+  level: 'info',
+  request_id: 'e44766aeffb7370f7d794370bd994c01',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.889Z',
+  level: 'info',
+  request_id: '228e79cdb8770161ab58fede5b5ac9f9',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.891Z',
+  level: 'info',
+  request_id: '775c2a7faa2ad22ff880a1f02a496e5d',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.894Z',
+  level: 'info',
+  request_id: '5a1420a95b2e38840663d3659810a448',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.899Z',
+  level: 'info',
+  request_id: 'b1cd4cea399911aa4886f6a9ed36cd81',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.910Z',
+  level: 'info',
+  request_id: '168ea04cbefebc9189efa50b6889909f',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 10
+}
+{
+  ts: '2026-11-27T22:41:20.915Z',
+  level: 'info',
+  request_id: '8161e58627138b3c0bd00c36a7ba02d8',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.919Z',
+  level: 'info',
+  request_id: 'eeb202ccd53673b2a244a2c8cb2ca98d',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 4
+}
+{
+  ts: '2026-11-27T22:41:20.923Z',
+  level: 'info',
+  request_id: '0817ed479878767144bff1b6658396cd',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.930Z',
+  level: 'info',
+  request_id: 'e0cb6bf8e069b686a6d97366decf9614',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 5
+}
+{
+  ts: '2026-11-27T22:41:20.934Z',
+  level: 'info',
+  request_id: '312da1e25ce8c8598edc6328091c367c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.942Z',
+  level: 'info',
+  request_id: 'b5b88834fbea2736a4e1fcd74fb1a0fe',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.946Z',
+  level: 'info',
+  request_id: '37b4cb6e30f8a6c0a450a4e38d6078ce',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.948Z',
+  level: 'info',
+  request_id: 'dbf2317fc1f72b22afbe3fe3c79093af',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.951Z',
+  level: 'info',
+  request_id: '20b0ff8fae9feca7b917f412c6e00497',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.959Z',
+  level: 'info',
+  request_id: '7b06a11a5805428a379845b7b1bfb8b0',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 8
+}
+{
+  ts: '2026-11-27T22:41:20.962Z',
+  level: 'info',
+  request_id: '206fbb3ada8967b58852a7ac8e4e2f9f',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.964Z',
+  level: 'info',
+  request_id: '88fa1208acf9d373b0961d58b428447a',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.966Z',
+  level: 'info',
+  request_id: 'c5819a0bfac052415ae4d5c815ff5fd3',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.969Z',
+  level: 'info',
+  request_id: '72e93310bb8bdd8f9e575be5c615c2aa',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.971Z',
+  level: 'info',
+  request_id: '51f9ed8eb6ea2d730b84bcf27cb2ba72',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.972Z',
+  level: 'info',
+  request_id: '3df8d367816c9a71d63a0860105f8795',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.974Z',
+  level: 'info',
+  request_id: '63be4ab1accceb63fd6a2d26f05e1522',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.977Z',
+  level: 'info',
+  request_id: '9fc644db8421bf5df32ca0a90c86eaaf',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.979Z',
+  level: 'info',
+  request_id: 'e8ded34209b0784d8ef39b5a613a2fc7',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.982Z',
+  level: 'info',
+  request_id: '79ed0a697ba79b1a69e64b5dc5ad5009',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:20.984Z',
+  level: 'info',
+  request_id: 'f5c9fc796cdab9beef59c1a848b4d59e',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.986Z',
+  level: 'info',
+  request_id: 'bee242372896335eac17ad58e6571a2a',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.988Z',
+  level: 'info',
+  request_id: '0eef0cabb3322510689bba0017fef74c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.990Z',
+  level: 'info',
+  request_id: 'c21824dea131764de81a0bca9cf94f48',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:20.991Z',
+  level: 'info',
+  request_id: '94ef966fbb8089eb9a31dc45c1c475d4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:20.993Z',
+  level: 'info',
+  request_id: '697d49cdd9b54387bfcc1f4653b6755a',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.003Z',
+  level: 'info',
+  request_id: '67b120eebcffd70e53e7b058c82e7505',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:21.005Z',
+  level: 'info',
+  request_id: '6f6a58724dec0fc571a0ceeeabd68c7c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.007Z',
+  level: 'info',
+  request_id: '0bf3f602b6438ce05fb9c110b7d48988',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.009Z',
+  level: 'info',
+  request_id: '059c684b3e3bb67da7f4588ff32c14fa',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.011Z',
+  level: 'info',
+  request_id: 'bf2383e7faa2d2da9cf0c6bc30dbd14d',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.013Z',
+  level: 'info',
+  request_id: '77f09605ceea1e54d86618c3a8579b5c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.015Z',
+  level: 'info',
+  request_id: 'bd867b8a6578fb5fb416a0d394edaaeb',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.017Z',
+  level: 'info',
+  request_id: '554eb30f6ff677178feb2422cb80144e',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:21.019Z',
+  level: 'info',
+  request_id: '816122ca9f92b7491f6a38983d48fed9',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:21.021Z',
+  level: 'info',
+  request_id: '99277590d3a8356fc5053d859867dbce',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.023Z',
+  level: 'info',
+  request_id: '84a45628e1bad53cc7c5e5f6276a141b',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:21.025Z',
+  level: 'info',
+  request_id: '5f4ee30fb9bb5bfc5bcbe9418a122cc8',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:21.027Z',
+  level: 'info',
+  request_id: '82d6cd5f5479f18dd1f806baa6cb2903',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:21.033Z',
+  level: 'info',
+  request_id: '8d68b9cba1e3c9bd8da75a3da61c46d5',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:41:21.035Z',
+  level: 'info',
+  request_id: '5b032d9a647a61aae7d4fe9d8edb345c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 2
+}
+{
+  ts: '2026-11-27T22:41:21.036Z',
+  level: 'info',
+  request_id: 'f8e1330c067177ef903b0b252687f511',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.038Z',
+  level: 'info',
+  request_id: '9938e885f60eca28d3aa5388b26769e2',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.042Z',
+  level: 'info',
+  request_id: 'eef470f2a2451c163f352da9829f10c4',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:41:21.044Z',
+  level: 'info',
+  request_id: 'f62eed1ec2e2726eb18c3d3223547a61',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.045Z',
+  level: 'info',
+  request_id: '9605dcffbda5ea795c5a21875124b26b',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 0
+}
+{
+  ts: '2026-11-27T22:41:21.047Z',
+  level: 'info',
+  request_id: 'df1ffa82041623cff70f01261838d175',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 429,
+  code: 'rate_limited',
+  duration_ms: 1
+}
+✔ MANDATES_PER_ITEM_PER_DAY sets the cap; an unusable value falls back to 20 (309.884749ms)
+{
+  ts: '2026-11-27T22:41:21.054Z',
+  level: 'info',
+  request_id: 'a0407af7290677befa85482a8ef954a7',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 1
+}
+{
+  ts: '2026-11-27T22:41:21.056Z',
+  level: 'info',
+  request_id: 'cc97d225d09e1715d58f54736cf39411',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 409,
+  code: 'identical_terms',
+  duration_ms: 1
+}
+✔ the identical-terms lock is unchanged, far below the cap (9.54609ms)
+{
+  ts: '2026-11-27T22:41:21.064Z',
+  level: 'info',
+  request_id: '08b785b0460805c588775bbe359d5c5c',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✔ GET / publishes the limits an agent needs (8.351693ms)
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (4.834836ms)
+✔ AC-F1-6: mechanism identity, and each offer names its step (3.00022ms)
+✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.52365ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.471652ms)
+✔ tie between two grid points goes to the buyer (lower) (0.612627ms)
+✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (97.190601ms)
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (488.615655ms)
+✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (6.479345ms)
+✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (63.302379ms)
+✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (96.337519ms)
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (27.851254ms)
+✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (9.995029ms)
+✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (1.425804ms)
+✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.962319ms)
+✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (150.952289ms)
+✔ cap: 20 deals by an adaptive prober (bisecting budgets, q 1-12) still leave at least one unit_step of possible floors (400 sellers) (126.927677ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (15.544356ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (2.581268ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (4.500064ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (1.521154ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.138561ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (1.220526ms)
+✔ the top level logs as ENVIRONMENT = "local" (1.223082ms)
+✔ the runbook says how to read the logs (0.692208ms)
+✔ the top level binds version metadata as CF_VERSION_METADATA (1.263287ms)
+✔ [env.staging] binds version metadata as CF_VERSION_METADATA (1.217752ms)
+✔ [env.production] binds version metadata as CF_VERSION_METADATA (0.94669ms)
+✔ the top level binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S (1.033854ms)
+✔ [env.staging] binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S (1.021881ms)
+✔ [env.production] binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S (0.977297ms)
+✔ the top level sets MANDATES_PER_ITEM_PER_DAY = "20" (0.972247ms)
+✔ [env.staging] sets MANDATES_PER_ITEM_PER_DAY = "20" (0.9365ms)
+✔ [env.production] sets MANDATES_PER_ITEM_PER_DAY = "20" (0.944966ms)
+ℹ tests 69
+ℹ suites 0
+ℹ pass 69
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2366.972743
+exit: 0

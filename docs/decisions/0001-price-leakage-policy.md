@@ -1,6 +1,6 @@
 # ADR 0001: Price leakage policy (B2 snap-then-midpoint on a nested per-unit grid)
 
-- **Status:** accepted, 2026-11-23 (owner decision B2, amendments A1 and A2 in `docs/rpi/arbiter-hardening/plan.md`). **Amended 2026-11-24** after review finding R1: nested ₦100 × 2^k steps and valid listings only (mechanism 3.0.0, owner decision).
+- **Status:** accepted, 2026-11-23 (owner decision B2, amendments A1 and A2 in `docs/rpi/arbiter-hardening/plan.md`). **Amended 2026-11-24** after review finding R1: nested ₦100 × 2^k steps and valid listings only (mechanism 3.0.0, owner decision). **Amended 2026-11-27** (owner): the daily negotiation cap is load protection, not price protection, and rises from 3 to 20 (see "The daily cap" below).
 - **Task:** P0.5 (F1), slice 5, commit `14aac06`; amended at the Phase 0 gate, commit `175b4d1`
 - **Code:** `arbiter/src/mechanism.js` (`unitStep`, `maxFloor`, `checkListing`, `resolve`, `MECHANISM` 3.0.0)
 - **Tests:** `arbiter/test/mechanism.test.mjs` (AC-F1-1 to AC-F1-7, R1)
@@ -61,16 +61,28 @@ This follows from the code, and the property tests check it:
 | Steps of any two asks nest (each is ₦100 × 2^k) | R1, 5,000 pairs |
 | Deals across 2–4 list prices (same floor, q 1–3, any budgets) leave ≥ the smallest step used | R1, 2,000 sequences (> 300 with a step change), plus the reviewer's example |
 | A floor in the cut-off top step, or an ask under ₦100, is refused by `checkListing` | R1/R2 |
+| 20 deals (the deployed daily cap) by an adaptive prober, each budget bisecting the floors still possible, q 1–12, still leave ≥ `unit_step` possible floors; with the bound doubled to 2 steps the same test fails, so the prober is strong | "cap: 20 deals", 400 sellers (`evidence/p1.7b-negative-control.txt`) |
 
 So **any number of deals narrows a floor to no less than one step** (1.25–2.5% of the unit list price, at least ₦100), and across list-price changes to no less than the smallest step used. The buyer's maximum is narrowed only to one `g` per mandate.
 
 ## Multi-deal caveat (what the bound does *not* say)
 
-1. **One step is reachable.** The bound is a floor on what is left, not a promise that deals reveal less than that. Enough deals with chosen budgets can pin the floor to its exact cell, one step wide (1.25–2.5% of the list price). The anti-probing limits (3 mandates per item per buyer per day, identical terms once) slow this down but do not prevent it. They key on a salted IP hash, so a prober with many IPs gets more attempts.
+1. **One step is reachable.** The bound is a floor on what is left, not a promise that deals reveal less than that. Enough deals with chosen budgets can pin the floor to its exact cell, one step wide (1.25–2.5% of the list price). The daily cap and the identical-terms lock slow this down, but the bound does not depend on them: it holds for any number of deals, and a prober with many IPs gets no further than one step.
 2. **List-price changes cost at most a coarser step.** In 2.0.0 the grid moved with the ask (finding R1). Since 3.0.0 the grids nest, so a change leaves the bound at the smallest step used, never below it. A seller who lowers its list price by enough to halve the step lowers its own bound to that smaller step.
 3. **Floor changes are visible.** If a seller moves its floor into another cell, outcomes before and after differ. That reveals that a change happened and which cells were involved, not the exact values.
 4. **No-agreement outcomes carry information too.** A no-deal says `ceil(floor/u) > hi`, which is a union of whole cells, so the bound includes it. AC-F1-7 counts no-deals and asserts the bound on every sequence.
 5. **Out of scope of this policy:** the arbiter operator sees both limits. The visitor's AI provider sees whatever the visitor types, including a maximum.
+
+## The daily cap (amendment, 2026-11-27)
+
+Until 2026-11-27 each caller (a salted hash of the IP address) could negotiate an item at most 3 times a day, and the docs called this anti-probing. Since mechanism 3.0.0 the nested grid bounds the floor leak to one step **for any number of deals** (the table above), so the cap no longer protects prices: it can only slow a prober down to the same one-step result.
+
+A cap of 3 also locked out real shoppers: on Nigerian mobile networks many people share one public address (carrier-grade NAT), and 3 negotiations a day per item per address would be spent by strangers. The owner's decision:
+
+- **The cap is load protection.** It bounds how much negotiation work (D1 reads and writes, signing) one address can cause per item per day. It is an environment setting, `MANDATES_PER_ITEM_PER_DAY`, 20 by default and in staging and production (`arbiter/wrangler.toml`; `GET /` publishes it).
+- **The leak bound is unchanged and does not depend on the cap.** The "cap: 20 deals" property test checks it at the deployed cap with the strongest strategy a buyer has.
+- **The identical-terms lock is unchanged:** the same item, quantity, deadline and sellers can be negotiated once per address, so a buyer cannot raise only the budget and re-bid.
+- **Distributed abuse** (many addresses) is a load problem, not a price problem. P6.5 evaluates Cloudflare Turnstile on the write endpoints for it.
 
 ## Alternatives considered
 

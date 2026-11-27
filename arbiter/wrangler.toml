@@ -52,6 +52,9 @@ ENVIRONMENT = "local"
 # P1.7: requests per IP per 60 s (quota.js). Local dev is one loopback IP for every script, so it is
 # higher here; staging and production use the default, 100. IP_RATE_LIMIT below says the same.
 IP_LIMIT_PER_60S = "1000"
+# Negotiations per item per address per 24 h: load protection (ADR 0001: the price leakage bound
+# does not depend on it). 20 everywhere since 2026-11-27 (carrier-grade NAT).
+MANDATES_PER_ITEM_PER_DAY = "20"
 
 # P1.7: the Workers rate-limiting binding, per Cloudflare location, keyed by the salted IP hash.
 # Each environment has its own namespace (counters are shared within a namespace across Workers).
@@ -75,6 +78,7 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 [env.staging.vars]
 ENVIRONMENT = "staging"
 IP_LIMIT_PER_60S = "100"
+MANDATES_PER_ITEM_PER_DAY = "20"
 
 [[env.staging.ratelimits]]
 name = "IP_RATE_LIMIT"
@@ -115,6 +119,7 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 [env.production.vars]
 ENVIRONMENT = "production"
 IP_LIMIT_PER_60S = "100"
+MANDATES_PER_ITEM_PER_DAY = "20"
 
 [[env.production.ratelimits]]
 name = "IP_RATE_LIMIT"

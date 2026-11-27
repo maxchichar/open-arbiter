@@ -31,6 +31,13 @@ const isTokenConflict = (e) => sqliteMessage(e).includes("UNIQUE constraint fail
  * 0001_settle_attempt the R6 settle marker. Always every migration in this tree (a test checks it).
  */
 export const REQUIRED_MIGRATIONS = ["0000_baseline.sql", "0001_settle_attempt.sql", "0002_read_indexes.sql"];
+/**
+ * Negotiations per item per caller (salted IP hash) per rolling 24 h, unless the environment sets
+ * MANDATES_PER_ITEM_PER_DAY. Load protection only: the price leakage bound comes from the nested
+ * grid and holds for any number of deals (ADR 0001; mechanism.test.mjs "cap: 20 deals"). It was 3
+ * until 2026-11-27, when carrier-grade NAT (many shoppers behind one address) made 3 a lockout.
+ */
+export const MANDATE_CAP_DEFAULT = 20;
 /** The most listings one catalog call returns (P1.7 AC-7.2). Pages continue with `after`. */
 export const CATALOG_PAGE_MAX = 100;
 const CURSOR_MAX = 512;
@@ -70,8 +77,9 @@ export class Arbiter {
    *   schema was already checked. The Worker passes one module-level set, so the check runs once per
    *   database binding per instance instead of once per write. Defaults to a per-Arbiter set.
    */
-  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false, random = Math.random, schemaVerified = new WeakSet() } = {}) {
+  constructor(db, { clock = () => Math.floor(Date.now() / 1000), signingJwk, allowGeneratedKey = false, random = Math.random, schemaVerified = new WeakSet(), mandateCap = MANDATE_CAP_DEFAULT } = {}) {
     this.db = db;
+    this.mandateCap = mandateCap;
     this.schemaVerified = schemaVerified;
     this.clock = clock;
     this.random = random;
@@ -356,7 +364,7 @@ export class Arbiter {
            WHERE (SELECT COUNT(*) FROM mandates WHERE buyer_key = ? AND sku = ? AND created_at > ?) < ?`,
           id, tokenHash, buyerKey, tk, m.sku, m.quantity, m.max_total_cents, m.deliver_within_hours,
           m.vendor_ids ? JSON.stringify(m.vendor_ids) : null, callerOrigin, now,
-          buyerKey, m.sku, now - DAY, LIMITS.mandatesPerBuyerPerSkuPerDay)],
+          buyerKey, m.sku, now - DAY, this.mandateCap)],
         guard: { sql: "EXISTS (SELECT 1 FROM mandates WHERE id = ?)", args: [id] },
       });
     } catch (e) {
@@ -373,7 +381,7 @@ export class Arbiter {
     if (created.results[0].meta.changes !== 1) {
       const concurrent = await replay();
       if (concurrent) return concurrent;
-      throw new ArbiterError("rate_limited", `At most ${LIMITS.mandatesPerBuyerPerSkuPerDay} negotiations per item per day. This stops repeated bids from mapping a seller's floor.`);
+      throw new ArbiterError("rate_limited", `At most ${this.mandateCap} negotiations per item per day from one address. This limits load; prices reveal at most one price step however many deals are made.`);
     }
     return { mandate_id: id, ...(token ? { buyer_token: token } : {}), state: "OPEN", replayed: false };
   }
