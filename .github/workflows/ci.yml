@@ -1,0 +1,108 @@
+# CI (P1.3, docs/rpi/phase-1/p1.3-plan.md). No Cloudflare credential, no secrets, no deploy: those come
+# in P1.4 with approvals A2 and A4. scripts/ci-guards.mjs (run below and by npm test) enforces this.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: "1"
+  WRANGLER_SEND_METRICS: "false"
+  # The agentic-web commit Oja's runtime is copied from (CLAUDE.md). P1.3b moves it.
+  AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - name: npm test (unit, property, page, copy, CSP, config, workflow guards)
+        run: npm test
+      - name: secret scan, every commit
+        run: node scripts/secret-scan.mjs --history
+      - name: workflow guard (AC-3.4, AC-3.7)
+        run: node scripts/ci-guards.mjs workflows
+      - name: M3 guard (AC-3.5)
+        run: node scripts/ci-guards.mjs m3
+      - name: M2, release tags on HEAD's migrations (AC-3.6)
+        run: npm run test:m2
+
+  worker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - name: seed, e2e, concurrency on a local wrangler dev
+        run: npm run test:worker
+      - name: migrations through wrangler's local D1
+        run: npm run test:migrations-d1
+
+  network-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: cognizant-ai-labs/agentic-web
+          ref: d67755e762545de983e38a395ec45d89b77c9311
+          path: .agentic-web
+          persist-credentials: false
+      - name: agentic-web is at the pin
+        run: test "$(git -C .agentic-web rev-parse HEAD)" = "$AGENTIC_WEB_PIN"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - run: npm ci
+      - name: network and manifest build is up to date
+        working-directory: sites/oja
+        run: node ../../.agentic-web/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json --check
+      - name: upstream linking tests at the pin
+        working-directory: .agentic-web
+        run: node --test tests/linking/linking.test.mjs
+      - name: Playwright and Chromium
+        run: |
+          python -m pip install --require-hashes -r sites/oja/tests/requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: browser check (scripted LLM, page CSP from _headers, 0 violations)
+        env:
+          AGENTIC_WEB: ${{ github.workspace }}/.agentic-web
+          BROWSER_OUT: ${{ runner.temp }}/oja-shots
+        run: node arbiter/scripts/worker-harness.mjs --port 8787 browser
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: oja-screenshots
+          path: ${{ runner.temp }}/oja-shots
+          retention-days: 7
+          if-no-files-found: ignore

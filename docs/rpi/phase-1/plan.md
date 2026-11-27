@@ -126,11 +126,24 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 | ID | Given / When / Then | Verification |
 | --- | --- | --- |
 | AC-3.1 | Every push and PR: `npm test`, `npm run test:worker` and the copy, CSP and config tests. No Cloudflare credentials needed. | Workflow run |
-| AC-3.2 | On `main`: deploy **staging** only (arbiter + Oja), with `cloudflare/wrangler-action` and a token scoped to one account, with an expiry, as GitHub secrets (A4) | Workflow run |
-| AC-3.3 | **Least privilege, measured:** start from Workers Scripts Edit + D1 Edit + Workers KV Storage Edit (+ Account Settings Read); remove one permission at a time while running deploy and `migrations list`; record the minimal set | Evidence table |
+| AC-3.2, AC-3.3 | **Moved to P1.4 (owner, 2026-11-27)** under A2/A4: CI holds no Cloudflare credential until then. See P1.4d. | n/a |
 | AC-3.4 | CI never deploys production, never runs production `migrations apply --remote`, and has no production token | Workflow review plus a test that greps the workflows |
 | AC-3.5 | **M3 guard:** a `MECHANISM.version` change ships only with `wrangler deploy` (100%), never `versions deploy` at a percentage | Workflow test with a fixture |
 | AC-3.6 | M2 check (AC-2.3) and the secret-scan (AC-1.3) run in CI | Workflow run |
+| AC-3.7 | Hardening: `permissions: contents: read`, no `secrets.*`, no `pull_request_target`, actions pinned by SHA, `persist-credentials: false`, timeouts. The browser job (`browser_check.py`, 0 CSP violations) runs on every push and PR (owner, 2026-11-27). Each guard shown red, then green, on GitHub. | Workflow test; run links |
+
+Detail: [`p1.3-plan.md`](p1.3-plan.md).
+
+### P1.3b: upstream re-pin (own slice after P1.3, before P1.4; owner 2026-11-27)
+
+Read-only review of `agentic-web` `d67755e..origin/main` (60 commits on 2026-11-27; spec text unchanged), then a plan for the re-pin, then the re-pin as its own slice.
+
+| ID | Given / When / Then | Verification |
+| --- | --- | --- |
+| AC-3b.1 | Every upstream change touching `skills/agentify-website/` (runtime, scripts, templates, references) is listed with its effect on Oja: none, adopt, or conflict | Review doc |
+| AC-3b.2 | `trusted-types.js` and `ui.js`: the new runtime `<style>` hash, and whether Oja's CSP can add `require-trusted-types-for 'script'` (browser_check with it, 0 violations) | Saved browser check |
+| AC-3b.3 | `EVERY_SITE` convention for reads shared with all sites; the builder's new check that a shared write never lists `"*"`: Oja's network and manifest pass the new `build_network.mjs` | Saved build output |
+| AC-3b.4 | Re-pin: `runtime/` replaced wholesale (invariant 6), CLAUDE.md pin, CI clone SHA and CSP hash updated together; `npm test` and CI green | Run link |
 
 ### P1.4: deploys, ADR 0004
 
@@ -142,6 +155,13 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 | AC-4.2 | **Deployed test (A2):** `scripts/check-headers.mjs <url>` requests `/`, `/index.html`, `/vendor`, `/vendor.html`, `/agent-manifest.json`, `/bridge/action-bridge.html` and `/runtime/sandbox-worker.js`, and compares every `_headers` rule with what is served, on 200s and on the documented 307s. The docs do not settle `/`, extensionless paths or 307s, so this test does. | Saved output |
 | AC-4.3 | `browser_check.py` against deployed staging Oja (real headers, no injection): 0 violations | Saved |
 | AC-4.4 | If any page response lacks its CSP, Oja moves to Pages and AC-4.2/4.3 are rerun there. ADR 0004 records the outcome. | ADR 0004 |
+
+**P1.4d: CI deploys staging** (moved from P1.3, A2 + A4)
+
+| ID | Given / When / Then | Verification |
+| --- | --- | --- |
+| AC-4.d1 | (was AC-3.2) On `main`: deploy **staging** only (arbiter + Oja), with `cloudflare/wrangler-action` and a token scoped to one account, with an expiry, as GitHub secrets (A4). The M3 guard (AC-3.5) gates the deploy step. | Workflow run |
+| AC-4.d2 | (was AC-3.3) **Least privilege, measured:** start from Workers Scripts Edit + D1 Edit + Workers KV Storage Edit (+ Account Settings Read); remove one permission at a time while running deploy and `migrations list`; record the minimal set | Evidence table |
 
 **P1.4b: first staging deploy** (A1, A2)
 
@@ -281,7 +301,7 @@ R2 alternative (https://developers.cloudflare.com/r2/pricing/, 2026-10-30): 10 G
 
 ## 4. Order of work
 
-`P1.0 → P1.1 → P1.2 → P1.5 → P1.6 → P1.12 → P1.7 → P1.3 → P1.4a+b → P1.8 → P1.9 → P1.10 → P1.11 → P1.4c`
+`P1.0 → P1.1 → P1.2 → P1.5 → P1.6 → P1.12 → P1.7 → P1.3 → P1.3b → P1.4a+b → P1.8 → P1.9 → P1.10 → P1.11 → P1.4c`
 
 - Logs, health, checkpoints and quota protection come before any public deploy. The public verify endpoint can exhaust the D1 daily reads (research L1).
 - The deploy tasks need A1/A2.

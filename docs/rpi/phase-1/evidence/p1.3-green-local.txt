@@ -1,0 +1,18 @@
+✔ [tree] every workflow passes the guards, and ci.yml runs every required check (3.430303ms)
+✔ the minimal good workflow passes (0.192854ms)
+✔ AC-3.4: production, remote migrations, credentials and deploys are refused (0.561571ms)
+✔ AC-3.7: hardening rules (0.411147ms)
+✔ ci.yml requirements: each missing check is named (0.454209ms)
+✔ AC-3.5 M3: a mechanism version change may not ship as split traffic (0.866197ms)
+✔ AC-3.5 M3 CLI: base = HEAD compares with HEAD~1 and passes (49.444027ms)
+✔ test:m2 without tags (a shallow clone) fails loudly instead of checking nothing (133.232632ms)
+✔ secret scan --history finds a key that was committed and later removed, without printing it (126.275443ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 380.392909
+exit: 0

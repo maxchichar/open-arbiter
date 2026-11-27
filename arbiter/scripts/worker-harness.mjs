@@ -1,7 +1,11 @@
 // Runs checks against a throwaway local Worker: its own D1 state in a temp directory,
 // a free port and fixed test variables, so a developer's local data is never touched.
-//   node arbiter/scripts/worker-harness.mjs [step ...]      (steps: seed e2e concurrency; default all)
+//   node arbiter/scripts/worker-harness.mjs [step ...]      (steps: seed e2e concurrency browser; default all but browser)
 //   node arbiter/scripts/worker-harness.mjs --serve         (start, print the URL, wait for Ctrl-C)
+//   node arbiter/scripts/worker-harness.mjs --port 8787 browser
+//       browser (P1.3 CI): seed, then serve sites/oja on :8080 with the agentify skill's serve_site.mjs
+//       from $AGENTIC_WEB (a clone at the pinned commit), tests/fake-llm.mjs on :8799, and run
+//       sites/oja/tests/browser_check.py into $BROWSER_OUT. The page expects the arbiter on :8787.
 // Exits non-zero if any step fails. Every step runs even if an earlier one failed,
 // except that e2e and concurrency need seed.
 import { spawn, spawnSync } from "node:child_process";
@@ -16,7 +20,12 @@ const wrangler = join(arbiterDir, "..", "node_modules", ".bin", "wrangler");
 const ADMIN = "harness-admin-token";
 const args = process.argv.slice(2);
 const serveOnly = args.includes("--serve");
-const steps = args.filter((a) => !a.startsWith("--"));
+const portArg = args.indexOf("--port");
+const fixedPort = portArg >= 0 ? Number(args[portArg + 1]) : 0;
+if (portArg >= 0 && !(Number.isInteger(fixedPort) && fixedPort > 0)) { console.error("--port needs a port number"); process.exit(2); }
+const steps = args.filter((a, i) => !a.startsWith("--") && !(portArg >= 0 && i === portArg + 1));
+const unknown = steps.filter((s) => !["seed", "e2e", "concurrency", "browser"].includes(s));
+if (unknown.length) { console.error(`unknown step(s): ${unknown.join(" ")}`); process.exit(2); }
 const want = steps.length ? steps : ["seed", "e2e", "concurrency"];
 
 const freePort = () => new Promise((res) => {
@@ -27,7 +36,7 @@ const state = mkdtempSync(join(tmpdir(), "open-arbiter-harness-"));
 // An explicit env file, so the developer's .dev.vars (other admin token, maybe no DEV) is not used.
 const envFile = join(state, "harness.env");
 writeFileSync(envFile, `ADMIN_TOKEN=${ADMIN}\nBUYER_SALT=harness\nDEV=1\n`);
-const port = await freePort();
+const port = fixedPort || await freePort();
 const base = `http://127.0.0.1:${port}`;
 
 // The same migrations a deployment gets (arbiter/migrations/); not interactive, so wrangler does not prompt.
@@ -66,11 +75,37 @@ const run = (name, script, extra = [], env = {}) => {
 };
 
 const results = {};
-if (want.includes("seed") || want.includes("e2e") || want.includes("concurrency")) {
+if (want.length) {
   results.seed = run("seed", "seed.mjs", [ADMIN, "http://127.0.0.1:8080"], { SEED_KEYS_OUT: join(state, "seed-keys.json") });
 }
 if (want.includes("e2e")) results.e2e = results.seed && run("e2e", "e2e.mjs");
 if (want.includes("concurrency")) results.concurrency = results.seed && run("concurrency", "concurrency.mjs", [ADMIN]);
+if (want.includes("browser")) results.browser = results.seed && await browser();
+
+/** Site on :8080 and the scripted LLM on :8799, then browser_check.py. Both are stopped afterwards. */
+async function browser() {
+  console.log("\n=== browser ===");
+  const repo = join(arbiterDir, "..");
+  const aw = process.env.AGENTIC_WEB;
+  if (!aw) { console.error("browser: set AGENTIC_WEB to a clone of cognizant-ai-labs/agentic-web at the pinned commit"); return false; }
+  const kids = [
+    spawn(process.execPath, [join(repo, "sites/oja/tests/fake-llm.mjs"), "8799"], { stdio: "inherit", detached: true }),
+    spawn(process.execPath, [join(aw, "skills/agentify-website/scripts/serve_site.mjs"), join(repo, "sites/oja"), "--host", "127.0.0.1", "--port", "8080"], { stdio: "inherit", detached: true }),
+  ];
+  try {
+    for (const url of ["http://127.0.0.1:8799/", "http://127.0.0.1:8080/"]) {
+      let ok = false;
+      for (let i = 0; i < 60 && !ok; i++) { try { await fetch(url); ok = true; } catch { await new Promise((r) => setTimeout(r, 250)); } }
+      if (!ok) { console.error(`browser: ${url} did not start`); return false; }
+    }
+    const out = process.env.BROWSER_OUT || mkdtempSync(join(tmpdir(), "oja-shots-"));
+    const r = spawnSync("python3", [join(repo, "sites/oja/tests/browser_check.py"), out], { stdio: "inherit", env: process.env });
+    console.log(`browser: screenshots in ${out}`);
+    return r.status === 0;
+  } finally {
+    for (const k of kids) { try { process.kill(-k.pid, "SIGTERM"); } catch { /* gone */ } }
+  }
+}
 
 stop();
 console.log("\nharness results:", JSON.stringify(results));

@@ -18,6 +18,8 @@ Keep RPI records in `docs/rpi/<task>/`. Never mark a check `pass` without eviden
 
 Save test output for evidence only through `node scripts/save-output.mjs <file> -- <cmd…>`: it keeps the command's exit status (so `&& next` stops on a red run), appends `exit: <code>`, and redacts secret-shaped values. Never pipe a test run through `grep`/`tail` into evidence, because that loses the exit status.
 
+CI (`.github/workflows/ci.yml`, P1.3) runs `npm test`, the history secret scan, the workflow and M3 guards (`scripts/ci-guards.mjs`), `test:m2`, `test:worker`, `test:migrations-d1`, the network `--check`, the upstream linking tests and `browser_check.py`, with `agentic-web` cloned at the pin. It holds **no Cloudflare credential and no secret** until P1.4 (A2/A4); `ci-guards.mjs workflows` and `arbiter/test/ci-guards.test.mjs` refuse a workflow that deploys, migrates remotely, mentions production in a command, uses `secrets.*`, `pull_request_target`, an action not pinned by SHA, or a checkout that keeps credentials. Before any push: `node scripts/secret-scan.mjs --history`.
+
 The versioned pre-commit hook (`.githooks/pre-commit`, enabled by `npm install` via `core.hooksPath`) runs `scripts/secret-scan.mjs --staged` and blocks a commit on any finding. Don't bypass it with `--no-verify`.
 
 Whenever Otari causes friction (sign-in, keys, models, docs, CSP origins), add an entry to `docs/otari-feedback.md`: date, what happened, what would help.

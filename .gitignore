@@ -6,3 +6,4 @@ arbiter/.seed-keys.json
 *.jwk
 *.pem
 dist/
+.agentic-web/

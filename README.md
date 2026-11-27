@@ -57,6 +57,8 @@ node <agentic-web>/skills/agentify-website/scripts/serve_site.mjs sites/oja --po
 
 Open `http://127.0.0.1:8080/?arbiter=http://127.0.0.1:8787` (the `?arbiter=` override works only on a page served from this machine), add an Otari or OpenRouter key under **AI model settings** (or use **Connect with Otari**, which signs you in at otari.ai and saves a key you approve, with nothing to paste), and try "I need 2 bags of rice within 48 hours and won't pay more than 170,000 naira in total." Sellers sign in at `/vendor.html` with a key from `arbiter/.seed-keys.json`.
 
+CI: `.github/workflows/ci.yml` runs all of the checks below on every push and pull request, without any Cloudflare credential (P1.3). `node arbiter/scripts/worker-harness.mjs --port 8787 browser` runs the browser check the way CI does (needs `AGENTIC_WEB=<clone at the pin>` and `pip install --require-hashes -r sites/oja/tests/requirements.txt`).
+
 Tests: `npm test` (unit, property and page tests; no network). `npm run test:worker` runs seed, e2e and concurrency checks against an isolated `wrangler dev`. The browser check (`sites/oja/tests/browser_check.py`) drives the real page with a scripted LLM (`tests/fake-llm.mjs`), so it needs no key. It applies the page CSP from `_headers` and fails on any CSP violation.
 
 ## Deploy on Cloudflare
