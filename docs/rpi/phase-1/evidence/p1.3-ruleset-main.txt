@@ -1,0 +1,9 @@
+# gh api repos/maxchichar/open-arbiter/rulesets (read-only, 2026-11-27T20:33:22Z)
+[]
+# gh api repos/maxchichar/open-arbiter/rules/branches/main
+[]
+# gh api repos/maxchichar/open-arbiter/branches/main --jq .protected
+false
+# caller permissions
+{"admin":true,"maintain":true,"pull":true,"push":true,"triage":true}
+exit: 0

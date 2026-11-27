@@ -136,12 +136,12 @@ Detail: [`p1.3-plan.md`](p1.3-plan.md).
 
 ### P1.3b: upstream re-pin (own slice after P1.3, before P1.4; owner 2026-11-27)
 
-Read-only review of `agentic-web` `d67755e..origin/main` (60 commits on 2026-11-27; spec text unchanged), then a plan for the re-pin, then the re-pin as its own slice.
+Read-only review of `agentic-web` `d67755e..origin/main` (60 commits on 2026-11-27; spec text unchanged), then a plan for the re-pin, then the re-pin as its own slice. Research and plan: [`p1.3b-plan.md`](p1.3b-plan.md) (target `90d561d`).
 
 | ID | Given / When / Then | Verification |
 | --- | --- | --- |
 | AC-3b.1 | Every upstream change touching `skills/agentify-website/` (runtime, scripts, templates, references) is listed with its effect on Oja: none, adopt, or conflict | Review doc |
-| AC-3b.2 | `trusted-types.js` and `ui.js`: the new runtime `<style>` hash, and whether Oja's CSP can add `require-trusted-types-for 'script'` (browser_check with it, 0 violations) | Saved browser check |
+| AC-3b.2 | `trusted-types.js` and `ui.js`: the runtime `<style>` hash (research: unchanged, `cInCcVTz…`), and whether Oja's CSP can add `require-trusted-types-for 'script'` (browser_check with it, 0 violations) | Saved browser check |
 | AC-3b.3 | `EVERY_SITE` convention for reads shared with all sites; the builder's new check that a shared write never lists `"*"`: Oja's network and manifest pass the new `build_network.mjs` | Saved build output |
 | AC-3b.4 | Re-pin: `runtime/` replaced wholesale (invariant 6), CLAUDE.md pin, CI clone SHA and CSP hash updated together; `npm test` and CI green | Run link |
 

@@ -1,0 +1,34 @@
+# upstream origin/main
+90d561d6185d3b5625f9d8055da4d259074af745 2026-11-26 16:16:11 -0800
+# tag 0.2.2 (predates Trusted Types)
+3130406592209a6bd8116d10abedbbd9578fbe98 2026-11-24 08:45:52 -0800
+# commits d67755e..origin/main
+60
+# spec text, d67755e..main and c178171..main
+unchanged (d67755e)
+unchanged (c178171)
+spec blob at main: b72fcdf433e323e30a6052e9e0c0718b835672c1
+# skill files changed
+ skills/agentify-website/SKILL.md                            |  6 +++++-
+ skills/agentify-website/references/bundle_and_hosting.md    | 13 ++++++++++++-
+ skills/agentify-website/references/linking.md               | 14 +++++++++-----
+ skills/agentify-website/references/network_design.md        |  6 +++---
+ skills/agentify-website/references/site_actions.md          |  4 +++-
+ skills/agentify-website/runtime/README.md                   | 24 +++++++++++++++++++++---
+ skills/agentify-website/runtime/cruse-render.js             |  5 ++++-
+ skills/agentify-website/runtime/discovered-actions.js       | 10 +++++++---
+ skills/agentify-website/runtime/enter-key.js                | 30 ++++++++++++++++++++++++++++++
+ skills/agentify-website/runtime/form-actions.js             |  6 ++++--
+ skills/agentify-website/runtime/sandbox.js                  |  5 ++++-
+ skills/agentify-website/runtime/trusted-types.js            | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ skills/agentify-website/runtime/ui.js                       | 87 +++++++++++++++++++++++++++++++++++++++++++++------------------------------------------
+ skills/agentify-website/scripts/build_network.mjs           |  5 ++++-
+ skills/agentify-website/templates/bridge/bridge-actions.js  | 17 ++++++++++++++---
+ skills/agentify-website/templates/tests/agentified.test.mjs | 21 +++++++++++++++++++++
+ 16 files changed, 236 insertions(+), 67 deletions(-)
+# Oja runtime vs d67755e
+identical
+# runtime <style> hash (csp.test.mjs method)
+open-arbiter/sites/oja/runtime 'sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='
+upstream-main/skills/agentify-website/runtime 'sha256-cInCcVTzIwlAW/42yPHZKk4sbZHVNv7RM9LUQR14NT8='
+exit: 0
