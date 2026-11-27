@@ -1,0 +1,24 @@
+$ npm test
+ℹ tests 191
+ℹ pass 191
+ℹ fail 0
+$ placeholder ids per environment (deploy.mjs tomlPlaceholders)
+staging: false production: true
+$ npm run deploy:arbiter -- staging --dry-run   (uploads nothing)
+
+ ⛅️ wrangler 4.166.0
+────────────────────
+Total Upload: 48.40 KiB / gzip: 14.32 KiB
+Your Worker has access to the following bindings:
+Binding                                                  Resource          
+env.AUDIT_ANCHOR (8476675c8fb84377993c998b92144749)      KV Namespace      
+env.DB (open-arbiter-staging)                            D1 Database       
+
+--dry-run: exiting now.
+$ npm run deploy:arbiter -- production   (must refuse: placeholders, no --confirm-production)
+deploy:arbiter: a production deploy needs --confirm-production, and the owner's approval (docs/runbooks/deploy.md)
+(exit 2)
+$ npm run build:oja -- staging   (must refuse: arbiter_url not set until the first deploy)
+build:oja: staging is not configured: set arbiter_url and keys in sites/oja/environments.json
+(exit 2)
+exit: 0

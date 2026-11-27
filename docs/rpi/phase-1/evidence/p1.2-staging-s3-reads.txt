@@ -1,0 +1,10 @@
+$ npx wrangler d1 migrations list open-arbiter-staging --env staging --remote
+Resource location: remote 
+
+✅ No migrations to apply!
+$ SELECT name, applied_at FROM d1_migrations ORDER BY id
+[{"name":"0000_baseline.sql","applied_at":"2026-11-27 13:11:19"},{"name":"0001_settle_attempt.sql","applied_at":"2026-11-27 13:11:19"}]
+$ sqlite_master on staging vs node:sqlite after the same migrations
+remote objects: 11; node:sqlite objects: 11; identical: true
+all sqlite_master names: table:_cf_KV, table:d1_migrations, table:events, index:events_prev_unique, table:listings, table:mandates, index:mandates_by_buyer, index:mandates_token_unique, table:offers, index:offers_by_mandate, table:receipts, table:signing_keys, index:sqlite_autoindex_d1_migrations_1, index:sqlite_autoindex_listings_1, index:sqlite_autoindex_mandates_1, index:sqlite_autoindex_mandates_2, index:sqlite_autoindex_offers_1, index:sqlite_autoindex_receipts_1, index:sqlite_autoindex_receipts_2, index:sqlite_autoindex_signing_keys_1, index:sqlite_autoindex_vendors_1, index:sqlite_autoindex_vendors_2, table:sqlite_sequence, table:vendors
+exit: 0

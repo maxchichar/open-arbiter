@@ -1,0 +1,15 @@
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' d1 create open-arbiter-staging --location weur
+
+ ⛅️ wrangler 4.166.0
+────────────────────
+✅ Successfully created DB 'open-arbiter-staging' in region WEUR
+Created your new D1 database.
+
+To access your new D1 Database in your Worker, add the following snippet to your configuration file:
+[[d1_databases]]
+binding = "open_arbiter_staging"
+database_name = "open-arbiter-staging"
+database_id = "922441f6-7046-437e-8a7a-b7c1ac2e2c6f"
+
+exit: 0

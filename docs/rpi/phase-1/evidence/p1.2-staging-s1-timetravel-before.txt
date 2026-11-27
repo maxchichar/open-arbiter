@@ -1,0 +1,13 @@
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' d1 time-travel info open-arbiter-staging --env staging
+
+ ⛅️ wrangler 4.166.0
+────────────────────
+Resource location: remote 
+
+🚧 Time Traveling...
+⚠️ The current bookmark is '00000001-00000000-00005130-69a6587a4e6e6b5d8f8c03af04ca9fcd'
+⚡️ To restore to this specific bookmark, run:
+ `wrangler d1 time-travel restore open-arbiter-staging --bookmark=00000001-00000000-00005130-69a6587a4e6e6b5d8f8c03af04ca9fcd`
+      
+exit: 0

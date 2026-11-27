@@ -43,13 +43,13 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "open-arbiter-staging"
-# Replace with the id printed by `npx wrangler d1 create open-arbiter-staging` (approval A1).
-database_id = "00000000-0000-0000-0000-00000000000a"
+# Created 2026-11-27 (approval A1), region WEUR; docs/rpi/phase-1/evidence/p1.1-staging-resources.md
+database_id = "922441f6-7046-437e-8a7a-b7c1ac2e2c6f"
 
 [[env.staging.kv_namespaces]]
 binding = "AUDIT_ANCHOR"
-# Replace with the id printed by `npx wrangler kv namespace create AUDIT_ANCHOR --env staging` (approval A1).
-id = "0000000000000000000000000000000a"
+# Namespace "open-arbiter-staging-audit-anchor", created 2026-11-27 (approval A1)
+id = "8476675c8fb84377993c998b92144749"
 
 [env.staging.triggers]
 crons = ["0 2 * * *"]

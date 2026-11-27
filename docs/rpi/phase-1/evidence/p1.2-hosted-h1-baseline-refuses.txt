@@ -1,0 +1,36 @@
+$ d1 execute --remote --file pre-constraint-schema.sql   (v0.0 schema without CHECK stock_nonneg)
+🚣 Executed 11 queries in 3.71ms (16 rows read, 29 rows written)
+read: listings has the CHECK?
+[{"with_check":0}]
+$ d1 migrations apply --remote   (expect 0000 to FAIL)
+ ⛅️ wrangler 4.166.0
+────────────────────
+Resource location: remote 
+Migrations to be applied:
+┌─────────────────────────┐
+│ name                    │
+├─────────────────────────┤
+│ 0000_baseline.sql       │
+├─────────────────────────┤
+│ 0001_settle_attempt.sql │
+├─────────────────────────┤
+│ 0002_must_fail.sql      │
+└─────────────────────────┘
+? About to apply 3 migration(s)
+Your database may not be available to serve requests during the migration, continue?
+🤖 Using fallback value in non-interactive context: yes
+🌀 Executing on remote database open-arbiter-throwaway-20261127 (d0deac49-f476-494d-a809-58c5359bdc89):
+🌀 To execute on your local development database, remove the --remote flag from your wrangler command.
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mA request to the Cloudflare API (/accounts/[account-id]/d1/database/d0deac49-f476-494d-a809-58c5359bdc89/query) failed.[0m
+  CHECK constraint failed: ok = 1: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_CHECK) [code: 7500]
+  
+  If you think this is a bug, please open an issue at: [4mhttps://github.com/cloudflare/workers-sdk/issues/new/choose[0m
+🪵  Logs were written to "/home/maxchichar/.config/.wrangler/logs/wrangler-2026-11-27_13-27-32_824.log"
+(apply wall time: 2.568455782 s)
+read: d1_migrations rows
+[]
+read: _baseline_check left behind?
+[{"n":0}]
+read: tables
+[{"name":"_cf_KV"},{"name":"d1_migrations"},{"name":"events"},{"name":"listings"},{"name":"mandates"},{"name":"offers"},{"name":"receipts"},{"name":"signing_keys"},{"name":"sqlite_sequence"},{"name":"vendors"}]
+exit: 0

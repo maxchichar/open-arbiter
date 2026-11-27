@@ -1,0 +1,39 @@
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' d1 migrations apply open-arbiter-staging --env staging --remote
+
+ ⛅️ wrangler 4.166.0
+────────────────────
+Resource location: remote 
+
+Migrations to be applied:
+┌─────────────────────────┐
+│ name                    │
+├─────────────────────────┤
+│ 0000_baseline.sql       │
+├─────────────────────────┤
+│ 0001_settle_attempt.sql │
+└─────────────────────────┘
+? About to apply 2 migration(s)
+Your database may not be available to serve requests during the migration, continue?
+🤖 Using fallback value in non-interactive context: yes
+🌀 Executing on remote database open-arbiter-staging (922441f6-7046-437e-8a7a-b7c1ac2e2c6f):
+🌀 To execute on your local development database, remove the --remote flag from your wrangler command.
+🚣 Executed 15 commands in 1.77ms
+┌─────────────────────────┬────────┐
+│ name                    │ status │
+├─────────────────────────┼────────┤
+│ 0000_baseline.sql       │ ✅     │
+├─────────────────────────┼────────┤
+│ 0001_settle_attempt.sql │ 🕒️    │
+└─────────────────────────┴────────┘
+🌀 Executing on remote database open-arbiter-staging (922441f6-7046-437e-8a7a-b7c1ac2e2c6f):
+🌀 To execute on your local development database, remove the --remote flag from your wrangler command.
+🚣 Executed 2 commands in 0.52ms
+┌─────────────────────────┬────────┐
+│ name                    │ status │
+├─────────────────────────┼────────┤
+│ 0000_baseline.sql       │ ✅     │
+├─────────────────────────┼────────┤
+│ 0001_settle_attempt.sql │ ✅     │
+└─────────────────────────┴────────┘
+exit: 0

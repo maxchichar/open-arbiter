@@ -1,7 +1,15 @@
 {
   "staging": {
     "arbiter_url": null,
-    "keys": []
+    "keys": [
+      {
+        "kid": "685a95f24d5c71f5",
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "o_4_7KvbBi4okSLYUtzFF3RP02hh7Hgy2vRogIEG_Wo",
+        "y": "ON8cjVXQmQ-0NaNJfLM6u9YFHc9uI9XhQtpDmlP7tRU"
+      }
+    ]
   },
   "production": {
     "arbiter_url": null,

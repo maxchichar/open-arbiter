@@ -1,0 +1,15 @@
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' d1 create open-arbiter-throwaway-20261127 --location weur
+
+ ⛅️ wrangler 4.166.0
+────────────────────
+✅ Successfully created DB 'open-arbiter-throwaway-20261127' in region WEUR
+Created your new D1 database.
+
+To access your new D1 Database in your Worker, add the following snippet to your configuration file:
+[[d1_databases]]
+binding = "open_arbiter_throwaway_20261127"
+database_name = "open-arbiter-throwaway-20261127"
+database_id = "d0deac49-f476-494d-a809-58c5359bdc89"
+
+exit: 0

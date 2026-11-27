@@ -1,0 +1,14 @@
+$ npx wrangler d1 delete open-arbiter-throwaway-20261127 -c <scratchpad>/throwaway/wrangler.toml --skip-confirmation
+
+ ⛅️ wrangler 4.166.0
+────────────────────
+Resource location: remote 
+
+About to delete remote database DB 'open-arbiter-throwaway-20261127' (d0deac49-f476-494d-a809-58c5359bdc89).
+This action is irreversible and will permanently delete all data in the database.
+
+Deleting...
+Deleted 'open-arbiter-throwaway-20261127' successfully.
+$ npx wrangler d1 list   (name, id)
+open-arbiter-staging  922441f6-7046-437e-8a7a-b7c1ac2e2c6f
+exit: 0

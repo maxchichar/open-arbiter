@@ -1,7 +1,7 @@
 // Run a command and save its output as evidence, keeping its exit status.
 //   node scripts/save-output.mjs <file> -- <command> [args...]
 // stdout and stderr go to the terminal unchanged and, interleaved, to <file>, with secret-shaped values
-// redacted (scripts/secret-scan.mjs), then a final line "exit: <code>". This script exits with the
+// redacted (scripts/secret-scan.mjs) and Cloudflare account ids in API paths replaced, then a final line "exit: <code>". This script exits with the
 // command's own code (1 if it was killed by a signal), so `save-output … && next` stops on a failing
 // test. A redaction is reported on stderr; it never changes the exit code. No shell is involved:
 // pipe or filter inside the command (e.g. `-- sh -c '…'`) only if you mean to.
@@ -19,7 +19,8 @@ export function run(file, cmd, args, { stdio = process } = {}) {
     child.stderr.on("data", (b) => { chunks.push(b); stdio.stderr.write(b); });
     const finish = (code, note) => {
       const raw = Buffer.concat(chunks).toString("utf8");
-      const text = redact(raw);
+      // Secrets, and the Cloudflare account id that wrangler's API errors print (private, not secret).
+      const text = redact(raw).replace(/\/accounts\/[0-9a-f]{32}/g, "/accounts/[account-id]");
       mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, `${text}${text.endsWith("\n") || !text ? "" : "\n"}exit: ${code}${note ? ` (${note})` : ""}\n`);
       if (text !== raw) stdio.stderr.write(`save-output: redacted secret-shaped values in ${file}\n`);

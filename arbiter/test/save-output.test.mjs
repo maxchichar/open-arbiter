@@ -62,3 +62,10 @@ test("secret-shaped output is redacted in the file, exit code unchanged", () => 
 test("usage errors exit 2", () => {
   assert.equal(spawnSync(process.execPath, [SCRIPT, "x.txt", "node"], { encoding: "utf8" }).status, 2);
 });
+
+test("a Cloudflare account id in an API path is replaced", () => {
+  const f = out();
+  const r = save(f, 'console.log("A request to the Cloudflare API (/accounts/0123456789abcdef0123456789abcdef/d1/database/x/query) failed.")');
+  assert.equal(r.status, 0);
+  assert.equal(readFileSync(f, "utf8"), "A request to the Cloudflare API (/accounts/[account-id]/d1/database/x/query) failed.\nexit: 0\n");
+});

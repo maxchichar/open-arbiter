@@ -1,0 +1,22 @@
+== H3a: 0003_rebuild_mandates (defer FKs, rebuild mandates, fail if pragma_foreign_key_check has rows, defer off)
+read before: counts
+[{"mandates":4,"offers":4,"fk_violations":0}]
+read before: columns
+[{"name":"id","type":"TEXT","notnull":0,"pk":1},{"name":"token_hash","type":"TEXT","notnull":1,"pk":0},{"name":"buyer_key","type":"TEXT","notnull":1,"pk":0},{"name":"terms_key","type":"TEXT","notnull":1,"pk":0},{"name":"sku","type":"TEXT","notnull":1,"pk":0},{"name":"quantity","type":"INTEGER","notnull":1,"pk":0},{"name":"max_total_cents","type":"INTEGER","notnull":1,"pk":0},{"name":"deliver_within_hours","type":"INTEGER","notnull":1,"pk":0},{"name":"vendor_ids","type":"TEXT","notnull":0,"pk":0},{"name":"caller_origin","type":"TEXT","notnull":0,"pk":0},{"name":"state","type":"TEXT","notnull":1,"pk":0},{"name":"created_at","type":"INTEGER","notnull":1,"pk":0},{"name":"settle_attempt","type":"TEXT","notnull":0,"pk":0}]
+read before: indexes
+[{"name":"mandates_by_buyer","unique":0},{"name":"mandates_token_unique","unique":1},{"name":"sqlite_autoindex_mandates_1","unique":1},{"name":"sqlite_autoindex_mandates_2","unique":1}]
+│ 0003_rebuild_mandates.sql │
+🚣 Executed 12 commands in 2.41ms
+│ 0003_rebuild_mandates.sql │ ✅     │
+(apply wall time: 4.365504425 s)
+read after: d1_migrations
+[{"name":"0000_baseline.sql"},{"name":"0001_settle_attempt.sql"},{"name":"0003_rebuild_mandates.sql"}]
+read after: counts
+[{"mandates":4,"offers":4,"fk_violations":0}]
+read after: columns
+[{"name":"id","type":"TEXT","notnull":0,"pk":1},{"name":"token_hash","type":"TEXT","notnull":1,"pk":0},{"name":"buyer_key","type":"TEXT","notnull":1,"pk":0},{"name":"terms_key","type":"TEXT","notnull":1,"pk":0},{"name":"sku","type":"TEXT","notnull":1,"pk":0},{"name":"quantity","type":"INTEGER","notnull":1,"pk":0},{"name":"max_total_cents","type":"INTEGER","notnull":1,"pk":0},{"name":"deliver_within_hours","type":"INTEGER","notnull":1,"pk":0},{"name":"vendor_ids","type":"TEXT","notnull":0,"pk":0},{"name":"caller_origin","type":"TEXT","notnull":0,"pk":0},{"name":"state","type":"TEXT","notnull":1,"pk":0},{"name":"created_at","type":"INTEGER","notnull":1,"pk":0},{"name":"settle_attempt","type":"TEXT","notnull":0,"pk":0}]
+read after: indexes
+[{"name":"mandates_by_buyer","unique":0},{"name":"mandates_token_unique","unique":1},{"name":"sqlite_autoindex_mandates_1","unique":1},{"name":"sqlite_autoindex_mandates_2","unique":1}]
+read after: offers still reference mandates
+[{"offers_with_parent":4}]
+exit: 0

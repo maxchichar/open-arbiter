@@ -1,0 +1,18 @@
+== H3b: 0004_rebuild_orphaning (same rebuild, but copies only non-RESOLVED mandates: the RESOLVED one has offers)
+read before: counts
+[{"mandates":4,"offers":4,"fk_violations":0,"leftovers":0}]
+│ 0004_rebuild_orphaning.sql │
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mA request to the Cloudflare API (/accounts/[account-id]/d1/database/d0deac49-f476-494d-a809-58c5359bdc89/query) failed.[0m
+  CHECK constraint failed: orphans = 0: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_CHECK) [code: 7500]
+(apply wall time: 3.235185855 s)
+read after: d1_migrations (0004 must be absent)
+[{"name":"0000_baseline.sql"},{"name":"0001_settle_attempt.sql"},{"name":"0003_rebuild_mandates.sql"}]
+read after: counts (unchanged, no leftovers)
+[{"mandates":4,"offers":4,"fk_violations":0,"leftovers":0}]
+
+== EXTRA DATA POINT (not the H3 result): the same orphaning rebuild through d1 execute --file instead of migrations apply
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mD1 DB was reset and rolled back to its last known good state because the application left the database in a state where constraints were violated: FOREIGN KEY constraint failed: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_FOREIGNKEY)[0m
+(execute wall time: 5.570811815 s)
+read after: counts
+[{"mandates":4,"offers":4,"fk_violations":0,"leftovers":0}]
+exit: 0

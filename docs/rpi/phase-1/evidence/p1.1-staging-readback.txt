@@ -1,0 +1,47 @@
+$ npx wrangler secret list --env staging
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' secret list --env staging
+[
+  {
+    "name": "ADMIN_TOKEN",
+    "type": "secret_text"
+  },
+  {
+    "name": "ARBITER_SIGNING_JWK",
+    "type": "secret_text"
+  },
+  {
+    "name": "BUYER_SALT",
+    "type": "secret_text"
+  }
+]
+$ npx wrangler d1 info open-arbiter-staging --json
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' d1 info open-arbiter-staging --json
+{
+  "uuid": "922441f6-7046-437e-8a7a-b7c1ac2e2c6f",
+  "name": "open-arbiter-staging",
+  "created_at": "2026-11-27T12:57:34.342Z",
+  "num_tables": 0,
+  "running_in_region": "WEUR",
+  "read_replication": {
+    "mode": "disabled"
+  },
+  "jurisdiction": null,
+  "database_size": 12288,
+  "read_queries_24h": 0,
+  "write_queries_24h": 0,
+  "rows_read_24h": 0,
+  "rows_written_24h": 0
+}
+$ npx wrangler kv namespace list
+npm notice run open-arbiter@1.0.0 npx
+npm notice run 'wrangler' kv namespace list
+[
+  {
+    "id": "8476675c8fb84377993c998b92144749",
+    "title": "open-arbiter-staging-audit-anchor",
+    "supports_url_encoding": true
+  }
+]
+exit: 0

@@ -1,0 +1,15 @@
+== H4: 0005_unguarded_orphaning (0004 without the guard; defer on, orphaning rebuild, defer off)
+migrations pending: 0004 (still failing on its guard) and 0005. 0004 is moved aside so 0005 runs alone.
+read before: counts
+[{"mandates":4,"offers":4,"fk_violations":0}]
+│ 0005_unguarded_orphaning.sql │
+🚣 Executed 9 commands in 3.30ms
+│ 0005_unguarded_orphaning.sql │ ✅     │
+(apply wall time: 4.507780889 s)
+read after: d1_migrations
+[{"name":"0000_baseline.sql"},{"name":"0001_settle_attempt.sql"},{"name":"0003_rebuild_mandates.sql"},{"name":"0005_unguarded_orphaning.sql"}]
+read after: counts
+[{"mandates":3,"offers":4,"fk_violations":2}]
+read after: orphaned offers (offers whose mandate is gone)
+[{"orphans":2}]
+exit: 0

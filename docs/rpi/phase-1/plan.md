@@ -95,7 +95,7 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 
 ### P1.1: environments, per-environment signing keys and secrets
 
-**State (2026-11-27):** local part done ([`evidence/p1.1-summary.md`](evidence/p1.1-summary.md)). AC-1.3's Cloudflare check and AC-1.7 wait for A1 and P1.4b. Design as built: the top-level `wrangler.toml` is local only; `secrets.required` per environment; `preview_urls = false`; Oja environments come from `sites/oja/environments.json` through `npm run build:oja -- <env>` (output `dist/oja-<env>/`, which P1.4a deploys).
+**State (2026-11-27):** done except AC-1.7 (key rotation, needs P1.4b/A2). Staging D1, KV and secrets created under A1; `wrangler secret list` shows the three names ([`evidence/p1.1-summary.md`](evidence/p1.1-summary.md), [`evidence/p1.1-staging-resources.md`](evidence/p1.1-staging-resources.md)). The stub Worker is unreachable (no workers.dev subdomain; owner chooses one at A2). Design as built: the top-level `wrangler.toml` is local only; `secrets.required` per environment; `preview_urls = false`; Oja environments come from `sites/oja/environments.json` through `npm run build:oja -- <env>` (output `dist/oja-<env>/`, which P1.4a deploys).
 
 | ID | Given / When / Then | Verification |
 | --- | --- | --- |
@@ -109,7 +109,7 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 
 ### P1.2: migrations (includes R6), ADR 0005
 
-**State (2026-11-27):** done locally ([`evidence/p1.2-summary.md`](evidence/p1.2-summary.md)). The hosted-D1 behaviour goes to P1.8; CI wiring (`fetch-depth: 0`, `test:m2`, `test:migrations-d1`) to P1.3.
+**State (2026-11-27):** done locally ([`evidence/p1.2-summary.md`](evidence/p1.2-summary.md)). Hosted-D1 checks done 2026-11-27 ([`evidence/p1.2-hosted-summary.md`](evidence/p1.2-hosted-summary.md)): failed migrations roll back; the rebuild guard is required on hosted D1 too. The hosted-D1 behaviour goes to P1.8; CI wiring (`fetch-depth: 0`, `test:m2`, `test:migrations-d1`) to P1.3.
 
 | ID | Given / When / Then | Verification |
 | --- | --- | --- |
@@ -224,6 +224,7 @@ Each AC is a test or a recorded check, and it fails first where possible. Red an
 | AC-11.3 | The incident checklist covers: a leaked signing key (rotate, mark the old `kid` revoked in Oja, re-verify receipts), a leaked admin token, a chain broken or rewound, quota exhaustion (1027, D1 limits), a bad deploy (rollback), a bad migration (restore, then the M2 limits) | Review |
 | AC-11.4 | Deploy, rollback, restore and rotation were each **executed on staging by following the runbook as written** (P1.4b, P1.9, P1.10, AC-1.7). Deviations were fixed in the runbook. | Evidence links |
 | AC-11.5 | A fresh subagent with only the runbook and the repo reviews it for missing steps or ambiguous commands. Findings are triaged. | Evidence |
+| AC-11.6 | **Key and token backup (owner, 2026-11-27):** the production signing key (`ARBITER_SIGNING_JWK`) and the production admin token are backed up in the owner's password manager at creation, never kept only on one laptop. key-rotation.md and deploy.md name the step and check it ("present in the password manager") before the secret is set. Staging material may live in `~/.config/open-arbiter/staging/` (0600) only. | Review |
 
 ### P1.12: signed checkpoints, ADR 0006 (owner decision 3)
 
