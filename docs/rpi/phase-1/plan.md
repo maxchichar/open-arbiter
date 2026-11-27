@@ -22,6 +22,18 @@
 | P1.11 | Runbook: deploy, rollback, restore, key rotation, incident checklist |
 | P1.12 | Signed checkpoints |
 
+## 0a. Plan change from the Devpost requirements review (owner, 2026-11-27)
+
+`docs/production-plan.md` is still not in the repo, so this change is written down here. Mirror it there when that file is added.
+
+1. **P5.1 moves into Phase 2, right after P2.5.** P5.1 adds a second Oja agent: the front agent delegates item and seller questions to it. The submission must be a conforming agent network, and spec §6 asks for a two-agent network, so this can't wait for Phase 5. Phase 2 order: … → P2.5 → **P5.1** → the rest of Phase 2.
+2. **Target date ~2026-12-20, before the holidays:** one supplier site (P4.5) calling Oja, with a minimal P5.2. "Minimal" is the smallest P5.2 that lets that one site call Oja end to end. The rest of P5.2 stays in Phase 5.
+3. **Otari feedback log:** [`docs/otari-feedback.md`](../../otari-feedback.md). Add an entry (date, what happened, what would help) whenever Otari causes friction, in any task.
+
+What this means for Phase 1:
+- Nothing in P1.0–P1.12 is removed. The 20 Dec target needs Phase 1 and Phase 2 through P5.1 done well before then, so Phase 1 should not grow beyond this plan. Any new Phase 1 scope goes to the owner first.
+- §1 "Out of scope" still excludes the second agent and the second site from Phase 1. They are now scheduled (Phase 2 and the 20 Dec target) rather than open-ended.
+
 ## 1. Objective and boundaries
 
 **Outcome:** the arbiter and Oja run on Cloudflare over HTTPS, in separate staging and production environments, each on its own origin. All Phase 0 guarantees and the 13 CLAUDE.md invariants hold on hosted infrastructure, verified by evidence. The service is observable (logs, health) without leaking sealed values or secrets. Deploy, rollback, restore and key rotation are written down and drilled. Public endpoints cannot exhaust the free-plan quotas cheaply. A rewound audit chain is detected.
@@ -33,7 +45,7 @@
 
 **Out of scope:**
 - Publisher-funded inference (P5.7).
-- A second site, a second agent, a real-model run and prompt-injection tests.
+- A second site (P4.5, target ~2026-12-20), a second agent (P5.1, now in Phase 2 after P2.5; §0a), a real-model run and prompt-injection tests.
 - Paid-plan features.
 - Any production action without the owner's explicit approval at that step.
 

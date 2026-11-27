@@ -16,6 +16,8 @@ Use the `rpi-production-engineering` skill (`.claude/skills/rpi-production-engin
 
 Keep RPI records in `docs/rpi/<task>/`. Never mark a check `pass` without evidence you actually produced.
 
+Whenever Otari causes friction (sign-in, keys, models, docs, CSP origins), add an entry to `docs/otari-feedback.md`: date, what happened, what would help.
+
 ## Commands
 
 ```shell
