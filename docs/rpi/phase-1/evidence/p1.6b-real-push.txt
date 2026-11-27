@@ -1,0 +1,6 @@
+secret scan (history): 45 commit(s), 535 file version(s), no findings
+pre-push: running npm test on 9edc3d1a5bf1…
+pre-push: npm test passed on 9edc3d1a5bf1
+To https://github.com/maxchichar/open-arbiter.git
+   bb3a87f..9edc3d1  phase-1 -> phase-1
+exit: 0
