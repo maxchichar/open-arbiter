@@ -1,0 +1,319 @@
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/maxchichar/open-arbiter/arbiter/src/errors.js' imported from /home/maxchichar/open-arbiter/arbiter/test/errors.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/maxchichar/open-arbiter/arbiter/src/errors.js'
+}
+
+Node.js v24.21.0
+✖ arbiter/test/errors.test.mjs (57.481787ms)
+✖ a request writes one JSON line: route template, never the raw path or query (43.377931ms)
+✖ route templates for every endpoint; anything else is 'unmatched' (2.682883ms)
+✖ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (2.650782ms)
+✖ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (3.458256ms)
+✖ a cf-ray header that is not a plain ray id is not trusted as the request id (2.210571ms)
+✖ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (2.159856ms)
+✖ the same failure gives the same fingerprint (2.227944ms)
+✖ a misconfiguration is logged with a fixed reason, and nothing else is written (2.378097ms)
+✖ MCP calls log the JSON-RPC method and the tool, and a tool's error code (16.513774ms)
+node:internal/modules/esm/resolve:272
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/maxchichar/open-arbiter/arbiter/src/errors.js' imported from /home/maxchichar/open-arbiter/arbiter/test/redaction.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+    at moduleResolve (node:internal/modules/esm/resolve:879:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+    at #resolve (node:internal/modules/esm/loader:687:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:276:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/maxchichar/open-arbiter/arbiter/src/errors.js'
+}
+
+Node.js v24.21.0
+✖ arbiter/test/redaction.test.mjs (55.89888ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (11.634596ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (1.39918ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (2.223726ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (0.936327ms)
+✖ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.878545ms)
+✖ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (1.200426ms)
+✖ the top level logs as ENVIRONMENT = "local" (0.976663ms)
+✖ the runbook says how to read the logs (0.493391ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 4
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1100.947578
+
+✖ failing tests:
+
+test at arbiter/test/errors.test.mjs:1:1
+✖ arbiter/test/errors.test.mjs (57.481787ms)
+  'test failed'
+
+test at arbiter/test/logging.test.mjs:36:1
+✖ a request writes one JSON line: route template, never the raw path or query (43.377931ms)
+  AssertionError [ERR_ASSERTION]: expected exactly one log call, got 0: 
+  
+  0 !== 1
+  
+      at line (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:25:10)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:39:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:47:1
+✖ route templates for every endpoint; anything else is 'unmatched' (2.682883ms)
+  AssertionError [ERR_ASSERTION]: expected exactly one log call, got 0: 
+  
+  0 !== 1
+  
+      at line (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:25:10)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:59:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:63:1
+✖ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (2.650782ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + null
+  - '8f2a1b3c4d5e6f70-LOS'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:67:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: '8f2a1b3c4d5e6f70-LOS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:74:1
+✖ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (3.458256ms)
+  AssertionError [ERR_ASSERTION]: GET /v1/catalog
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:80:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: /^[0-9a-f]{32}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:87:1
+✖ a cf-ray header that is not a plain ray id is not trusted as the request id (2.210571ms)
+  AssertionError [ERR_ASSERTION]: The "string" argument must be of type string. Received type object (null)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:89:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: /^[0-9a-f]{32}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:92:1
+✖ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (2.159856ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - null
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:98:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:106:1
+✖ the same failure gives the same fingerprint (2.227944ms)
+  AssertionError [ERR_ASSERTION]: missing ts
+      at line (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:29:34)
+      at fp (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:110:12)
+      at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:112:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:115:1
+✖ a misconfiguration is logged with a fixed reason, and nothing else is written (2.378097ms)
+  AssertionError [ERR_ASSERTION]: log an object, so Workers Logs indexes its fields
+  
+  'string' !== 'object'
+  
+      at line (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:28:10)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:119:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'string',
+    expected: 'object',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/logging.test.mjs:123:1
+✖ MCP calls log the JSON-RPC method and the tool, and a tool's error code (16.513774ms)
+  AssertionError [ERR_ASSERTION]: expected exactly one log call, got 0: 
+  
+  0 !== 1
+  
+      at line (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:25:10)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/logging.test.mjs:126:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/redaction.test.mjs:1:1
+✖ arbiter/test/redaction.test.mjs (55.89888ms)
+  'test failed'
+
+test at arbiter/test/wrangler-env.test.mjs:66:3
+✖ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.878545ms)
+  AssertionError [ERR_ASSERTION]: observability.enabled
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:68:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:66:3
+✖ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (1.200426ms)
+  AssertionError [ERR_ASSERTION]: observability.enabled
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:68:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:74:1
+✖ the top level logs as ENVIRONMENT = "local" (0.976663ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'local'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:75:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'local',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:78:1
+✖ the runbook says how to read the logs (0.493391ms)
+  AssertionError [ERR_ASSERTION]: docs/runbooks/deploy.md has no '## Logs' section
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:81:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+exit: 1

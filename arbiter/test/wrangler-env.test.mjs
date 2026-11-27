@@ -58,3 +58,27 @@ test("the top level is local only: placeholder ids, no workers.dev route, no sec
   assert.deepEqual(c.d1_databases.map((d) => d.binding), BINDINGS.d1);
   assert.deepEqual(c.kv_namespaces.map((k) => k.binding), BINDINGS.kv, "local dev has the same bindings as the environments");
 });
+
+// P1.5 AC-5.6: Workers Logs on in both environments, every request sampled, and each Worker names
+// its environment in its log lines. Workers Logs docs (2026-11-18) repeat [env.X.observability] per
+// environment, so the file does too; this reads the resolved config either way.
+for (const env of ENVS) {
+  test(`[env.${env}] has Workers Logs on (sampling 1) and ENVIRONMENT = "${env}"`, () => {
+    const c = read(env);
+    assert.equal(c.observability?.enabled, true, "observability.enabled");
+    assert.equal(c.observability?.head_sampling_rate ?? 1, 1, "every request logged");
+    assert.equal(c.vars?.ENVIRONMENT, env, "vars are not inherited: set ENVIRONMENT per environment");
+  });
+}
+
+test("the top level logs as ENVIRONMENT = \"local\"", () => {
+  assert.equal(read(undefined).vars?.ENVIRONMENT, "local");
+});
+
+test("the runbook says how to read the logs", () => {
+  const rb = readFileSync(new URL("../../docs/runbooks/deploy.md", import.meta.url), "utf8");
+  const section = rb.split(/^## Logs$/m)[1]?.split(/^## /m)[0];
+  assert.ok(section, "docs/runbooks/deploy.md has no '## Logs' section");
+  for (const env of ENVS) assert.ok(section.includes(`wrangler tail --env ${env} --format json`), env);
+  assert.match(section, /request_id/);
+});

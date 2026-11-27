@@ -410,7 +410,7 @@ Schema guard (from slice 4): `commit()` refuses writes when the CHECK or the `pr
 | P8.2 | v1.0 release: tag, production deploy through CI, smoke test, release notes | M | Production smoke passes; rollback ready |
 | P8.3 | Developer quickstart: "use Open Arbiter from your agentic site in 15 minutes" | M | A fresh reader integrates a test site by following it |
 | P8.4 | PR adding Oja and the supplier sites to `docs/agentic_websites.md`; NANDA Index registration | S | PR open; registration recorded |
-| P8.5 | File the upstream issues found (duplicate agent names, peer fetch timeout) | S | Issues linked from the README |
+| P8.5 | File the upstream issues found (duplicate agent names, peer fetch timeout, `tests/skills/agentify-website/runtime/panel.test.mjs` races its Chrome profile cleanup: "an unknown key saved in the panel never reaches the publisher-funded router" fails with `ENOTEMPTY … rmdir /tmp/panel-key-…/profile/Default` on an Ubuntu 24.04 GitHub runner at `90d561d`, https://github.com/maxchichar/open-arbiter/actions/runs/46067045280; passes locally) | S | Issues linked from the README |
 | P8.6 | Screenshots: market, approval dialog, receipt verification, cross-site call | S | 4 to 6 images |
 | P8.7 | Record the video (on camera, under 2 minutes), upload publicly | L | Plays logged out; under 2:00 |
 | P8.8 | Devpost text: features, architecture, limits, extra tools shared, Otari feedback | M | Reviewed by someone else |

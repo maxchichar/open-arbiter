@@ -1,0 +1,136 @@
+✖ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (90.431698ms)
+✖ the same, when unexpected errors carry sentinels in their messages (33.700989ms)
+✔ the same, with no signing key (misconfigured paths) (26.609546ms)
+✖ every error response uses its code's registry status and carries request_id (30.472767ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 278.157737
+
+✖ failing tests:
+
+test at arbiter/test/redaction.test.mjs:138:1
+✖ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (90.431698ms)
+  AssertionError [ERR_ASSERTION]: one log line per request
+  
+  0 !== 55
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/redaction.test.mjs:141:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 55,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/redaction.test.mjs:145:1
+✖ the same, when unexpected errors carry sentinels in their messages (33.700989ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'line 0 holds adm_SE…',
+  +   'line 0 holds 203.0.113.77',
+  +   'line 0 holds 5v6Ff2…',
+  +   'line 0 holds 73149683',
+  +   'line 0 holds 731496',
+  +   'line 1 holds adm_SE…',
+  +   'line 1 holds 203.0.113.77',
+  +   'line 1 holds 5v6Ff2…',
+  +   'line 1 holds 73149683',
+  +   'line 1 holds 731496',
+  +   'line 2 holds adm_SE…',
+  +   'line 2 holds 203.0.113.77',
+  +   'line 2 holds 5v6Ff2…',
+  +   'line 2 holds 73149683',
+  +   'line 2 holds 731496'
+  + ]
+  - []
+  
+      at assertClean (file:///home/maxchichar/open-arbiter/arbiter/test/redaction.test.mjs:135:10)
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/redaction.test.mjs:148:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'line 0 holds adm_SE…', 'line 0 holds 203.0.113.77', 'line 0 holds 5v6Ff2…', 'line 0 holds 73149683', 'line 0 holds 731496', 'line 1 holds adm_SE…', 'line 1 holds 203.0.113.77', 'line 1 holds 5v6Ff2…', 'line 1 holds 73149683', 'line 1 holds 731496', 'line 2 holds adm_SE…', 'line 2 holds 203.0.113.77', 'line 2 holds 5v6Ff2…', 'line 2 holds 73149683', 'line 2 holds 731496' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/redaction.test.mjs:157:1
+✖ every error response uses its code's registry status and carries request_id (30.472767ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'POST /v1/vendors: 401 with unregistered code "unauthorized"',
+  +   'POST /v1/vendors: no request_id',
+  +   'POST /v1/vendors: 401 with unregistered code "unauthorized"',
+  +   'POST /v1/vendors: no request_id',
+  +   'POST /v1/vendors: 400 with unregistered code "invalid"',
+  +   'POST /v1/vendors: no request_id',
+  +   'POST /v1/vendors: 400 with unregistered code "invalid_json"',
+  +   'POST /v1/vendors: no request_id',
+  +   'POST /v1/vendors: 400 with unregistered code "invalid"',
+  +   'POST /v1/vendors: no request_id',
+  +   'PUT /v1/listings: 401 with unregistered code "unauthorized"',
+  +   'PUT /v1/listings: no request_id',
+  +   'PUT /v1/listings: 400 with unregistered code "invalid"',
+  +   'PUT /v1/listings: no request_id',
+  +   'POST /v1/mandates: 400 with unregistered code "invalid"',
+  +   'POST /v1/mandates: no request_id',
+  +   'POST /v1/mandates: 409 with unregistered code "token_reused"',
+  +   'POST /v1/mandates: no request_id',
+  +   'POST /v1/mandates: 409 with unregistered code "identical_terms"',
+  +   'POST /v1/mandates: no request_id',
+  +   'POST /v1/mandates/man_Fw4A613JLjO23wjb/resolve: 404 with unregistered code "not_found"',
+  +   'POST /v1/mandates/man_Fw4A613JLjO23wjb/resolve: no request_id',
+  +   'GET /v1/mandates/man_Fw4A613JLjO23wjb/audit: 404 with unregistered code "not_found"',
+  +   'GET /v1/mandates/man_Fw4A613JLjO23wjb/audit: no request_id',
+  +   'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: 404 with unregistered code "not_found"',
+  +   'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: no request_id',
+  +   'POST /v1/offers/off_unknown/accept: 404 with unregistered code "not_found"',
+  +   'POST /v1/offers/off_unknown/accept: no request_id',
+  +   'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: 409 with unregistered code "already_settled"',
+  +   'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: no request_id',
+  +   'POST /v1/mandates: 429 with unregistered code "rate_limited"',
+  +   'POST /v1/mandates: no request_id',
+  +   'GET /v1/receipts/rct_unknown: 404 with unregistered code "not_found"',
+  +   'GET /v1/receipts/rct_unknown: no request_id',
+  +   'POST /mcp: 400 with unregistered code "invalid_json"',
+  +   'POST /mcp: no request_id',
+  +   'GET /mcp: 405 with unregistered code "This server answers POST only (no SSE stream)."',
+  +   'GET /mcp: no request_id',
+  +   'DELETE /mcp: 405 with unregistered code "method not allowed"',
+  +   'DELETE /mcp: no request_id',
+  +   'GET /nowhere: 404 with unregistered code "not_found"',
+  +   'GET /nowhere: no request_id',
+  +   'GET /v1/catalog: 500 with unregistered code "internal"',
+  +   'GET /v1/catalog: no request_id',
+  +   'POST /v1/mandates: 500 with unregistered code "internal"',
+  +   'POST /v1/mandates: no request_id',
+  +   'PUT /v1/listings: 500 with unregistered code "internal"',
+  +   'PUT /v1/listings: no request_id'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/redaction.test.mjs:167:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'POST /v1/vendors: 401 with unregistered code "unauthorized"', 'POST /v1/vendors: no request_id', 'POST /v1/vendors: 401 with unregistered code "unauthorized"', 'POST /v1/vendors: no request_id', 'POST /v1/vendors: 400 with unregistered code "invalid"', 'POST /v1/vendors: no request_id', 'POST /v1/vendors: 400 with unregistered code "invalid_json"', 'POST /v1/vendors: no request_id', 'POST /v1/vendors: 400 with unregistered code "invalid"', 'POST /v1/vendors: no request_id', 'PUT /v1/listings: 401 with unregistered code "unauthorized"', 'PUT /v1/listings: no request_id', 'PUT /v1/listings: 400 with unregistered code "invalid"', 'PUT /v1/listings: no request_id', 'POST /v1/mandates: 400 with unregistered code "invalid"', 'POST /v1/mandates: no request_id', 'POST /v1/mandates: 409 with unregistered code "token_reused"', 'POST /v1/mandates: no request_id', 'POST /v1/mandates: 409 with unregistered code "identical_terms"', 'POST /v1/mandates: no request_id', 'POST /v1/mandates/man_Fw4A613JLjO23wjb/resolve: 404 with unregistered code "not_found"', 'POST /v1/mandates/man_Fw4A613JLjO23wjb/resolve: no request_id', 'GET /v1/mandates/man_Fw4A613JLjO23wjb/audit: 404 with unregistered code "not_found"', 'GET /v1/mandates/man_Fw4A613JLjO23wjb/audit: no request_id', 'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: 404 with unregistered code "not_found"', 'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: no request_id', 'POST /v1/offers/off_unknown/accept: 404 with unregistered code "not_found"', 'POST /v1/offers/off_unknown/accept: no request_id', 'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: 409 with unregistered code "already_settled"', 'POST /v1/offers/off_hUnuOuZT0gOTFFs1/accept: no request_id', 'POST /v1/mandates: 429 with unregistered code "rate_limited"', 'POST /v1/mandates: no request_id', 'GET /v1/receipts/rct_unknown: 404 with unregistered code "not_found"', 'GET /v1/receipts/rct_unknown: no request_id', 'POST /mcp: 400 with unregistered code "invalid_json"', 'POST /mcp: no request_id', 'GET /mcp: 405 with unregistered code "This server answers POST only (no SSE stream)."', 'GET /mcp: no request_id', 'DELETE /mcp: 405 with unregistered code "method not allowed"', 'DELETE /mcp: no request_id', 'GET /nowhere: 404 with unregistered code "not_found"', 'GET /nowhere: no request_id', 'GET /v1/catalog: 500 with unregistered code "internal"', 'GET /v1/catalog: no request_id', 'POST /v1/mandates: 500 with unregistered code "internal"', 'POST /v1/mandates: no request_id', 'PUT /v1/listings: 500 with unregistered code "internal"', 'PUT /v1/listings: no request_id' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+exit: 1
