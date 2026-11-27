@@ -110,6 +110,12 @@ Every error is JSON `{"error": "<code>", "message": "...", "request_id": "..."}`
 | `internal` | 500 | An unexpected error. Whether a write happened is unknown; the request_id identifies it in the logs. |
 | `misconfigured` | 500 | The deployment is missing its signing key or its database migrations; nothing was written. |
 | `busy` | 503 | The audit log is busy with concurrent writes; nothing was written. Retry shortly. |
+| `db_unavailable` | 503 | /health: the database did not answer SELECT 1. |
+| `schema_outdated` | 503 | /health: the database has no migrations table; it was never migrated. |
+| `migrations_pending` | 503 | /health: a migration this Worker needs is not applied; it refuses writes until it is. |
+| `key_missing` | 503 | /health: no ARBITER_SIGNING_JWK secret, so the arbiter cannot sign receipts. |
+| `key_invalid` | 503 | /health: ARBITER_SIGNING_JWK is not a private P-256 JWK. |
+| `key_dev_in_deployed_env` | 503 | /health: DEV=1 is set in staging or production; it must never be deployed. |
 
 ## Limits (honest list)
 

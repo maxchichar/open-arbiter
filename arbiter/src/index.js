@@ -4,6 +4,7 @@ import { handleRpc, presentOutcome, presentCatalog, TOOLS } from "./mcp.js";
 import { MECHANISM } from "./mechanism.js";
 import { sha256Hex } from "./crypto.js";
 import { requestIdFor, routeOf, errorFingerprint, logLine } from "./log.js";
+import { health, signingJwkOf } from "./health.js";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -61,7 +62,7 @@ export default {
       if (e instanceof ArbiterError) {
         code = e.code;
         if (e.reason) extra.reason = e.reason;
-        res = json({ error: e.code, message: e.message, request_id: requestId }, e.status, e.headers);
+        res = json({ error: e.code, message: e.message, request_id: requestId, ...(e.details || {}) }, e.status, e.headers);
       } else {
         code = "internal";
         extra = { error_class: e?.constructor?.name || typeof e, error_fingerprint: await errorFingerprint(e) };
@@ -79,8 +80,10 @@ async function route(req, env, rec) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
     const url = new URL(req.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
+    // Before the Arbiter is built: /health reports a bad key secret instead of failing on it.
+    if (req.method === "GET" && path === "/health") return json(await health(env.DB, env), 200, { "cache-control": "no-store" });
     const arb = new Arbiter(env.DB, {
-      signingJwk: env.ARBITER_SIGNING_JWK ? JSON.parse(env.ARBITER_SIGNING_JWK) : undefined,
+      signingJwk: signingJwkOf(env) ?? undefined,
       allowGeneratedKey: env.DEV === "1", // only local development may generate a key
       schemaVerified,
     });
@@ -91,7 +94,7 @@ async function route(req, env, rec) {
           description: "Deterministic, sealed-bid negotiation and signed receipts for the open agentic web.",
           mechanism: MECHANISM,
           endpoints: {
-            mcp: `${url.origin}/mcp`, catalog: `${url.origin}/v1/catalog`, jwks: `${url.origin}/.well-known/jwks.json`,
+            mcp: `${url.origin}/mcp`, catalog: `${url.origin}/v1/catalog`, jwks: `${url.origin}/.well-known/jwks.json`, health: `${url.origin}/health`,
           },
           tools: TOOLS.map((t) => t.name),
         });

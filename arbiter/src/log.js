@@ -2,12 +2,13 @@
 // indexes its fields (Workers Logs docs, 2026-11-18). A line holds only what is built here: no
 // body, header, raw path, query or error message, so sealed limits, tokens, keys and IPs cannot
 // reach it (tests: arbiter/test/logging.test.mjs, redaction.test.mjs).
-import { MECHANISM } from "./mechanism.js";
+import { versionOf } from "./health.js";
 import { sha256Hex } from "./crypto.js";
 
 /** Route templates. The first match names the route; ids never reach the log. */
 const ROUTES = [
   [/^\/$/, "/"],
+  [/^\/health$/, "/health"],
   [/^\/\.well-known\/jwks\.json$/, "/.well-known/jwks.json"],
   [/^\/mcp$/, "/mcp"],
   [/^\/v1\/catalog$/, "/v1/catalog"],
@@ -54,7 +55,7 @@ export function logLine({ requestId, env, method, route, status, code, started, 
     level: status >= 500 ? "error" : "info",
     request_id: requestId,
     env: typeof env?.ENVIRONMENT === "string" ? env.ENVIRONMENT : "unknown",
-    version: MECHANISM.version,
+    version: (({ worker, mechanism, git }) => ({ worker, mechanism, git }))(versionOf(env)),
     method: /^[A-Z]{3,7}$/.test(method) ? method : "OTHER",
     route,
     status,

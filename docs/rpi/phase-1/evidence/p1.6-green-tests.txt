@@ -1,0 +1,75 @@
+✔ no environment, an unknown one or the empty top level is refused (1.794655ms)
+✔ staging deploys with --env staging (0.979122ms)
+✔ production needs --confirm-production (owner approval A3 is still required; this only stops slips) (0.272325ms)
+✔ unknown flags are refused rather than passed to wrangler (0.257527ms)
+✔ an environment whose ids are still placeholders is refused, except for a dry run (0.278517ms)
+✔ the CLI exits 2 without an environment, before starting wrangler (1154.655281ms)
+✔ the checked-in wrangler.toml still has placeholder ids (resources are created at approval A1/A3) (15.520563ms)
+✔ a deploy passes the git commit as GIT_SHA and as the version tag (1.021994ms)
+✔ every code in the registry has one integer HTTP status and a meaning (3.066391ms)
+✔ every ArbiterError in src/ names a registry code as a literal, with no status of its own (7.584448ms)
+✔ ArbiterError takes its status from the registry and refuses an unknown code (1.822408ms)
+✔ the README lists every error code with its status (1.497523ms)
+✔ healthy: 200 with versions, db, key (kid only), migrations and schema (104.105373ms)
+✔ the log line carries the Worker version, the mechanism and the git commit (8.30372ms)
+✔ local dev (DEV=1, no secret): 200, the key is the dev key and nothing is written (4.169909ms)
+✔ misconfigured: 503 key_missing, with the checks and a request id (7.076818ms)
+✔ misconfigured: 503 key_invalid, with the checks and a request id (6.528851ms)
+✔ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (7.942546ms)
+✔ misconfigured: 503 key_dev_in_deployed_env, with the checks and a request id (7.896639ms)
+✔ misconfigured: 503 schema_outdated, with the checks and a request id (5.167676ms)
+✔ misconfigured: 503 migrations_pending, with the checks and a request id (6.334815ms)
+✔ misconfigured: 503 db_unavailable, with the checks and a request id (5.590366ms)
+{
+  ts: '2026-11-27T21:42:33.082Z',
+  level: 'error',
+  request_id: 'e8beff58cead567310e80b0da71cf0a0',
+  env: 'staging',
+  version: {
+    worker: '0b9e1f6c-1111-4222-8333-944455556666',
+    mechanism: '3.0.0',
+    git: '6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1'
+  },
+  method: 'GET',
+  route: '/.well-known/jwks.json',
+  status: 500,
+  code: 'misconfigured',
+  duration_ms: 1,
+  reason: 'signing_key_invalid'
+}
+✔ an unparseable signing key makes other routes refuse as misconfigured, not crash as internal (4.906312ms)
+✔ a request writes one JSON line: route template, never the raw path or query (82.148853ms)
+✔ route templates for every endpoint; anything else is 'unmatched' (49.935872ms)
+✔ request_id comes from cf-ray, is x-request-id on the response and request_id in error bodies (3.958559ms)
+✔ without cf-ray a random 16-byte hex id is made; every response carries it, OPTIONS included (5.217701ms)
+✔ a cf-ray header that is not a plain ray id is not trusted as the request id (3.256361ms)
+✔ an unexpected error: body {error: internal, request_id}; log has class and fingerprint, not the message (8.337413ms)
+✔ the same failure gives the same fingerprint (8.651838ms)
+✔ a misconfiguration is logged with a fixed reason, and nothing else is written (3.75253ms)
+✔ MCP calls log the JSON-RPC method and the tool, and a tool's error code (7.290843ms)
+✔ no log line holds a floor, a maximum, a buyer secret or token, the admin token, a vendor key, the JWK d, the salt or the IP (184.806317ms)
+✔ the same, when unexpected errors carry sentinels in their messages (57.132957ms)
+✔ the same, with no signing key (misconfigured paths) (47.357704ms)
+✔ every error response uses its code's registry status and carries request_id (54.125868ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (13.046182ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (1.643128ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (3.043538ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (1.132973ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (0.948504ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (0.870537ms)
+✔ the top level logs as ENVIRONMENT = "local" (0.770918ms)
+✔ the runbook says how to read the logs (0.60759ms)
+✔ the top level binds version metadata as CF_VERSION_METADATA (0.910212ms)
+✔ [env.staging] binds version metadata as CF_VERSION_METADATA (0.85629ms)
+✔ [env.production] binds version metadata as CF_VERSION_METADATA (0.737375ms)
+✔ the seller console shows the arbiter's /health in a status line (3.578781ms)
+✔ the runbook's first check after a deploy is /health (1.130418ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 49
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2649.386618
+exit: 0

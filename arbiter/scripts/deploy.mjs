@@ -28,8 +28,21 @@ export function tomlPlaceholders(configPath = join(ARBITER_DIR, "wrangler.toml")
   };
 }
 
-/** The wrangler arguments for argv, or throws with the reason. Pure apart from `ids`. */
-export function deployArgs(argv, ids) {
+/** The commit being deployed, from git: { sha, dirty }. */
+export function gitState(cwd = ARBITER_DIR) {
+  const run = (args) => spawnSync("git", args, { cwd, encoding: "utf8" });
+  const head = run(["rev-parse", "HEAD"]);
+  if (head.status !== 0) throw new Error("cannot read the git commit (git rev-parse HEAD failed)");
+  const status = run(["status", "--porcelain"]);
+  return { sha: head.stdout.trim(), dirty: status.status !== 0 || status.stdout.trim() !== "" };
+}
+
+/**
+ * The wrangler arguments for argv, or throws with the reason. Pure apart from `ids`. With `git`,
+ * the commit goes into the Worker as GIT_SHA (/health, log lines) and as the version tag; a dirty
+ * tree is marked "-dirty" rather than hidden (P1.6).
+ */
+export function deployArgs(argv, ids, git) {
   const [env, ...flags] = argv;
   if (!ENVS.has(env)) throw new Error(`name an environment: staging|production (got ${JSON.stringify(env ?? null)})\n${USAGE}`);
   const known = new Set(["--dry-run", "--confirm-production"]);
@@ -42,13 +55,21 @@ export function deployArgs(argv, ids) {
   if (!dryRun && ids.hasPlaceholderIds(env)) {
     throw new Error(`[env.${env}] in arbiter/wrangler.toml still has placeholder D1/KV ids: create the resources first (staging|production runbook)`);
   }
-  return ["deploy", "--env", env, ...(dryRun ? ["--dry-run"] : [])];
+  const out = ["deploy", "--env", env, ...(dryRun ? ["--dry-run"] : [])];
+  // `git` may be a function, read only after the arguments are valid (no git needed to refuse them).
+  if (typeof git === "function") git = git();
+  if (git) {
+    if (!/^[0-9a-f]{40}$/.test(git.sha ?? "")) throw new Error(`not a git commit: ${JSON.stringify(git.sha)}`);
+    const mark = git.dirty ? "-dirty" : "";
+    out.push("--var", `GIT_SHA:${git.sha}${mark}`, "--tag", `${git.sha.slice(0, 12)}${mark}`);
+  }
+  return out;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   let args;
   try {
-    args = deployArgs(process.argv.slice(2), tomlPlaceholders());
+    args = deployArgs(process.argv.slice(2), tomlPlaceholders(), () => gitState());
   } catch (e) {
     process.stderr.write(`deploy:arbiter: ${e.message}\n`);
     process.exit(2);

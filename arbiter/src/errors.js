@@ -20,6 +20,13 @@ export const ERRORS = Object.freeze({
   internal: { status: 500, meaning: "An unexpected error. Whether a write happened is unknown; the request_id identifies it in the logs." },
   misconfigured: { status: 500, meaning: "The deployment is missing its signing key or its database migrations; nothing was written." },
   busy: { status: 503, meaning: "The audit log is busy with concurrent writes; nothing was written. Retry shortly." },
+  // GET /health only (P1.6). The body also carries every check, so one call shows what is wrong.
+  db_unavailable: { status: 503, meaning: "/health: the database did not answer SELECT 1." },
+  schema_outdated: { status: 503, meaning: "/health: the database has no migrations table; it was never migrated." },
+  migrations_pending: { status: 503, meaning: "/health: a migration this Worker needs is not applied; it refuses writes until it is." },
+  key_missing: { status: 503, meaning: "/health: no ARBITER_SIGNING_JWK secret, so the arbiter cannot sign receipts." },
+  key_invalid: { status: 503, meaning: "/health: ARBITER_SIGNING_JWK is not a private P-256 JWK." },
+  key_dev_in_deployed_env: { status: 503, meaning: "/health: DEV=1 is set in staging or production; it must never be deployed." },
 });
 
 export class ArbiterError extends Error {
@@ -28,13 +35,15 @@ export class ArbiterError extends Error {
    * @param message for people; returned to the caller, never logged
    * @param opts.reason a fixed, value-free word for the log (e.g. "signing_key_missing")
    * @param opts.headers extra response headers (e.g. allow on 405)
+   * @param opts.details extra, value-free fields for the response body (e.g. /health's checks)
    */
-  constructor(code, message, { reason, headers } = {}) {
+  constructor(code, message, { reason, headers, details } = {}) {
     if (!Object.hasOwn(ERRORS, code)) throw new Error(`unknown error code: ${code}`);
     super(message);
     this.code = code;
     this.status = ERRORS[code].status;
     this.reason = reason;
     this.headers = headers;
+    this.details = details;
   }
 }

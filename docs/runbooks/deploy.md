@@ -35,6 +35,20 @@ Template and tests: `arbiter/test/fixtures/rebuild-mandates.sql`, `arbiter/test/
 4. Migrate, then deploy (never the reverse).
 5. Production: owner approval at this step, manual, never from CI.
 
+## After a deploy
+
+1. `curl -s https://<arbiter origin>/health` must answer **200** with `"ok": true`. Check that `version.git` is the commit you deployed, that `version.worker` is the new version id (`wrangler deployments list --env <env>`), that `key.kid` is the `kid` pinned in that environment's Oja (`sites/oja/environments.json`), and that `migrations.applied` is the latest file in `arbiter/migrations/`. A **503** names what is wrong in `error`:
+   - `db_unavailable`: D1 is not answering `SELECT 1`. Check the D1 binding and the Cloudflare status page.
+   - `schema_outdated`: the database was never migrated. Run the migrations (R3 above), then recheck.
+   - `migrations_pending`: a migration this Worker needs is not applied, so writes are refused. Migrate (R3), then recheck. Never roll the Worker back instead (ADR 0005).
+   - `key_missing`: `ARBITER_SIGNING_JWK` is not set: `wrangler secret put ARBITER_SIGNING_JWK --env <env>`.
+   - `key_invalid`: the secret is not a private P-256 JWK. Put the right one (R1 backup).
+   - `key_dev_in_deployed_env`: `DEV=1` is set in a deployed environment. Remove it at once (`wrangler secret delete DEV --env <env>`) and redeploy.
+2. Oja's seller console (`/vendor`) shows the same check in its status line: "Arbiter healthy · signing key <kid> · database at <migration>".
+3. Then the environment's smoke test (P1.4b).
+
+`/health` makes at most 3 queries, reads no business table and is never cached (`cache-control: no-store`).
+
 ## Logs
 
 Workers Logs is on in both environments (`[env.X.observability]`, sampling 1), with Cloudflare's own invocation logs **off** (`invocation_logs = false`): the docs don't say whether they leave out headers such as `Authorization` or the caller IP. Every request writes one JSON object (`arbiter/src/log.js`):

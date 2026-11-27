@@ -46,7 +46,7 @@ async function drive({ withKey = true, faults = false } = {}) {
 
   const { calls } = await captureLogs(async () => {
     // discovery
-    await f("/"); await f("/.well-known/jwks.json");
+    await f("/"); await f("/health"); await f("/.well-known/jwks.json");
     // admin
     await f("/v1/vendors", { method: "POST", body: { name: "No token" } });
     await f("/v1/vendors", { method: "POST", token: "wrong", body: { name: "Wrong token" } });

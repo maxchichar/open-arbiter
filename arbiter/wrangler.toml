@@ -50,6 +50,11 @@ invocation_logs = false
 [vars]
 ENVIRONMENT = "local"
 
+# The Worker version in /health and every log line (P1.6). Not inherited by [env.X] (checked with
+# wrangler 4.166.0's config reader), so each environment declares it.
+[version_metadata]
+binding = "CF_VERSION_METADATA"
+
 # ---------- staging ----------
 [env.staging]
 workers_dev = true
@@ -59,6 +64,9 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
+
+[env.staging.version_metadata]
+binding = "CF_VERSION_METADATA"
 
 [env.staging.observability]
 enabled = true
@@ -90,6 +98,9 @@ required = ["ADMIN_TOKEN", "ARBITER_SIGNING_JWK", "BUYER_SALT"]
 
 [env.production.vars]
 ENVIRONMENT = "production"
+
+[env.production.version_metadata]
+binding = "CF_VERSION_METADATA"
 
 [env.production.observability]
 enabled = true

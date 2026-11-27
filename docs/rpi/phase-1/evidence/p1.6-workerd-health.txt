@@ -1,0 +1,47 @@
+# before migrations:
+{
+  "error": "schema_outdated",
+  "message": "The database has never been migrated.",
+  "request_id": "0c439093f6c4f005c45c9d293090b2fe",
+  "ok": false,
+  "version": {
+    "worker": "399c4bf6-64e5-49b1-99bf-89e5f1b77293",
+    "tag": null,
+    "mechanism": "3.0.0",
+    "git": "6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1"
+  },
+  "db": "ok",
+  "key": {
+    "loaded": false,
+    "kid": null,
+    "source": "dev"
+  },
+  "migrations": {
+    "latest": "0001_settle_attempt.sql",
+    "applied": null
+  },
+  "schema": "outdated"
+}
+HTTP 503
+# after migrations:
+HTTP/1.1 200 OK
+Cache-Control: no-store
+x-request-id: ea3a777602583d46e39bb12d9bffbd5b
+{
+  "ok": true,
+  "version": {
+    "worker": "1323fb7c-c7a6-4f36-bd0a-26404f358638",
+    "tag": null,
+    "mechanism": "3.0.0",
+    "git": "6fe6ff5b07fe2a7274e50782f0ea6cbdeeae29b1"
+  "db": "ok",
+  "key": {
+    "loaded": false,
+    "kid": null,
+    "source": "dev"
+  "migrations": {
+    "latest": "0001_settle_attempt.sql",
+    "applied": "0001_settle_attempt.sql"
+  "schema": "ok"
+# port 8788 listeners left: 0
+exit: 0

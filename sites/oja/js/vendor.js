@@ -5,6 +5,13 @@ const base = arbiterUrl().replace(/\/+$/, "");
 const $ = (s) => document.querySelector(s);
 const ngn = (k) => `₦${(k / 100).toLocaleString("en-NG")}`;
 $("#host").textContent = new URL(base).host;
+// P1.6: the arbiter's /health first, so a misconfigured deployment shows before a seller signs in.
+fetch(`${base}/health`, { cache: "no-store" }).then(async (r) => {
+  const h = await r.json();
+  $("#arbiter-health").textContent = h.ok
+    ? `Arbiter healthy · signing key ${h.key.kid ?? "(dev, made on first receipt)"} · database at ${h.migrations.applied}`
+    : `Arbiter not ready: ${h.error}. Sealing prices may fail until it is fixed.`;
+}, () => { $("#arbiter-health").textContent = "Arbiter unreachable."; });
 let key = sessionStorage.getItem("oja-vendor-key") || "";
 const api = (method, body) => fetch(`${base}/v1/listings`, { method, headers: { "content-type": "application/json", authorization: `Bearer ${key}` }, body: body && JSON.stringify(body) }).then(async (r) => ({ ok: r.ok, data: await r.json() }));
 async function load() {
