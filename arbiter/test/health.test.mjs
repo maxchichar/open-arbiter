@@ -46,6 +46,7 @@ test("healthy: 200 with versions, db, key (kid only), migrations and schema", as
     key: { loaded: true, kid, source: "secret" },
     migrations: { latest: LATEST, applied: LATEST },
     schema: "ok",
+    rate_limit: "instance", // P1.7: no IP_RATE_LIMIT binding in this env
   });
   assert.equal(res.headers.get("cache-control"), "no-store");
   assert.match(res.headers.get("x-request-id"), /^[0-9a-f]{32}$/);
