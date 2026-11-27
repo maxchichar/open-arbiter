@@ -74,6 +74,19 @@ test("the page CSP is strict for scripts and locked down elsewhere", () => {
   }
 });
 
+test("the page CSP turns on Trusted Types, allowing only the runtime's one policy (P1.3b)", () => {
+  // The name the runtime creates, read from its source so a rename upstream fails here.
+  let policyName;
+  try { policyName = read("runtime/trusted-types.js").match(/createPolicy\("([^"]+)"/)?.[1]; } catch {}
+  assert.ok(policyName, "runtime/trusted-types.js with a createPolicy call is missing");
+  for (const path of PAGES) {
+    const d = directives(rules()[path]["content-security-policy"]);
+    assert.deepEqual(d["require-trusted-types-for"], ["'script'"], `${path}: require-trusted-types-for`);
+    // No 'allow-duplicates', no 'none', no "default" policy: exactly the runtime's.
+    assert.deepEqual(d["trusted-types"], [policyName], `${path}: trusted-types`);
+  }
+});
+
 /** Where the runtime's key sign-ins (Connect with Otari, Connect with OpenRouter) fetch a key. */
 export const RUNTIME_SIGN_IN_ORIGINS = [OtariConnect.TOKEN_URL, OpenRouterConnect.KEYS_URL].map((u) => new URL(u).origin);
 

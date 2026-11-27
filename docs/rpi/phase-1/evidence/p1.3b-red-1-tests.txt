@@ -1,0 +1,410 @@
+✖ CALLERS lists exact origins only, never "*"; EVERY_SITE is ["*"] (1.87757ms)
+✖ only the owner-confirmed reads are shared with every site, through EVERY_SITE (2.495592ms)
+✖ every other shared action lists exact origins (verify_receipt included) (0.34266ms)
+✔ a shared write or irreversible action lists exact callers, never "*" (agentic-web e67e306) (0.291052ms)
+✔ every HTML page gets the same page CSP from _headers (1.42405ms)
+✔ the page CSP is strict for scripts and locked down elsewhere (1.956499ms)
+✖ the page CSP turns on Trusted Types, allowing only the runtime's one policy (P1.3b) (0.862345ms)
+✔ connect-src allows exactly Oja, the arbiter, the runtime's LLM providers and its key sign-ins (0.787854ms)
+✔ the bridge keeps a script policy but can be framed (spec: callers load it in a hidden frame) (0.246908ms)
+✔ the coded-tool worker keeps the skill's own CSP (0.198566ms)
+✔ Oja's own HTML has no inline script, event handler or style attribute (0.913502ms)
+✖ runtime/ is exactly the locked upstream copy: same files, same bytes (11.010154ms)
+✖ CI and CLAUDE.md pin the same agentic-web commit as the runtime lock (1.190938ms)
+✖ CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there (0.575751ms)
+✖ every HTML write, HTML parse and worker start in Oja's pages uses the runtime's policy (27.6921ms)
+✖ the runtime has one Trusted Types policy, and nothing else creates one (0.25844ms)
+✔ Oja's own code imports the policy module only by its one URL (a ?v= copy cannot create the policy again) (1.194965ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 8
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 112.484155
+
+✖ failing tests:
+
+test at sites/oja/tests/bridge.test.mjs:24:1
+✖ CALLERS lists exact origins only, never "*"; EVERY_SITE is ["*"] (1.87757ms)
+  AssertionError [ERR_ASSERTION]: BridgeActions.EVERY_SITE not found
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/bridge.test.mjs:28:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/bridge.test.mjs:35:1
+✖ only the owner-confirmed reads are shared with every site, through EVERY_SITE (2.495592ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'get_market_state',
+  +   'verify_receipt'
+    ]
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/bridge.test.mjs:38:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'get_market_state', 'verify_receipt' ],
+    expected: [ 'get_market_state' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/bridge.test.mjs:47:1
+✖ every other shared action lists exact origins (verify_receipt included) (0.34266ms)
+  AssertionError [ERR_ASSERTION]: verify_receipt: * is not an exact origin
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/bridge.test.mjs:49:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/csp.test.mjs:77:1
+✖ the page CSP turns on Trusted Types, allowing only the runtime's one policy (P1.3b) (0.862345ms)
+  AssertionError [ERR_ASSERTION]: runtime/trusted-types.js with a createPolicy call is missing
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/csp.test.mjs:81:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/runtime-pin.test.mjs:24:1
+✖ runtime/ is exactly the locked upstream copy: same files, same bytes (11.010154ms)
+  AssertionError [ERR_ASSERTION]: runtime/ differs from skills/agentify-website/runtime at 90d561d6185d3b5625f9d8055da4d259074af745: replace it wholesale from upstream (invariant 6)
+  + actual - expected
+  
+    {
+  +   changed: [
+  +     'README.md',
+  +     'cruse-render.js',
+  +     'discovered-actions.js',
+  +     'form-actions.js',
+  +     'sandbox.js',
+  +     'ui.js'
+  +   ],
+  -   changed: [],
+      extra: [],
+  +   missing: [
+  +     'enter-key.js',
+  +     'trusted-types.js'
+  +   ]
+  -   missing: []
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/runtime-pin.test.mjs:30:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { missing: [ 'enter-key.js', 'trusted-types.js' ], extra: [], changed: [ 'README.md', 'cruse-render.js', 'discovered-actions.js', 'form-actions.js', 'sandbox.js', 'ui.js' ] },
+    expected: { missing: [], extra: [], changed: [] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/runtime-pin.test.mjs:34:1
+✖ CI and CLAUDE.md pin the same agentic-web commit as the runtime lock (1.190938ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      checkout: [
+  +     'd67755e762545de983e38a395ec45d89b77c9311'
+  -     '90d561d6185d3b5625f9d8055da4d259074af745'
+      ],
+  +   claude: 'd67755e762545de983e38a395ec45d89b77c9311',
+  +   envPin: 'd67755e762545de983e38a395ec45d89b77c9311'
+  -   claude: '90d561d6185d3b5625f9d8055da4d259074af745',
+  -   envPin: '90d561d6185d3b5625f9d8055da4d259074af745'
+    }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/runtime-pin.test.mjs:39:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { envPin: 'd67755e762545de983e38a395ec45d89b77c9311', checkout: [ 'd67755e762545de983e38a395ec45d89b77c9311' ], claude: 'd67755e762545de983e38a395ec45d89b77c9311' },
+    expected: { envPin: '90d561d6185d3b5625f9d8055da4d259074af745', checkout: [ '90d561d6185d3b5625f9d8055da4d259074af745' ], claude: '90d561d6185d3b5625f9d8055da4d259074af745' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/runtime-pin.test.mjs:42:1
+✖ CI compares runtime/ with the clone at the pin and runs upstream's runtime tests there (0.575751ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /diff -r \.agentic-web\/skills\/agentify-website\/runtime sites\/oja\/runtime/. Input:
+  
+  '# CI (P1.3, docs/rpi/phase-1/p1.3-plan.md). No Cloudflare credential, no secrets, no deploy: those come\n' +
+    '# in P1.4 with approvals A2 and A4. scripts/ci-guards.mjs (run below and by npm test) enforces this.\n' +
+    'name: ci\n' +
+    '\n' +
+    'on:\n' +
+    '  push:\n' +
+    '  pull_request:\n' +
+    '\n' +
+    'permissions:\n' +
+    '  contents: read\n' +
+    '\n' +
+    'concurrency:\n' +
+    '  group: ci-${{ github.ref }}\n' +
+    '  cancel-in-progress: true\n' +
+    '\n' +
+    'env:\n' +
+    '  CI: "1"\n' +
+    '  WRANGLER_SEND_METRICS: "false"\n' +
+    "  # The agentic-web commit Oja's runtime is copied from (CLAUDE.md). P1.3b moves it.\n" +
+    '  AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311\n' +
+    '\n' +
+    'jobs:\n' +
+    '  unit:\n' +
+    '    runs-on: ubuntu-24.04\n' +
+    '    timeout-minutes: 15\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n' +
+    '        with:\n' +
+    '          fetch-depth: 0\n' +
+    '          persist-credentials: false\n' +
+    '      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0\n' +
+    '        with:\n' +
+    '          node-version: "24"\n' +
+    '          cache: npm\n' +
+    '      - run: npm ci\n' +
+    '      - name: npm test (unit, property, page, copy, CSP, config, workflow guards)\n' +
+    '        run: npm test\n' +
+    '      - name: secret scan, every commit\n' +
+    '        run: node scripts/secret-scan.mjs --history\n' +
+    '      - name: workflow guard (AC-3.4, AC-3.7)\n' +
+    '        run: node scripts/ci-guards.mjs workflows\n' +
+    '      - name: M3 guard (AC-3.5)\n' +
+    '        run: node scripts/ci-guards.mjs m3\n' +
+    "      - name: M2, release tags on HEAD's migrations (AC-3.6)\n" +
+    '        run: npm run test:m2\n' +
+    '\n' +
+    '  worker:\n' +
+    '    runs-on: ubuntu-24.04\n' +
+    '    timeout-minutes: 20\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n' +
+    '        with:\n' +
+    '          persist-credentials: false\n' +
+    '      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0\n' +
+    '        with:\n' +
+    '          node-version: "24"\n' +
+    '          cache: npm\n' +
+    '      - run: npm ci\n' +
+    '      - name: seed, e2e, concurrency on a local wrangler dev\n' +
+    '        run: npm run test:worker\n' +
+    "      - name: migrations through wrangler's local D1\n" +
+    '        run: npm run test:migrations-d1\n' +
+    '\n' +
+    '  network-and-browser:\n' +
+    '    runs-on: ubuntu-24.04\n' +
+    '    timeout-minutes: 25\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n' +
+    '        with:\n' +
+    '          persist-credentials: false\n' +
+    '      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n' +
+    '        with:\n' +
+    '          repository: cognizant-ai-labs/agentic-web\n' +
+    '          ref: d67755e762545de983e38a395ec45d89b77c9311\n' +
+    '          path: .agentic-web\n' +
+    '          persist-credentials: false\n' +
+    '      - name: agentic-web is at the pin\n' +
+    '        run: test "$(git -C .agentic-web rev-parse HEAD)" = "$AGENTIC_WEB_PIN"\n' +
+    '      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0\n' +
+    '        with:\n' +
+    '          node-version: "24"\n' +
+    '          cache: npm\n' +
+    '      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0\n' +
+    '        with:\n' +
+    '          python-version: "3.12"\n' +
+    '      - run: npm ci\n' +
+    '      - name: network and manifest build is up to date\n' +
+    '        working-directory: sites/oja\n' +
+    '        run: node ../../.agentic-web/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json --check\n' +
+    '      - name: upstream linking tests at the pin\n' +
+    '        working-directory: .agentic-web\n' +
+    '        run: node --test tests/linking/linking.test.mjs\n' +
+    '      - name: Playwright and Chromium\n' +
+    '        run: |\n' +
+    '          python -m pip install --require-hashes -r sites/oja/tests/requirements.txt\n' +
+    '          python -m playwright install --with-deps chromium\n' +
+    '      - name: browser check (scripted LLM, page CSP from _headers, 0 violations)\n' +
+    '        env:\n' +
+    '          AGENTIC_WEB: ${{ github.workspace }}/.agentic-web\n' +
+    '          BROWSER_OUT: ${{ runner.temp }}/oja-shots\n' +
+    '        run: node arbiter/scripts/worker-harness.mjs --port 8787 browser\n' +
+    '      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2\n' +
+    '        if: always()\n' +
+    '        with:\n' +
+    '          name: oja-screenshots\n' +
+    '          path: ${{ runner.temp }}/oja-shots\n' +
+    '          retention-days: 7\n' +
+    '          if-no-files-found: ignore\n'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/runtime-pin.test.mjs:44:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '# CI (P1.3, docs/rpi/phase-1/p1.3-plan.md). No Cloudflare credential, no secrets, no deploy: those come\n# in P1.4 with approvals A2 and A4. scripts/ci-guards.mjs (run below and by npm test) enforces this.\nname: ci\n\non:\n  push:\n  pull_request:\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: ci-${{ github.ref }}\n  cancel-in-progress: true\n\nenv:\n  CI: "1"\n  WRANGLER_SEND_METRICS: "false"\n  # The agentic-web commit Oja\'s runtime is copied from (CLAUDE.md). P1.3b moves it.\n  AGENTIC_WEB_PIN: d67755e762545de983e38a395ec45d89b77c9311\n\njobs:\n  unit:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n        with:\n          fetch-depth: 0\n          persist-credentials: false\n      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0\n        with:\n          node-version: "24"\n          cache: npm\n      - run: npm ci\n      - name: npm test (unit, property, page, copy, CSP, config, workflow guards)\n        run: npm test\n      - name: secret scan, every commit\n        run: node scripts/secret-scan.mjs --history\n      - name: workflow guard (AC-3.4, AC-3.7)\n        run: node scripts/ci-guards.mjs workflows\n      - name: M3 guard (AC-3.5)\n        run: node scripts/ci-guards.mjs m3\n      - name: M2, release tags on HEAD\'s migrations (AC-3.6)\n        run: npm run test:m2\n\n  worker:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 20\n    steps:\n      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n        with:\n          persist-credentials: false\n      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0\n        with:\n          node-version: "24"\n          cache: npm\n      - run: npm ci\n      - name: seed, e2e, concurrency on a local wrangler dev\n        run: npm run test:worker\n      - name: migrations through wrangler\'s local D1\n        run: npm run test:migrations-d1\n\n  network-and-browser:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 25\n    steps:\n      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n        with:\n          persist-credentials: false\n      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n        with:\n          repository: cognizant-ai-labs/agentic-web\n          ref: d67755e762545de983e38a395ec45d89b77c9311\n          path: .agentic-web\n          persist-credentials: false\n      - name: agentic-web is at the pin\n        run: test "$(git -C .agentic-web rev-parse HEAD)" = "$AGENTIC_WEB_PIN"\n      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0\n        with:\n          node-version: "24"\n          cache: npm\n      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0\n        with:\n          python-version: "3.12"\n      - run: npm ci\n      - name: network and manifest build is up to date\n        working-directory: sites/oja\n        run: node ../../.agentic-web/skills/agentify-website/scripts/build_network.mjs oja_market.hocon --manifest agent-manifest.json --check\n      - name: upstream linking tests at the pin\n        working-directory: .agentic-web\n        run: node --test tests/linking/linking.test.mjs\n      - name: Playwright and Chromium\n        run: |\n          python -m pip install --require-hashes -r sites/oja/tests/requirements.txt\n          python -m playwright install --with-deps chromium\n      - name: browser check (scripted LLM, page CSP from _headers, 0 violations)\n        env:\n          AGENTIC_WEB: ${{ github.workspace }}/.agentic-web\n          BROWSER_OUT: ${{ runner.temp }}/oja-shots\n        run: node arbiter/scripts/worker-harness.mjs --port 8787 browser\n      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2\n        if: always()\n        with:\n          name: oja-screenshots\n          path: ${{ runner.temp }}/oja-shots\n          retention-days: 7\n          if-no-files-found: ignore\n',
+    expected: /diff -r \.agentic-web\/skills\/agentify-website\/runtime sites\/oja\/runtime/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/trusted-types.test.mjs:38:1
+✖ every HTML write, HTML parse and worker start in Oja's pages uses the runtime's policy (27.6921ms)
+  AssertionError [ERR_ASSERTION]: These skip the Trusted Types policy:
+  runtime/cruse-render.js:110 innerHTML or outerHTML
+  runtime/discovered-actions.js:43 DOMParser.parseFromString
+  runtime/discovered-actions.js:98 DOMParser.parseFromString
+  runtime/form-actions.js:36 DOMParser.parseFromString
+  runtime/form-actions.js:127 DOMParser.parseFromString
+  runtime/sandbox.js:35 new Worker
+  runtime/ui.js:472 innerHTML or outerHTML
+  runtime/ui.js:473 innerHTML or outerHTML
+  runtime/ui.js:474 innerHTML or outerHTML
+  runtime/ui.js:483 innerHTML or outerHTML
+  runtime/ui.js:485 innerHTML or outerHTML
+  runtime/ui.js:491 innerHTML or outerHTML
+  runtime/ui.js:498 innerHTML or outerHTML
+  runtime/ui.js:842 innerHTML or outerHTML
+  runtime/ui.js:851 innerHTML or outerHTML
+  runtime/ui.js:922 innerHTML or outerHTML
+  runtime/ui.js:942 innerHTML or outerHTML
+  runtime/ui.js:948 innerHTML or outerHTML
+  runtime/ui.js:966 innerHTML or outerHTML
+  runtime/ui.js:980 innerHTML or outerHTML
+  runtime/ui.js:999 innerHTML or outerHTML
+  runtime/ui.js:1069 innerHTML or outerHTML
+  runtime/ui.js:1142 innerHTML or outerHTML
+  runtime/ui.js:1166 innerHTML or outerHTML
+  runtime/ui.js:1275 innerHTML or outerHTML
+  runtime/ui.js:1667 innerHTML or outerHTML
+  runtime/ui.js:1673 innerHTML or outerHTML
+  runtime/ui.js:1679 innerHTML or outerHTML
+  runtime/ui.js:1685 innerHTML or outerHTML
+  runtime/ui.js:1693 innerHTML or outerHTML
+  runtime/ui.js:1700 innerHTML or outerHTML
+  runtime/ui.js:1783 innerHTML or outerHTML
+  runtime/ui.js:1823 innerHTML or outerHTML
+  runtime/ui.js:1842 innerHTML or outerHTML
+  runtime/ui.js:494 insertAdjacentHTML
+  + actual - expected
+  
+  + [
+  +   'runtime/cruse-render.js:110 innerHTML or outerHTML',
+  +   'runtime/discovered-actions.js:43 DOMParser.parseFromString',
+  +   'runtime/discovered-actions.js:98 DOMParser.parseFromString',
+  +   'runtime/form-actions.js:36 DOMParser.parseFromString',
+  +   'runtime/form-actions.js:127 DOMParser.parseFromString',
+  +   'runtime/sandbox.js:35 new Worker',
+  +   'runtime/ui.js:472 innerHTML or outerHTML',
+  +   'runtime/ui.js:473 innerHTML or outerHTML',
+  +   'runtime/ui.js:474 innerHTML or outerHTML',
+  +   'runtime/ui.js:483 innerHTML or outerHTML',
+  +   'runtime/ui.js:485 innerHTML or outerHTML',
+  +   'runtime/ui.js:491 innerHTML or outerHTML',
+  +   'runtime/ui.js:498 innerHTML or outerHTML',
+  +   'runtime/ui.js:842 innerHTML or outerHTML',
+  +   'runtime/ui.js:851 innerHTML or outerHTML',
+  +   'runtime/ui.js:922 innerHTML or outerHTML',
+  +   'runtime/ui.js:942 innerHTML or outerHTML',
+  +   'runtime/ui.js:948 innerHTML or outerHTML',
+  +   'runtime/ui.js:966 innerHTML or outerHTML',
+  +   'runtime/ui.js:980 innerHTML or outerHTML',
+  +   'runtime/ui.js:999 innerHTML or outerHTML',
+  +   'runtime/ui.js:1069 innerHTML or outerHTML',
+  +   'runtime/ui.js:1142 innerHTML or outerHTML',
+  +   'runtime/ui.js:1166 innerHTML or outerHTML',
+  +   'runtime/ui.js:1275 innerHTML or outerHTML',
+  +   'runtime/ui.js:1667 innerHTML or outerHTML',
+  +   'runtime/ui.js:1673 innerHTML or outerHTML',
+  +   'runtime/ui.js:1679 innerHTML or outerHTML',
+  +   'runtime/ui.js:1685 innerHTML or outerHTML',
+  +   'runtime/ui.js:1693 innerHTML or outerHTML',
+  +   'runtime/ui.js:1700 innerHTML or outerHTML',
+  +   'runtime/ui.js:1783 innerHTML or outerHTML',
+  +   'runtime/ui.js:1823 innerHTML or outerHTML',
+  +   'runtime/ui.js:1842 innerHTML or outerHTML',
+  +   'runtime/ui.js:494 insertAdjacentHTML'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/trusted-types.test.mjs:47:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'runtime/cruse-render.js:110 innerHTML or outerHTML', 'runtime/discovered-actions.js:43 DOMParser.parseFromString', 'runtime/discovered-actions.js:98 DOMParser.parseFromString', 'runtime/form-actions.js:36 DOMParser.parseFromString', 'runtime/form-actions.js:127 DOMParser.parseFromString', 'runtime/sandbox.js:35 new Worker', 'runtime/ui.js:472 innerHTML or outerHTML', 'runtime/ui.js:473 innerHTML or outerHTML', 'runtime/ui.js:474 innerHTML or outerHTML', 'runtime/ui.js:483 innerHTML or outerHTML', 'runtime/ui.js:485 innerHTML or outerHTML', 'runtime/ui.js:491 innerHTML or outerHTML', 'runtime/ui.js:498 innerHTML or outerHTML', 'runtime/ui.js:842 innerHTML or outerHTML', 'runtime/ui.js:851 innerHTML or outerHTML', 'runtime/ui.js:922 innerHTML or outerHTML', 'runtime/ui.js:942 innerHTML or outerHTML', 'runtime/ui.js:948 innerHTML or outerHTML', 'runtime/ui.js:966 innerHTML or outerHTML', 'runtime/ui.js:980 innerHTML or outerHTML', 'runtime/ui.js:999 innerHTML or outerHTML', 'runtime/ui.js:1069 innerHTML or outerHTML', 'runtime/ui.js:1142 innerHTML or outerHTML', 'runtime/ui.js:1166 innerHTML or outerHTML', 'runtime/ui.js:1275 innerHTML or outerHTML', 'runtime/ui.js:1667 innerHTML or outerHTML', 'runtime/ui.js:1673 innerHTML or outerHTML', 'runtime/ui.js:1679 innerHTML or outerHTML', 'runtime/ui.js:1685 innerHTML or outerHTML', 'runtime/ui.js:1693 innerHTML or outerHTML', 'runtime/ui.js:1700 innerHTML or outerHTML', 'runtime/ui.js:1783 innerHTML or outerHTML', 'runtime/ui.js:1823 innerHTML or outerHTML', 'runtime/ui.js:1842 innerHTML or outerHTML', 'runtime/ui.js:494 insertAdjacentHTML' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at sites/oja/tests/trusted-types.test.mjs:50:1
+✖ the runtime has one Trusted Types policy, and nothing else creates one (0.25844ms)
+  AssertionError [ERR_ASSERTION]: runtime/trusted-types.js is missing: the runtime predates Trusted Types
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/sites/oja/tests/trusted-types.test.mjs:51:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+exit: 1

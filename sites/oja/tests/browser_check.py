@@ -7,7 +7,9 @@ site on :8080, tests/fake-llm.mjs on :8799.
 The local file server does not send _headers, so this script applies the page CSP from _headers
 to each HTML page itself, adding only the scripted LLM's origin to connect-src (it stands in for
 the visitor's AI provider). Any CSP violation fails the check. CSP_DROP_STYLE_HASH=1 removes the
-runtime style hash from the policy: a negative control that must fail. Step 9 runs Connect with
+runtime style hash from the policy: a negative control that must fail. TT_PROBE=1 writes a plain
+string to innerHTML after the market loads: a Trusted Types negative control that must fail with a
+require-trusted-types-for violation. Step 9 runs Connect with
 Otari against a mocked otari.ai (Playwright routes; every other external host is refused).
 """
 import base64
@@ -123,6 +125,11 @@ with sync_playwright() as p:
     expect(page.locator("#assistant-status")).to_contain_text("connected", timeout=15000)
     page.screenshot(path=f"{OUT}/1-market.png", full_page=False)
     print(f"catalogue: {cards} items; assistant: {page.locator('#assistant-status').inner_text()}")
+    if os.environ.get("TT_PROBE") == "1":
+        # Negative control: a raw HTML write must be refused and reported under the page CSP.
+        refused = page.evaluate("""() => { const d = document.createElement('div');
+            try { d.innerHTML = '<b>tt probe</b>'; return false; } catch (e) { return String(e); } }""")
+        print("TT_PROBE: raw innerHTML write refused:", refused)
 
     # 2. Haggle by hand, then accept through the page's own dialog.
     page.select_option("#h-sku", "garri-ijebu-50kg")
