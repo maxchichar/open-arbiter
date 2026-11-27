@@ -1,0 +1,58 @@
+#!/bin/sh
+# Versioned pre-push hook (enabled by `npm install`, or `git config core.hooksPath .githooks`).
+# A push goes through only when:
+#   1. every ref being pushed is HEAD (npm test can only vouch for what is checked out),
+#   2. the working tree is clean (tracked and untracked), so what is tested is what is pushed,
+#   3. the history secret scan is clean,
+#   4. `npm test` passes on HEAD.
+# OPEN_ARBITER_ALLOW_RED_PUSH=1 (exactly "1") skips only step 4, for a deliberate red-test push,
+# and says so. Deleting a remote branch runs no checks.
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+say() { echo "pre-push: $*" >&2; }
+
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+  say "node or npm not found; the checks cannot run, so the push is blocked."
+  exit 1
+fi
+
+head=$(git rev-parse HEAD) || exit 1
+short=$(echo "$head" | cut -c1-12)
+checked=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$local_sha" in *[!0]*) ;; *) continue ;; esac # a deletion
+  commit=$(git rev-parse -q --verify "$local_sha^{commit}") || { say "$local_ref is not a commit; refusing."; exit 1; }
+  if [ "$commit" != "$head" ]; then
+    say "$local_ref is not HEAD ($short). Check it out and push again, so npm test runs on it."
+    exit 1
+  fi
+  checked=1
+done
+[ "$checked" = 1 ] || exit 0
+
+if [ -n "$(git status --porcelain --untracked-files=normal)" ]; then
+  say "the working tree is not clean, so HEAD is not what would be tested. Commit or stash first:"
+  git status --short >&2
+  exit 1
+fi
+
+if ! node scripts/secret-scan.mjs --history >&2; then
+  say "the history secret scan found a problem (above); the push is blocked."
+  exit 1
+fi
+
+if [ "${OPEN_ARBITER_ALLOW_RED_PUSH-}" = "1" ]; then
+  say "BYPASSED: npm test was NOT run on $short (OPEN_ARBITER_ALLOW_RED_PUSH=1). Use only for a deliberate red-test push."
+  exit 0
+fi
+
+out=$(mktemp) || exit 1
+trap 'rm -f "$out"' EXIT
+say "running npm test on $short…"
+if npm test >"$out" 2>&1; then
+  say "npm test passed on $short"
+  exit 0
+fi
+tail -n 80 "$out" >&2
+say "npm test failed on $short; the push is blocked. For a deliberate red-test push: OPEN_ARBITER_ALLOW_RED_PUSH=1 git push …"
+exit 1
