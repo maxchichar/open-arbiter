@@ -7,7 +7,7 @@ import { mkdtempSync, readFileSync, readdirSync, writeFileSync, rmSync } from "n
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { workflowProblems, ciProblems, jobBlocks, m3Problems, mechanismVersion, deployFiles, WORKFLOW_DIR } from "../../scripts/ci-guards.mjs";
-import { scanHistory } from "../../scripts/secret-scan.mjs";
+import { scanHistory, findSecrets, REVIEWED_BLOBS } from "../../scripts/secret-scan.mjs";
 
 const REPO = new URL("../../", import.meta.url).pathname;
 const SHA = "3d3c42e5aac5ba805825da76410c181273ba90b1";
@@ -134,4 +134,39 @@ test("secret scan --history finds a key that was committed and later removed, wi
     assert.equal(cli.status, 1);
     assert.ok(!(cli.stdout + cli.stderr).includes(FAKE));
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("reviewed blobs: only the exact reviewed .env.example blob passes; a different .env.example is refused", () => {
+  const ID = "005915ebbca6eb6d021d5445891006ac5668cad3";
+  assert.deepEqual([...REVIEWED_BLOBS.keys()], [ID]);
+  assert.match(REVIEWED_BLOBS.get(ID).reason, /placeholder-only \.env\.example from the earlier away-bot project; reviewed by owner 27 Nov 2026/);
+  assert.equal(REVIEWED_BLOBS.get(ID).date, "2026-11-27");
+  const dir = mkdtempSync(join(tmpdir(), "scan-reviewed-"));
+  const g = (...a) => execFileSync("git", ["-C", dir, "-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "core.hooksPath=/dev/null", ...a]);
+  try {
+    g("init", "-q");
+    // A different .env.example (one byte changed from anything reviewed): a new blob id, still refused.
+    writeFileSync(join(dir, ".env.example"), "DISCORD_BOT_TOKEN=your-bot-token-here\nNVIDIA_API_KEY=nvapi-your-key-here\n# changed\n");
+    g("add", "."); g("commit", "-qm", "example");
+    const blob = execFileSync("git", ["-C", dir, "rev-parse", "HEAD:.env.example"], { encoding: "utf8" }).trim();
+    assert.notEqual(blob, ID);
+    const { problems } = scanHistory({ cwd: dir });
+    assert.equal(problems.length, 1, JSON.stringify(problems));
+    assert.match(problems[0], /^\.env\.example \(blob [0-9a-f]{12}, commit [0-9a-f]+\): must not be committed$/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+  if (spawnSync("git", ["-C", REPO, "cat-file", "-e", ID]).status === 0) {
+    const real = scanHistory({ cwd: REPO }).problems.filter((p) => p.includes(ID.slice(0, 12)));
+    assert.deepEqual(real, [], "the reviewed blob itself passes in this repo's history");
+  }
+});
+
+test("Discord bot tokens and NVIDIA API keys are detected; placeholders are not", () => {
+  // Fake values of the right shape, built at run time so this file holds none.
+  const discord = ["M" + "T".repeat(23), "G" + "a".repeat(5), "x".repeat(27)].join(".");
+  const nvidia = "nvapi-" + "Q".repeat(64);
+  assert.deepEqual(findSecrets(`DISCORD_BOT_TOKEN=${discord}`), ["Discord bot token"]);
+  assert.deepEqual(findSecrets(`token: "${discord}"`), ["Discord bot token"]);
+  assert.deepEqual(findSecrets(`NVIDIA_API_KEY=${nvidia}`), ["NVIDIA API key"]);
+  assert.deepEqual(findSecrets("DISCORD_BOT_TOKEN=your-bot-token-here\nNVIDIA_API_KEY=nvapi-your-key-here"), []);
+  assert.deepEqual(findSecrets("see example.com.ng and v1.2.3 and a.b.c"), []);
 });

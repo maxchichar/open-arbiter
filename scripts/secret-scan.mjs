@@ -12,6 +12,15 @@ import { fileURLToPath } from "node:url";
 export const FORBIDDEN_PATHS = [/(^|\/)\.dev\.vars(\..+)?$/, /(^|\/)\.env(\..+)?$/, /(^|\/)\.seed-keys\.json$/, /\.jwk$/, /\.pem$/, /(^|\/)\.wrangler\//];
 
 /** Files skipped by content: binaries, and this scanner's own test, whose fixtures are fake secrets. */
+/**
+ * History blobs reviewed by the owner and allowed despite a path rule, by exact blob id. A changed file is
+ * a new blob and is checked again; any other file under a forbidden path stays flagged. Only scanHistory
+ * uses this, and the blob's content is still scanned.
+ */
+export const REVIEWED_BLOBS = new Map([
+  ["005915ebbca6eb6d021d5445891006ac5668cad3", { path: ".env.example", commit: "a8f7cca", date: "2026-11-27", reason: "placeholder-only .env.example from the earlier away-bot project; reviewed by owner 27 Nov 2026" }],
+]);
+
 const SKIP_CONTENT = [/\.(png|jpe?g|gif|ico|woff2?)$/, /^arbiter\/test\/secret-scan\.test\.mjs$/];
 
 /** Values a secret assignment may carry in the repo: local dev values. Interpolations ($X, ${X}) pass too. */
@@ -28,6 +37,10 @@ export function secretSpans(text) {
     const start = m.index + m[0].lastIndexOf(value);
     spans.push({ reason: `${m[1]} assigned a value`, start, end: start + value.length });
   }
+  // Discord bot token: base64 user id, timestamp, HMAC (three dot-separated url-safe base64 parts).
+  for (const m of text.matchAll(/(?<![A-Za-z0-9_.-])[A-Za-z0-9_-]{23,28}\.[A-Za-z0-9_-]{6,7}\.[A-Za-z0-9_-]{27,40}(?![A-Za-z0-9_.-])/g)) spans.push({ reason: "Discord bot token", start: m.index, end: m.index + m[0].length });
+  // NVIDIA API key (nvapi- and a long random part; placeholders such as nvapi-your-key-here are shorter).
+  for (const m of text.matchAll(/\bnvapi-[A-Za-z0-9_-]{32,}/g)) spans.push({ reason: "NVIDIA API key", start: m.index, end: m.index + m[0].length });
   for (const m of text.matchAll(/(api[_-]?token|CF_API_TOKEN)["'\s:=]+([A-Za-z0-9_-]{40})\b/gi)) {
     const start = m.index + m[0].lastIndexOf(m[2]);
     spans.push({ reason: "Cloudflare API token", start, end: start + 40 });
@@ -83,7 +96,7 @@ export function scanHistory({ cwd = process.cwd() } = {}) {
   const where = (sha) => git(["log", "--all", "--format=%h", "--reverse", `--find-object=${sha}`], root).toString().split("\n")[0];
   const toRead = [];
   for (const [sha, ps] of paths) {
-    const forbidden = [...ps].filter((f) => FORBIDDEN_PATHS.some((r) => r.test(f)));
+    const forbidden = REVIEWED_BLOBS.has(sha) ? [] : [...ps].filter((f) => FORBIDDEN_PATHS.some((r) => r.test(f)));
     for (const f of forbidden) problems.push(`${f} (blob ${sha.slice(0, 12)}, commit ${where(sha)}): must not be committed`);
     if (forbidden.length === ps.size) continue;
     if ([...ps].every((f) => SKIP_CONTENT.some((r) => r.test(f)))) continue;
