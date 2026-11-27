@@ -1,0 +1,242 @@
+✖ the default cap is 20 per item per IP per day (2.438284ms)
+{
+  ts: '2026-11-27T22:39:00.176Z',
+  level: 'info',
+  request_id: '9adeee6e95fa3e4a00e9dcf0ba4c4066',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 16
+}
+{
+  ts: '2026-11-27T22:39:00.181Z',
+  level: 'info',
+  request_id: '4aff1bc73f11954947e36e1115fb6327',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+{
+  ts: '2026-11-27T22:39:00.185Z',
+  level: 'info',
+  request_id: 'c95c242fa45d2d406a044bd060d61d92',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 3
+}
+✖ MANDATES_PER_ITEM_PER_DAY sets the cap; an unusable value falls back to 20 (90.623239ms)
+{
+  ts: '2026-11-27T22:39:00.200Z',
+  level: 'info',
+  request_id: '68cdacc1bf51e257d25b144f6a467047',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 201,
+  code: null,
+  duration_ms: 6
+}
+{
+  ts: '2026-11-27T22:39:00.204Z',
+  level: 'info',
+  request_id: '4c332c0e815f3d6f4171b69a45a28dd1',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'POST',
+  route: '/v1/mandates',
+  status: 409,
+  code: 'identical_terms',
+  duration_ms: 3
+}
+✔ the identical-terms lock is unchanged, far below the cap (18.874232ms)
+{
+  ts: '2026-11-27T22:39:00.211Z',
+  level: 'info',
+  request_id: '00710de67722784c05b5b30a683618be',
+  env: 'staging',
+  version: { worker: 'local', mechanism: '3.0.0', git: 'unknown' },
+  method: 'GET',
+  route: '/',
+  status: 200,
+  code: null,
+  duration_ms: 1
+}
+✖ GET / publishes the limits an agent needs (8.012771ms)
+✔ AC-F1-5: mechanism.js stays pure (no imports, clock or randomness) (2.658661ms)
+✔ AC-F1-6: mechanism identity, and each offer names its step (2.038698ms)
+✔ worked example (plan D1): rice, q 2, max ₦170,000, ask ₦90,000, floor ₦75,000 → ₦160,000 (0.266655ms)
+✔ AC-F1-2: a zone with no grid point gives no offer (0.25388ms)
+✔ tie between two grid points goes to the buyer (lower) (0.27463ms)
+✔ AC-F1-1: totals are on the grid and inside [floor·q, min(max, ask·q)] (20,000 cases) (35.784338ms)
+✔ the outcome is monotone in the floor (exhaustive on small asks), so binary search is exact (301.76793ms)
+✔ AC-F1-4: two floors in the same unit_step cell give the same result, at q = 1..12 (5.326999ms)
+✔ AC-F1-3: one agreed price leaves at least one unit_step of possible floors, and g of possible maxima (58.8021ms)
+✔ AC-F1-7: three deals at q = 1, 2, 3 still leave at least one unit_step of possible floors (2,000 sequences, no-deals included) (53.915384ms)
+✔ AC-F1-7, low price: ask ₦610 uses the ₦100 minimum step (8.536802ms)
+✔ R1: every step is ₦100 × 2^k, so the grids of any two asks nest (4.943083ms)
+✔ R1/R2: a listing whose floor is in the cut-off top step is refused (it could never trade, and a no-deal would pin it) (1.388938ms)
+✔ R1: the reviewer's example: floor ₦162,000, asks ₦184,000 then ₦180,000, still one step of possible floors (0.990304ms)
+✔ R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at least the smallest step used (2,000 sequences) (118.227621ms)
+✔ cap: 20 deals by an adaptive prober (bisecting budgets, q 1-12) still leave at least one unit_step of possible floors (400 sellers) (49.395622ms)
+✔ [env.staging] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (17.139861ms)
+✔ [env.production] is a separate Worker with its own D1, KV, cron, required secrets and no DEV (2.184423ms)
+✔ staging, production and the local top level never share a database, KV namespace or name (4.29181ms)
+✔ the top level is local only: placeholder ids, no workers.dev route, no secrets.required (1.893162ms)
+✔ [env.staging] has Workers Logs on (sampling 1) and ENVIRONMENT = "staging" (1.116413ms)
+✔ [env.production] has Workers Logs on (sampling 1) and ENVIRONMENT = "production" (1.190212ms)
+✔ the top level logs as ENVIRONMENT = "local" (1.064224ms)
+✔ the runbook says how to read the logs (0.725533ms)
+✔ the top level binds version metadata as CF_VERSION_METADATA (1.192316ms)
+✔ [env.staging] binds version metadata as CF_VERSION_METADATA (1.170745ms)
+✔ [env.production] binds version metadata as CF_VERSION_METADATA (1.182528ms)
+✔ the top level binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S (1.541257ms)
+✔ [env.staging] binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S (1.407603ms)
+✔ [env.production] binds IP_RATE_LIMIT, agreeing with IP_LIMIT_PER_60S (0.837043ms)
+✖ the top level sets MANDATES_PER_ITEM_PER_DAY = "20" (2.145269ms)
+✖ [env.staging] sets MANDATES_PER_ITEM_PER_DAY = "20" (1.666924ms)
+✖ [env.production] sets MANDATES_PER_ITEM_PER_DAY = "20" (1.05692ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 31
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1456.544732
+
+✖ failing tests:
+
+test at arbiter/test/mandate-cap.test.mjs:25:1
+✖ the default cap is 20 per item per IP per day (2.438284ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 20
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mandate-cap.test.mjs:26:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 20,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/mandate-cap.test.mjs:38:1
+✖ MANDATES_PER_ITEM_PER_DAY sets the cap; an unusable value falls back to 20 (90.623239ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  201 !== 429
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mandate-cap.test.mjs:42:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 429,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/mandate-cap.test.mjs:58:1
+✖ GET / publishes the limits an agent needs (8.012771ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   catalog_page_max: 100,
+  -   negotiations_per_item_per_day: 7,
+  -   requests_per_ip_per_minute: 100000
+  - }
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/mandate-cap.test.mjs:61:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { negotiations_per_item_per_day: 7, requests_per_ip_per_minute: 100000, catalog_page_max: 100 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:117:3
+✖ the top level sets MANDATES_PER_ITEM_PER_DAY = "20" (2.145269ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== '20'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:118:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: '20',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:117:3
+✖ [env.staging] sets MANDATES_PER_ITEM_PER_DAY = "20" (1.666924ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== '20'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:118:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: '20',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at arbiter/test/wrangler-env.test.mjs:117:3
+✖ [env.production] sets MANDATES_PER_ITEM_PER_DAY = "20" (1.05692ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== '20'
+  
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/wrangler-env.test.mjs:118:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: '20',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+exit: 1

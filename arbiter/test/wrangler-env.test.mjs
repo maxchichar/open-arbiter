@@ -111,3 +111,10 @@ for (const env of [undefined, ...ENVS]) {
     namespaces.add(rl.namespace_id);
   });
 }
+
+// Owner, 2026-11-27: the daily negotiation cap is an environment setting, 20 everywhere.
+for (const env of [undefined, ...ENVS]) {
+  test(`${env ? `[env.${env}]` : "the top level"} sets MANDATES_PER_ITEM_PER_DAY = "20"`, () => {
+    assert.equal(read(env).vars.MANDATES_PER_ITEM_PER_DAY, "20");
+  });
+}

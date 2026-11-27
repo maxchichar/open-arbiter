@@ -1,0 +1,35 @@
+# the 20-deal test with the bound doubled to 2 unit_steps: it must FAIL (the prober gets closer than 2 steps)
+✖ cap: 20 deals by an adaptive prober (bisecting budgets, q 1-12) still leave at least one unit_step of possible floors (400 sellers) (6.453276ms)
+ℹ replay with TEST_SEED=1877339273
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83.944529
+
+✖ failing tests:
+
+test at arbiter/test/zz-negctl.test.mjs:254:1
+✖ cap: 20 deals by an adaptive prober (bisecting budgets, q 1-12) still leave at least one unit_step of possible floors (400 sellers) (6.453276ms)
+  Error: replay with TEST_SEED=1877339273
+      at TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:29:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    [cause]: AssertionError [ERR_ASSERTION]: after 20 deals: floors 10001..20000 (10000) < one step 10000 (ask 28235, floor 11907)
+        at file:///home/maxchichar/open-arbiter/arbiter/test/zz-negctl.test.mjs:273:12
+        at async TestContext.<anonymous> (file:///home/maxchichar/open-arbiter/arbiter/test/seeded.mjs:24:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: false,
+      expected: true,
+      operator: '==',
+      diff: 'simple'
+    }
+  }
+# failed as required
+exit: 0

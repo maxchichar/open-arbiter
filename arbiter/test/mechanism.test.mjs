@@ -246,3 +246,32 @@ test("R1: deals across 2-4 ask changes (same floor, q 1-3, any budgets) leave at
   }
   assert.ok(changes > 300, `only ${changes} sequences changed the step`);
 }));
+
+// Owner, 2026-11-27 (carrier NAT): the anti-probing cap rises from 3 to 20 negotiations per item per
+// IP per day and becomes load protection only. The leakage bound must not depend on it: 20 deals
+// against one seller, each budget chosen by an adaptive prober to bisect what it still does not
+// know (the strongest strategy), at random quantities, still leave at least one unit_step of floors.
+test("cap: 20 deals by an adaptive prober (bisecting budgets, q 1-12) still leave at least one unit_step of possible floors (400 sellers)", replayable(async () => {
+  const { MANDATE_CAP_DEFAULT } = await import("../src/core.js").catch(() => ({}));
+  const DEALS = MANDATE_CAP_DEFAULT ?? 20;
+  assert.equal(DEALS, 20, "the deployed default cap");
+  const r = prng();
+  let narrowedToOneStep = 0;
+  for (let i = 0; i < 400; i++) {
+    const ask = randomAsk(r), floor = validFloor(r, ask, 0.3);
+    let lo = 1, hi = topFloor(ask);
+    for (let d = 0; d < DEALS; d++) {
+      const q = between(r, 1, 12);
+      // Bisect the floors still possible (a budget at the midpoint × q), sometimes jittered.
+      const mid = Math.floor((lo + hi) / 2);
+      const max = r() < 0.8 ? Math.max(1, mid * q) : between(r, Math.max(1, lo * q), Math.min(ask * q, hi * q + 1));
+      const deal = { ask, q, max };
+      const [a, b] = consistentFloors(deal, key(floor, deal));
+      lo = Math.max(lo, a); hi = Math.min(hi, b);
+    }
+    assert.ok(lo <= floor && floor <= hi, "the true floor is consistent");
+    assert.ok(hi - lo + 1 >= unitStep(ask), `after ${DEALS} deals: floors ${lo}..${hi} (${hi - lo + 1}) < one step ${unitStep(ask)} (ask ${ask}, floor ${floor})`);
+    if (hi - lo + 1 < 2 * unitStep(ask)) narrowedToOneStep++;
+  }
+  assert.ok(narrowedToOneStep > 200, `the prober is strong: only ${narrowedToOneStep}/400 floors pinned to about one step`);
+}));
