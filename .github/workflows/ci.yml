@@ -92,9 +92,12 @@ jobs:
       - name: upstream linking tests at the pin
         working-directory: .agentic-web
         run: node --test tests/linking/linking.test.mjs
+      # The upstream tests for what P1.3b took from upstream (Node only). The rest of upstream's runtime
+      # suite starts a real Chrome, and panel.test.mjs races its profile cleanup on the runner (ENOTEMPTY,
+      # run 46067045280); our own browser check below covers the page.
       - name: upstream runtime tests at the pin (Trusted Types, IME Enter, forms)
         working-directory: .agentic-web
-        run: node --test "tests/skills/agentify-website/runtime/*.test.mjs"
+        run: node --test tests/skills/agentify-website/runtime/trusted-types.test.mjs tests/skills/agentify-website/runtime/enter-key.test.mjs tests/skills/agentify-website/runtime/discovered-actions.test.mjs
       - name: Playwright and Chromium
         run: |
           python -m pip install --require-hashes -r sites/oja/tests/requirements.txt
