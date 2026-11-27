@@ -99,8 +99,15 @@ test("0000_baseline refuses a database whose audit chain forked (the unique inde
 });
 
 test("[tree] HEAD inserts name their columns, so an added column never breaks a running Worker (M2)", () => {
-  const src = readFileSync(new URL("../src/core.js", import.meta.url), "utf8");
-  assert.deepEqual([...src.matchAll(/INSERT INTO \w+ (VALUES|SELECT)/g)].map((m) => m[0]), []);
+  // The Worker, its scripts and its JS tests (a positional INSERT in a test hid a P1.3 red probe).
+  const found = [];
+  for (const dir of ["../src/", "../scripts/", "./"]) {
+    const base = new URL(dir, import.meta.url);
+    for (const f of readdirSync(base).filter((f) => /\.m?js$/.test(f))) {
+      for (const m of readFileSync(new URL(f, base), "utf8").matchAll(/INSERT INTO \w+ (VALUES|SELECT)/g)) found.push(`${dir}${f}: ${m[0]}`);
+    }
+  }
+  assert.deepEqual(found, []);
 });
 
 test("AC-2.6: a parent-table rebuild under PRAGMA defer_foreign_keys keeps every child row", () => {

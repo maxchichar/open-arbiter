@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { memoryD1 } from "./sqlite-d1.mjs";
 
 const count = async (db) => (await db.prepare("SELECT COUNT(*) AS n FROM vendors").first()).n;
-const insert = (db, id, keyHash) => db.prepare("INSERT INTO vendors VALUES (?,?,?,?,?)").bind(id, "n", null, keyHash, 1);
+const insert = (db, id, keyHash) => db.prepare("INSERT INTO vendors (id, name, origin, key_hash, created_at) VALUES (?,?,?,?,?)").bind(id, "n", null, keyHash, 1);
 
 test("batch commits every statement together", async () => {
   const db = memoryD1();
